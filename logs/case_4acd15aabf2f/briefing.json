@@ -1,0 +1,3454 @@
+{
+ "schema_version": "briefing-1",
+ "header": {
+  "case_id": "case-4acd15aabf2f",
+  "event_id": "E5",
+  "event": "Orvan grain corridor collapse",
+  "as_of_date": "2027-01-25",
+  "question": "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.",
+  "completion_status": "COMPLETE",
+  "stop_reason": null,
+  "flagged_cells": [
+   "Tolan / Maize"
+  ],
+  "cells_not_assessed": [],
+  "scope_assumptions": [],
+  "integrity_warnings": [],
+  "removed_numbers": 0,
+  "run2_new_evidence_families": [
+   "FAM-380e182fb8e2",
+   "FAM-f36f1e94cebd"
+  ],
+  "run2_notice": null,
+  "ruling_mode": "run 1: MODEL_ON_OPEN_CLAIMS; run 2: RULES_ONLY; narrative MODEL",
+  "guards_passed": true
+ },
+ "executive_summary": {
+  "paragraph_id": "sum-01",
+  "text": "As of 2027-01-25, the exposure to Orvan grain corridor collapse is: Midgard Wheat: net value shortfall of 54.8% to 57.7%; Midgard Maize: net value shortfall of 38.5% to 38.5%; Tolan Wheat: net value shortfall of 50.8% to 55.8%; Tolan Maize: insufficient evidence (NO_DOCUMENTED_FLOW), no number given…",
+  "finding_classification": "ESTABLISHED",
+  "claim_refs": [
+   "claim-loki-001",
+   "claim-thor-012",
+   "claim-loki-002"
+  ],
+  "citation_refs": [
+   "[ORV-0009, P4, 2027-01-19 09:20]",
+   "[ORV-0027, P5, 2027-01-22 09:05]",
+   "[ORV-0030, P4, 2027-01-21 09:35]",
+   "[ORV-0046, P4, 2027-01-20 10:05]",
+   "[ORV-0044, P5, 2027-01-22 10:50]"
+  ],
+  "row_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P8",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-07"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P9",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-08"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P10",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-09"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P11",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-10"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P12",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-11"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P13",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2025-12"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P2",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-07"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P3",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-08"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P4",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-09"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P5",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-10"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P6",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-11"
+   },
+   {
+    "doc_id": "ORV-0009",
+    "paragraph": "P7",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0009|2026-12"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P8",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-07"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P9",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-08"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P10",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-09"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P11",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-10"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P12",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-11"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P13",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2025-12"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P2",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-07"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P3",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-08"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P4",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-09"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P5",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-10"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P6",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-11"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "paragraph": "P7",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0027|2026-12"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P8",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-07"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P9",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-08"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P10",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-09"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P11",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-10"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P12",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-11"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P13",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2025-12"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P2",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-07"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P3",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-08"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P4",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-09"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P5",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-10"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P6",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-11"
+   },
+   {
+    "doc_id": "ORV-0030",
+    "paragraph": "P7",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0030|2026-12"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P8",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-07"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P9",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-08"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P10",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-09"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P11",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-10"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P12",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-11"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P13",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2025-12"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P2",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-07"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P3",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-08"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P4",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-09"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P5",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-10"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P6",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-11"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "paragraph": "P7",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0046|2026-12"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P8",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-07"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P9",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-08"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P10",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-09"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P11",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-10"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P12",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-11"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P13",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2025-12"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P2",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-07"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P3",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-08"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P4",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-09"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P5",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-10"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P6",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-11"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "paragraph": "P7",
+    "table_id": null,
+    "native_row_number": null,
+    "row_key": "ORV-0044|2026-12"
+   }
+  ],
+  "calc_refs": [
+   "calc-r1-loki-01",
+   "calc-r2-thor-07",
+   "calc-r1-loki-02"
+  ],
+  "number_refs": [
+   {
+    "value": "54.8",
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.full_credit.low"
+   },
+   {
+    "value": "57.7",
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.half_credit.high"
+   },
+   {
+    "value": "38.5",
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.half_credit.low"
+   },
+   {
+    "value": "38.5",
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.no_credit.high"
+   },
+   {
+    "value": "50.8",
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.full_credit.low"
+   },
+   {
+    "value": "55.8",
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.half_credit.high"
+   }
+  ],
+  "confidence": 0.8
+ },
+ "event_verification": [
+  {
+   "paragraph_id": "evt-01",
+   "text": "Orvan grain corridor collapse is verified: current top-tier case-event document asserts the event.",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [],
+   "citation_refs": [
+    "[ORV-0016, P6, 2026-09-10 17:45]",
+    "[ORV-0013, P2, 2026-09-10 09:10]",
+    "[ORV-0034, P1, 2026-09-11 06:20]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.9
+  },
+  {
+   "paragraph_id": "evt-c1",
+   "text": "[ORV-0013, P2, 2026-09-10 09:10] corrects [ORV-0043, P1, 2026-09-09 17:30].",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [],
+   "citation_refs": [
+    "[ORV-0013, P2, 2026-09-10 09:10]",
+    "[ORV-0043, P1, 2026-09-09 17:30]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.9
+  },
+  {
+   "paragraph_id": "evt-c2",
+   "text": "[ORV-0003, P1, 2026-08-18 10:10] superseded by [ORV-0013, P2, 2026-09-10 09:10].",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [],
+   "citation_refs": [
+    "[ORV-0003, P1, 2026-08-18 10:10]",
+    "[ORV-0013, P2, 2026-09-10 09:10]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.9
+  },
+  {
+   "paragraph_id": "evt-c3",
+   "text": "[ORV-0049, P1, 2026-08-25 09:25] superseded by [ORV-0013, P2, 2026-09-10 09:10].",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [],
+   "citation_refs": [
+    "[ORV-0049, P1, 2026-08-25 09:25]",
+    "[ORV-0013, P2, 2026-09-10 09:10]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.9
+  }
+ ],
+ "established": [
+  {
+   "paragraph_id": "est-01",
+   "text": "A news report states: \"Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.\" [ORV-0006, P1, 2026-10-08 08:45]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-003"
+   ],
+   "citation_refs": [
+    "[ORV-0006, P1, 2026-10-08 08:45]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-003"
+  },
+  {
+   "paragraph_id": "est-02",
+   "text": "Direct-route value for Midgard Wheat imports changed by -60.3% and volume by -65.2% against the same months one year earlier (4 paired months). [ORV-0009, P4, 2027-01-19 09:20]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-004"
+   ],
+   "citation_refs": [
+    "[ORV-0009, P4, 2027-01-19 09:20]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-12"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-thor-01"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-01",
+     "field": "passes.with_flagged.direct.value_change_pct",
+     "value": "-60.3"
+    },
+    {
+     "calc_id": "calc-r1-thor-01",
+     "field": "passes.with_flagged.direct.volume_change_pct",
+     "value": "-65.2"
+    },
+    {
+     "calc_id": "calc-r1-thor-01",
+     "field": "passes.with_flagged.paired_month_count",
+     "value": "4"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-004"
+  },
+  {
+   "paragraph_id": "est-03",
+   "text": "Direct-route value for Tolan Wheat imports changed by -60.3% and volume by -64.8% against the same months one year earlier (4 paired months). [ORV-0046, P4, 2027-01-20 10:05]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-005"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P4, 2027-01-20 10:05]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-12"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-thor-02"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "passes.with_flagged.direct.value_change_pct",
+     "value": "-60.3"
+    },
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "passes.with_flagged.direct.volume_change_pct",
+     "value": "-64.8"
+    },
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "passes.with_flagged.paired_month_count",
+     "value": "4"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-005"
+  },
+  {
+   "paragraph_id": "est-04",
+   "text": "A news report states: \"Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.\" [ORV-0022, P1, 2027-01-12 07:55]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-008"
+   ],
+   "citation_refs": [
+    "[ORV-0022, P1, 2027-01-12 07:55]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-008"
+  },
+  {
+   "paragraph_id": "est-05",
+   "text": "Direct-route value for Midgard Maize imports changed by -38.5% and volume by -42.5% against the same months one year earlier (4 paired months). [ORV-0030, P4, 2027-01-21 09:35]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-009"
+   ],
+   "citation_refs": [
+    "[ORV-0030, P4, 2027-01-21 09:35]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-12"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-thor-03"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-03",
+     "field": "passes.with_flagged.direct.value_change_pct",
+     "value": "-38.5"
+    },
+    {
+     "calc_id": "calc-r1-thor-03",
+     "field": "passes.with_flagged.direct.volume_change_pct",
+     "value": "-42.5"
+    },
+    {
+     "calc_id": "calc-r1-thor-03",
+     "field": "passes.with_flagged.paired_month_count",
+     "value": "4"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-009"
+  },
+  {
+   "paragraph_id": "est-06",
+   "text": "Loki estimates a net value shortfall of 54.8% to 57.7% for Midgard Wheat imports, crediting documented substitute growth in full. [ORV-0009, P4, 2027-01-19 09:20] [ORV-0027, P5, 2027-01-22 09:05]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-001"
+   ],
+   "citation_refs": [
+    "[ORV-0009, P4, 2027-01-19 09:20]",
+    "[ORV-0027, P5, 2027-01-22 09:05]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-12"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-loki-01"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-01",
+     "field": "envelope.full_credit.low",
+     "value": "54.8"
+    },
+    {
+     "calc_id": "calc-r1-loki-01",
+     "field": "envelope.half_credit.high",
+     "value": "57.7"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-010"
+  },
+  {
+   "paragraph_id": "est-07",
+   "text": "Loki estimates a net value shortfall of 50.8% to 55.8% for Tolan Wheat imports, crediting documented substitute growth in full. [ORV-0046, P4, 2027-01-20 10:05] [ORV-0044, P5, 2027-01-22 10:50]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-002"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P4, 2027-01-20 10:05]",
+    "[ORV-0044, P5, 2027-01-22 10:50]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-12"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-loki-02"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-02",
+     "field": "envelope.full_credit.low",
+     "value": "50.8"
+    },
+    {
+     "calc_id": "calc-r1-loki-02",
+     "field": "envelope.half_credit.high",
+     "value": "55.8"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-011"
+  },
+  {
+   "paragraph_id": "est-08",
+   "text": "A trade note states: \"December was the weakest month of the half-year, and rail loadings through Ravik were still rising.\" [ORV-0009, P14, 2027-01-19 09:20]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-003"
+   ],
+   "citation_refs": [
+    "[ORV-0009, P14, 2027-01-19 09:20]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-012"
+  },
+  {
+   "paragraph_id": "est-09",
+   "text": "Substitute routes into Midgard for Wheat changed by 15.6% in value over the same paired months, offsetting part of the direct-route loss. [ORV-0027, P5, 2027-01-22 09:05]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-004"
+   ],
+   "citation_refs": [
+    "[ORV-0027, P5, 2027-01-22 09:05]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-12"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-loki-01"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-01",
+     "field": "passes.with_flagged.substitute.value_change_pct",
+     "value": "15.6"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-013"
+  },
+  {
+   "paragraph_id": "est-10",
+   "text": "Substitute routes into Tolan for Wheat changed by 18.1% in value over the same paired months, offsetting part of the direct-route loss. [ORV-0044, P5, 2027-01-22 10:50]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-005"
+   ],
+   "citation_refs": [
+    "[ORV-0044, P5, 2027-01-22 10:50]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-12"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-loki-02"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-02",
+     "field": "passes.with_flagged.substitute.value_change_pct",
+     "value": "18.1"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-014"
+  },
+  {
+   "paragraph_id": "est-11",
+   "text": "Thor narrows its Midgard Wheat estimate to 57.6% to 57.7% (half of the documented substitute growth credited) after challenge-loki-001. [ORV-0009, P4, 2027-01-19 09:20] [ORV-0027, P5, 2027-01-22 09:05]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-010"
+   ],
+   "citation_refs": [
+    "[ORV-0009, P4, 2027-01-19 09:20]",
+    "[ORV-0027, P5, 2027-01-22 09:05]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-12"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-thor-05"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-05",
+     "field": "envelope.half_credit.low",
+     "value": "57.6"
+    },
+    {
+     "calc_id": "calc-r1-thor-05",
+     "field": "envelope.half_credit.high",
+     "value": "57.7"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-018"
+  },
+  {
+   "paragraph_id": "est-12",
+   "text": "Thor narrows its Tolan Wheat estimate to 55.6% to 55.8% (half of the documented substitute growth credited) after challenge-loki-002. [ORV-0046, P4, 2027-01-20 10:05] [ORV-0044, P5, 2027-01-22 10:50]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-011"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P4, 2027-01-20 10:05]",
+    "[ORV-0044, P5, 2027-01-22 10:50]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-12"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r1-thor-06"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-06",
+     "field": "envelope.half_credit.low",
+     "value": "55.6"
+    },
+    {
+     "calc_id": "calc-r1-thor-06",
+     "field": "envelope.half_credit.high",
+     "value": "55.8"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-019"
+  },
+  {
+   "paragraph_id": "est-13",
+   "text": "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth. [ORV-0030, P4, 2027-01-21 09:35]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-012"
+   ],
+   "citation_refs": [
+    "[ORV-0030, P4, 2027-01-21 09:35]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-12"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r2-thor-07"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r2-thor-07",
+     "field": "envelope.half_credit.low",
+     "value": "38.5"
+    },
+    {
+     "calc_id": "calc-r2-thor-07",
+     "field": "envelope.no_credit.high",
+     "value": "38.5"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-020"
+  },
+  {
+   "paragraph_id": "est-14",
+   "text": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given. [ORV-0046, P1, 2027-01-20 10:05] [ORV-0044, P1, 2027-01-22 10:50] [ORV-0042, P4, 2026-11-25 13:05]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-thor-013",
+    "claim-loki-010"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P1, 2027-01-20 10:05]",
+    "[ORV-0044, P1, 2027-01-22 10:50]",
+    "[ORV-0042, P4, 2026-11-25 13:05]",
+    "[ORV-0037, P1, 2026-07-22 11:20]",
+    "[ATL-0010, P1, 2024-01-15 11:15]"
+   ],
+   "row_refs": [],
+   "calc_refs": [
+    "calc-r2-thor-08"
+   ],
+   "number_refs": [],
+   "confidence": 0.8,
+   "ruling_id": "ruling-odin-021"
+  },
+  {
+   "paragraph_id": "est-15",
+   "text": "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full. [ORV-0030, P4, 2027-01-21 09:35]",
+   "finding_classification": "ESTABLISHED",
+   "claim_refs": [
+    "claim-loki-009"
+   ],
+   "citation_refs": [
+    "[ORV-0030, P4, 2027-01-21 09:35]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-12"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-12"
+    }
+   ],
+   "calc_refs": [
+    "calc-r2-loki-05"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r2-loki-05",
+     "field": "envelope.full_credit.low",
+     "value": "38.5"
+    },
+    {
+     "calc_id": "calc-r2-loki-05",
+     "field": "envelope.half_credit.high",
+     "value": "38.5"
+    }
+   ],
+   "confidence": 0.85,
+   "ruling_id": "ruling-odin-022"
+  }
+ ],
+ "contested": [],
+ "conceded": [
+  {
+   "paragraph_id": "con-01",
+   "text": "A company statement states: \"Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.\" Conceded by Loki after a INTERESTED_PARTY challenge. [ORV-0042, P1, 2026-11-25 13:05] Reason given: No independent top-tier evidence answers INTERESTED_…",
+   "finding_classification": "CONCEDED",
+   "claim_refs": [
+    "claim-loki-006"
+   ],
+   "citation_refs": [
+    "[ORV-0042, P1, 2026-11-25 13:05]"
+   ],
+   "row_refs": [],
+   "calc_refs": [],
+   "number_refs": [],
+   "confidence": 0.9,
+   "ruling_id": "ruling-odin-015"
+  }
+ ],
+ "rejected": [],
+ "exposure_table": [
+  {
+   "country": "Midgard",
+   "sector": "Wheat",
+   "status": "ASSESSED",
+   "reason": null,
+   "coverage": "COVERED",
+   "thor": {
+    "status": "ESTIMATED",
+    "low": 57.6,
+    "high": 57.7,
+    "claim_id": "claim-thor-010"
+   },
+   "loki": {
+    "status": "ESTIMATED",
+    "low": 54.8,
+    "high": 57.7,
+    "claim_id": "claim-loki-001"
+   },
+   "odin": {
+    "low": 54.8,
+    "high": 57.7,
+    "unit": "percent",
+    "low_from": "claim-loki-001",
+    "high_from": "claim-loki-001",
+    "value": {
+     "low": 196500000.0,
+     "high": 206900000.0,
+     "low_ref": {
+      "calc_id": "calc-r1-loki-01",
+      "field": "envelope_value.full_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r1-loki-01",
+      "field": "envelope_value.half_credit.high"
+     },
+     "unit": "USD"
+    },
+    "volume": {
+     "low": 615000.0,
+     "high": 633500.0,
+     "low_ref": {
+      "calc_id": "calc-r1-loki-01",
+      "field": "envelope_volume.full_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r1-loki-01",
+      "field": "envelope_volume.half_credit.high"
+     },
+     "unit": "tonnes"
+    },
+    "widened": true
+   },
+   "calibration": {
+    "width_points": 2.9,
+    "tier_mix": {
+     "1": 2
+    },
+    "independent_families": 2,
+    "sides_overlap": true,
+    "widened_by_repeated_rows": true,
+    "baseline_conflict": false,
+    "baseline_basis": [
+     "PRIMARY_YOY"
+    ],
+    "coverage": "COVERED"
+   },
+   "calibration_text": "The range is 2.9 percentage points wide; rests on 2 independent evidence families (tier mix {'1': 2}); the two sides' ranges overlap; it is widened because repeated-value rows are in the inputs.",
+   "calc_refs": [
+    "calc-r1-loki-01",
+    "calc-r1-thor-05"
+   ],
+   "claim_refs": [
+    "claim-loki-001",
+    "claim-thor-010"
+   ],
+   "citation_refs": [
+    "[ORV-0009, P4, 2027-01-19 09:20]",
+    "[ORV-0027, P5, 2027-01-22 09:05]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2025-12"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-07"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-08"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-09"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-10"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-11"
+    },
+    {
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0009|2026-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2025-12"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-07"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-08"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-09"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-10"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-11"
+    },
+    {
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0027|2026-12"
+    }
+   ]
+  },
+  {
+   "country": "Midgard",
+   "sector": "Maize",
+   "status": "ASSESSED",
+   "reason": null,
+   "coverage": "PARTIAL",
+   "thor": {
+    "status": "ESTIMATED",
+    "low": 38.5,
+    "high": 38.5,
+    "claim_id": "claim-thor-012"
+   },
+   "loki": {
+    "status": "ESTIMATED",
+    "low": 38.5,
+    "high": 38.5,
+    "claim_id": "claim-loki-009"
+   },
+   "odin": {
+    "low": 38.5,
+    "high": 38.5,
+    "unit": "percent",
+    "low_from": "claim-thor-012",
+    "high_from": "claim-thor-012",
+    "value": {
+     "low": 128700000.0,
+     "high": 128700000.0,
+     "low_ref": {
+      "calc_id": "calc-r2-thor-07",
+      "field": "envelope_value.half_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r2-thor-07",
+      "field": "envelope_value.no_credit.high"
+     },
+     "unit": "USD"
+    },
+    "volume": {
+     "low": 374000.0,
+     "high": 374000.0,
+     "low_ref": {
+      "calc_id": "calc-r2-thor-07",
+      "field": "envelope_volume.half_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r2-thor-07",
+      "field": "envelope_volume.no_credit.high"
+     },
+     "unit": "tonnes"
+    },
+    "widened": false
+   },
+   "calibration": {
+    "width_points": 0.0,
+    "tier_mix": {
+     "1": 1
+    },
+    "independent_families": 1,
+    "sides_overlap": true,
+    "widened_by_repeated_rows": false,
+    "baseline_conflict": false,
+    "baseline_basis": [
+     "PRIMARY_YOY"
+    ],
+    "coverage": "PARTIAL"
+   },
+   "calibration_text": "The range is 0.0 percentage points wide; rests on 1 independent evidence families (tier mix {'1': 1}); the two sides' ranges overlap.",
+   "calc_refs": [
+    "calc-r2-loki-05",
+    "calc-r2-thor-07"
+   ],
+   "claim_refs": [
+    "claim-thor-012",
+    "claim-loki-009"
+   ],
+   "citation_refs": [
+    "[ORV-0030, P4, 2027-01-21 09:35]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2025-12"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-07"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-08"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-09"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-10"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-11"
+    },
+    {
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0030|2026-12"
+    }
+   ]
+  },
+  {
+   "country": "Tolan",
+   "sector": "Wheat",
+   "status": "ASSESSED",
+   "reason": null,
+   "coverage": "COVERED",
+   "thor": {
+    "status": "ESTIMATED",
+    "low": 55.6,
+    "high": 55.8,
+    "claim_id": "claim-thor-011"
+   },
+   "loki": {
+    "status": "ESTIMATED",
+    "low": 50.8,
+    "high": 55.8,
+    "claim_id": "claim-loki-002"
+   },
+   "odin": {
+    "low": 50.8,
+    "high": 55.8,
+    "unit": "percent",
+    "low_from": "claim-loki-002",
+    "high_from": "claim-loki-002",
+    "value": {
+     "low": 80900000.0,
+     "high": 88800000.0,
+     "low_ref": {
+      "calc_id": "calc-r1-loki-02",
+      "field": "envelope_value.full_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r1-loki-02",
+      "field": "envelope_value.half_credit.high"
+     },
+     "unit": "USD"
+    },
+    "volume": {
+     "low": 267000.0,
+     "high": 282000.0,
+     "low_ref": {
+      "calc_id": "calc-r1-loki-02",
+      "field": "envelope_volume.full_credit.low"
+     },
+     "high_ref": {
+      "calc_id": "calc-r1-loki-02",
+      "field": "envelope_volume.half_credit.high"
+     },
+     "unit": "tonnes"
+    },
+    "widened": true
+   },
+   "calibration": {
+    "width_points": 5.0,
+    "tier_mix": {
+     "2": 2
+    },
+    "independent_families": 2,
+    "sides_overlap": true,
+    "widened_by_repeated_rows": true,
+    "baseline_conflict": false,
+    "baseline_basis": [
+     "PRIMARY_YOY"
+    ],
+    "coverage": "COVERED"
+   },
+   "calibration_text": "The range is 5.0 percentage points wide; rests on 2 independent evidence families (tier mix {'2': 2}); the two sides' ranges overlap; it is widened because repeated-value rows are in the inputs.",
+   "calc_refs": [
+    "calc-r1-loki-02",
+    "calc-r1-thor-06"
+   ],
+   "claim_refs": [
+    "claim-loki-002",
+    "claim-thor-011"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P4, 2027-01-20 10:05]",
+    "[ORV-0044, P5, 2027-01-22 10:50]"
+   ],
+   "row_refs": [
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2025-12"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-07"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-08"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-09"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-10"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-11"
+    },
+    {
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0046|2026-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2025-12"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-07"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-08"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-09"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-10"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-11"
+    },
+    {
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "row_key": "ORV-0044|2026-12"
+    }
+   ]
+  },
+  {
+   "country": "Tolan",
+   "sector": "Maize",
+   "status": "INSUFFICIENT_EVIDENCE",
+   "reason": "NO_DOCUMENTED_FLOW",
+   "coverage": "NO_DIRECT_FLOW",
+   "thor": {
+    "status": "NO_DOCUMENTED_FLOW",
+    "low": null,
+    "high": null,
+    "claim_id": "claim-thor-013"
+   },
+   "loki": {
+    "status": "NO_DOCUMENTED_FLOW",
+    "low": null,
+    "high": null,
+    "claim_id": "claim-loki-010"
+   },
+   "odin": null,
+   "calibration": {
+    "width_points": null,
+    "tier_mix": {
+     "2": 4,
+     "1": 1
+    },
+    "independent_families": 5,
+    "sides_overlap": null,
+    "widened_by_repeated_rows": false,
+    "baseline_conflict": false,
+    "baseline_basis": [
+     "NONE"
+    ],
+    "coverage": "NO_DIRECT_FLOW"
+   },
+   "calibration_text": "No range: the evidence did not support a number.",
+   "calc_refs": [
+    "calc-r2-loki-06",
+    "calc-r2-thor-08"
+   ],
+   "claim_refs": [
+    "claim-thor-013",
+    "claim-loki-010"
+   ],
+   "citation_refs": [
+    "[ORV-0046, P1, 2027-01-20 10:05]",
+    "[ORV-0044, P1, 2027-01-22 10:50]",
+    "[ORV-0042, P4, 2026-11-25 13:05]",
+    "[ORV-0037, P1, 2026-07-22 11:20]",
+    "[ATL-0010, P1, 2024-01-15 11:15]"
+   ],
+   "row_refs": [],
+   "targeted_queries": [
+    "Orvan to Tolan Maize trade note",
+    "Tolan Maize imports from Orvan",
+    "Tolan Maize alternative suppliers"
+   ]
+  }
+ ],
+ "outlook": {
+  "drivers": [
+   "Midgard Wheat: documented substitute routes offset part of the direct-route loss.",
+   "Tolan Wheat: documented substitute routes offset part of the direct-route loss."
+  ],
+  "risks": [
+   "Tolan Maize: no documented flow or baseline; exposure cannot be quantified.",
+   "Midgard Wheat: range widened by repeated-value trade rows.",
+   "Tolan Wheat: range widened by repeated-value trade rows."
+  ],
+  "indicators": [
+   "New monthly trade notes for the assessed routes",
+   "Any later corrections or retractions of the event documents",
+   "Documents that name a substitute route for a flagged cell"
+  ],
+  "assumptions": [
+   "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast.",
+   "Substitute supply keeps the pattern shown by the documented months; no new route is assumed.",
+   "Cells without a documented flow stay unquantified; they are not read as zero exposure.",
+   "Only documents published on or before 2027-01-25 in the case scope are used."
+  ]
+ },
+ "assumptions_limitations": [
+  "Coverage Midgard / Wheat: COVERED",
+  "Coverage Midgard / Maize: PARTIAL",
+  "Coverage Tolan / Wheat: COVERED",
+  "Coverage Tolan / Maize: NO_DIRECT_FLOW",
+  "Evidence gap: Midgard / Maize lacks substitute_flow",
+  "Evidence gap: Tolan / Maize lacks direct_flow",
+  "Evidence gap: Tolan / Maize lacks substitute_flow",
+  "Evidence gap: Tolan / Maize lacks contract_delay"
+ ],
+ "sources": [
+  {
+   "doc_id": "ATL-0010",
+   "title": "Country profile: Tolan",
+   "tier": 1,
+   "source_type": "atlas",
+   "pub_date": "2024-01-15",
+   "spans": [
+    "ATL-0010:P1",
+    "ATL-0010:P2"
+   ]
+  },
+  {
+   "doc_id": "ORV-0006",
+   "title": "Millers look beyond Orvan as wheat cargoes slip",
+   "tier": 2,
+   "source_type": "news",
+   "pub_date": "2026-10-08",
+   "spans": [
+    "ORV-0006:P1"
+   ]
+  },
+  {
+   "doc_id": "ORV-0009",
+   "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+   "tier": 1,
+   "source_type": "trade_note",
+   "pub_date": "2027-01-19",
+   "spans": [
+    "ORV-0009:P14",
+    "ORV-0009:P4"
+   ]
+  },
+  {
+   "doc_id": "ORV-0022",
+   "title": "December grain arrivals point to a smaller Orvan share",
+   "tier": 2,
+   "source_type": "news",
+   "pub_date": "2027-01-12",
+   "spans": [
+    "ORV-0022:P1"
+   ]
+  },
+  {
+   "doc_id": "ORV-0027",
+   "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+   "tier": 1,
+   "source_type": "trade_note",
+   "pub_date": "2027-01-22",
+   "spans": [
+    "ORV-0027:P5"
+   ]
+  },
+  {
+   "doc_id": "ORV-0030",
+   "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+   "tier": 1,
+   "source_type": "trade_note",
+   "pub_date": "2027-01-21",
+   "spans": [
+    "ORV-0030:P4"
+   ]
+  },
+  {
+   "doc_id": "ORV-0037",
+   "title": "Tolan's small boat fleet welcomes a stronger season",
+   "tier": 2,
+   "source_type": "news",
+   "pub_date": "2026-07-22",
+   "spans": [
+    "ORV-0037:P1"
+   ]
+  },
+  {
+   "doc_id": "ORV-0042",
+   "title": "Anchor Marine reports busier berths at Tolan Harbour",
+   "tier": 2,
+   "source_type": "company_statement",
+   "pub_date": "2026-11-25",
+   "spans": [
+    "ORV-0042:P1",
+    "ORV-0042:P4"
+   ]
+  },
+  {
+   "doc_id": "ORV-0044",
+   "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+   "tier": 2,
+   "source_type": "trade_note",
+   "pub_date": "2027-01-22",
+   "spans": [
+    "ORV-0044:P1",
+    "ORV-0044:P5"
+   ]
+  },
+  {
+   "doc_id": "ORV-0046",
+   "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+   "tier": 2,
+   "source_type": "trade_note",
+   "pub_date": "2027-01-20",
+   "spans": [
+    "ORV-0046:P1",
+    "ORV-0046:P4"
+   ]
+  }
+ ],
+ "removed_by_validator": []
+}

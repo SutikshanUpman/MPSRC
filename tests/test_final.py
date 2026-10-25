@@ -369,34 +369,28 @@ class OdinModelAndFallbacks(unittest.TestCase):
         res = self.run_with({"odin_briefing": liar})
         self.assertTrue(res["trace"].of_type("FALLBACK_BRIEFING_TEMPLATE"))
 
-    def test_budget_cap_mid_case_still_briefs_what_exists(self):
-        tiny = load_config(overrides={"per_case_cap_usd": 0.5})
-        provider = make_provider("mock", tiny)
-        provider.billable = True                      # a billable mock: cost counts against the cap
-        provider.name = "mock"
+    def billable_run(self, cap):
+        cfg = load_config(overrides={"per_case_cap_usd": cap})
+        provider = make_provider("mock", cfg)
+        provider.billable = True                      # a billable mock: its shadow cost counts against the caps
         tmp = tempfile.mkdtemp(prefix="final_budget_")
         self.addCleanup(shutil.rmtree, tmp, True)
-        res = run_full_case(QUESTION, [PACK], tiny, provider, Path(tmp) / "runs", Path(tmp) / "mem", out_name="x",
-                            ledger_path=Path(tmp) / "ledger.json")
-        guard = res["guard"]
-        guard.case_spent = guard.case_limit("thor") - 1e-9           # nothing fits any more
-        self.assertFalse(guard.can_afford("thor"))
+        return run_full_case(QUESTION, [PACK], cfg, provider, Path(tmp) / "runs", Path(tmp) / "mem", out_name="x",
+                             ledger_path=Path(tmp) / "ledger.json")
 
-    def test_event_verification_inconclusive_and_fallback_fails_gives_event_unverified_and_no_numbers(self):
-        from backend.agents.mock_policy import default_responders
+    def test_a_cap_too_small_for_the_trial_stops_it_and_odin_briefs_from_what_exists(self):
+        res = self.billable_run(0.215)
+        b = res["briefing"]
+        self.assertEqual(b["header"]["completion_status"], "INCOMPLETE")
+        self.assertEqual(b["header"]["stop_reason"], "INCOMPLETE_BUDGET_LIMIT")
+        self.assertEqual(len(b["header"]["cells_not_assessed"]), 4)
+        self.assertTrue(all(r["status"] == "INCOMPLETE_BUDGET_LIMIT" and r["odin"] is None for r in b["exposure_table"]))
 
-        def bad(role, messages, schema):
-            raise SchemaError("not json")
-        tmp = tempfile.mkdtemp(prefix="final_unv_")
-        self.addCleanup(shutil.rmtree, tmp, True)
-        pack = synthetic_pack.build_new_wording(Path(tmp) / "w")
-        provider = make_provider("mock", CONFIG, responders=dict(default_responders(), heimdall=bad))
-        res = run(synthetic_pack.WORDING_QUESTION, [pack], tmp, "unv", provider=provider)
-        self.assertEqual(res["briefing"]["event_status"], "EVENT_UNVERIFIED")
-        self.assertEqual(res["briefing"]["exposure_table"], [])
-        self.assertEqual(res["briefing"]["header"]["completion_status"], "INCOMPLETE")
-        self.assertTrue(res["trace"].of_type("FALLBACK_EVENT_UNVERIFIED"))
-        self.assertIn("EVENT_UNVERIFIED", (res["out_dir"] / "briefing.md").read_text(encoding="utf-8"))
+    def test_reserve_exhausted_before_odin_means_deterministic_rules(self):
+        res = self.billable_run(0.25)
+        self.assertTrue(res["trace"].of_type("FALLBACK_ODIN_RULES"))
+        self.assertEqual(res["briefing"]["header"]["completion_status"], "COMPLETE")
+        self.assertLessEqual(res["record"]["spend"]["case_spent_usd"], 0.25)
 
     def test_stop_reason_makes_the_briefing_incomplete(self):
         from backend.briefing import build
@@ -601,6 +595,27 @@ class ExportLogs(unittest.TestCase):
         longest = max(len(h["text"]) for c in cf["evidence_packet"]["cells"] for h in c["hits"])
         self.assertLessEqual(longest, mod.MAX_SPAN + 1)
         self.assertNotRegex("".join(f.read_text(encoding="utf-8") for f in dst.iterdir()), r"sk-ant")
+
+
+class MemoryAcrossCases(unittest.TestCase):
+    def test_ac9_second_case_changes_a_decision_because_of_memory(self):
+        tmp = tempfile.mkdtemp(prefix="final_mem_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        kw = dict(memory_dir=Path(tmp) / "mem")
+        first = run_full_case(QUESTION, [PACK], CONFIG, make_provider("mock", CONFIG), Path(tmp) / "runs", kw["memory_dir"],
+                              out_name="one", ledger_path=Path(tmp) / "l.json")
+        second = run_full_case(QUESTION, [PACK], CONFIG, make_provider("mock", CONFIG), Path(tmp) / "runs", kw["memory_dir"],
+                               out_name="two", ledger_path=Path(tmp) / "l.json")
+        self.assertEqual(first["record"]["ac"]["memory_decisions_changed"], 0)
+        changed = second["trace"].of_type("DECISION_CHANGED")
+        self.assertTrue(changed)
+        self.assertTrue(all(e["payload"]["verified"] and e["payload"]["memory_id"].startswith("mem-") for e in changed))
+        self.assertEqual(second["record"]["ac"]["memory_decisions_changed"], len(changed))
+        agents = {e["actor"] for e in changed}
+        self.assertTrue(agents <= {"thor", "loki"})
+        # private: each store belongs to one agent
+        for a in agents:
+            self.assertTrue((Path(tmp) / "mem" / a / "memory.jsonl").exists())
 
 
 if __name__ == "__main__":

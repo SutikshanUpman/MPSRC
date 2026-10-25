@@ -1,0 +1,684 @@
+[
+ {
+  "ruling_id": "ruling-odin-001",
+  "claim_id": "claim-thor-001",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-thor-010",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "span_id": "ORV-0009:P4"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "span_id": "ORV-0027:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-thor-010 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-002",
+  "claim_id": "claim-thor-002",
+  "run": 1,
+  "agent": "thor",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-thor-011",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P4"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-thor-011 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-003",
+  "claim_id": "claim-thor-003",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "SOURCED_FACT",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0006",
+    "span_id": "ORV-0006:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-004",
+  "claim_id": "claim-thor-004",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "span_id": "ORV-0009:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-005",
+  "claim_id": "claim-thor-005",
+  "run": 1,
+  "agent": "thor",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-006",
+  "claim_id": "claim-thor-006",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-thor-012",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0030",
+    "span_id": "ORV-0030:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-thor-012 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-007",
+  "claim_id": "claim-thor-007",
+  "run": 1,
+  "agent": "thor",
+  "country": "Tolan",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-thor-013",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P1"
+   },
+   {
+    "doc_id": "ORV-0042",
+    "span_id": "ORV-0042:P1"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P1"
+   },
+   {
+    "doc_id": "ORV-0037",
+    "span_id": "ORV-0037:P1"
+   },
+   {
+    "doc_id": "ATL-0010",
+    "span_id": "ATL-0010:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-thor-013 after a challenge; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-008",
+  "claim_id": "claim-thor-008",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "SOURCED_FACT",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0022",
+    "span_id": "ORV-0022:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-009",
+  "claim_id": "claim-thor-009",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0030",
+    "span_id": "ORV-0030:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-010",
+  "claim_id": "claim-loki-001",
+  "run": 1,
+  "agent": "loki",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "span_id": "ORV-0009:P4"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "span_id": "ORV-0027:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "RANGE_WIDENED_BY_FLAGGED_ROWS"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-011",
+  "claim_id": "claim-loki-002",
+  "run": 1,
+  "agent": "loki",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P4"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "RANGE_WIDENED_BY_FLAGGED_ROWS"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-012",
+  "claim_id": "claim-loki-003",
+  "run": 1,
+  "agent": "loki",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "SOURCED_FACT",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "span_id": "ORV-0009:P14"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-013",
+  "claim_id": "claim-loki-004",
+  "run": 1,
+  "agent": "loki",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0027",
+    "span_id": "ORV-0027:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-014",
+  "claim_id": "claim-loki-005",
+  "run": 1,
+  "agent": "loki",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+  "confidence": 0.85
+ },
+ {
+  "ruling_id": "ruling-odin-015",
+  "claim_id": "claim-loki-006",
+  "run": 1,
+  "agent": "loki",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "SOURCED_FACT",
+  "claim_status": "withdrawn",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0042",
+    "span_id": "ORV-0042:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONCEDED",
+  "decision": "REJECTED",
+  "rejected_by": "CONCESSION",
+  "rejection_reasons": [
+   "CONCEDED_BY_AUTHOR"
+  ],
+  "rationale": "The author conceded this claim after a INTERESTED_PARTY challenge: No independent top-tier evidence answers INTERESTED_PARTY (challenge-thor-001).",
+  "confidence": 0.9
+ },
+ {
+  "ruling_id": "ruling-odin-016",
+  "claim_id": "claim-loki-007",
+  "run": 1,
+  "agent": "loki",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-loki-009",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0030",
+    "span_id": "ORV-0030:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-loki-009 after a BASELINE_CHOICE; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-017",
+  "claim_id": "claim-loki-008",
+  "run": 1,
+  "agent": "loki",
+  "country": "Tolan",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "superseded",
+  "superseded_by": "claim-loki-010",
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0042",
+    "span_id": "ORV-0042:P1"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P1"
+   },
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P1"
+   },
+   {
+    "doc_id": "ORV-0037",
+    "span_id": "ORV-0037:P1"
+   },
+   {
+    "doc_id": "ATL-0010",
+    "span_id": "ATL-0010:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "CONTESTED",
+  "decision": "QUALIFIED",
+  "qualification_reasons": [
+   "NARROWED_AFTER_CHALLENGE"
+  ],
+  "rationale": "Narrowed by claim-loki-010 after a challenge; the revised claim stands in its place.",
+  "confidence": 0.7
+ },
+ {
+  "ruling_id": "ruling-odin-018",
+  "claim_id": "claim-thor-010",
+  "run": 1,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0009",
+    "span_id": "ORV-0009:P4"
+   },
+   {
+    "doc_id": "ORV-0027",
+    "span_id": "ORV-0027:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "RANGE_WIDENED_BY_FLAGGED_ROWS",
+   "REVISED_CLAIM"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-019",
+  "claim_id": "claim-thor-011",
+  "run": 1,
+  "agent": "thor",
+  "country": "Tolan",
+  "sector": "Wheat",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P4"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P5"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "RANGE_WIDENED_BY_FLAGGED_ROWS",
+   "REVISED_CLAIM"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-020",
+  "claim_id": "claim-thor-012",
+  "run": 2,
+  "agent": "thor",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0030",
+    "span_id": "ORV-0030:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "REVISED_CLAIM"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-021",
+  "claim_id": "claim-thor-013",
+  "run": 2,
+  "agent": "thor",
+  "country": "Tolan",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P1"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P1"
+   },
+   {
+    "doc_id": "ORV-0042",
+    "span_id": "ORV-0042:P4"
+   },
+   {
+    "doc_id": "ORV-0037",
+    "span_id": "ORV-0037:P1"
+   },
+   {
+    "doc_id": "ATL-0010",
+    "span_id": "ATL-0010:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+  "confidence": 0.8
+ },
+ {
+  "ruling_id": "ruling-odin-022",
+  "claim_id": "claim-loki-009",
+  "run": 2,
+  "agent": "loki",
+  "country": "Midgard",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0030",
+    "span_id": "ORV-0030:P4"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "QUALIFIED",
+  "rationale": "The two sides' ranges overlap.",
+  "confidence": 0.85,
+  "qualification_reasons": [
+   "REVISED_CLAIM"
+  ]
+ },
+ {
+  "ruling_id": "ruling-odin-023",
+  "claim_id": "claim-loki-010",
+  "run": 2,
+  "agent": "loki",
+  "country": "Tolan",
+  "sector": "Maize",
+  "claim_kind": "INFERENCE",
+  "claim_status": "submitted",
+  "superseded_by": null,
+  "supporting_refs": [
+   {
+    "doc_id": "ORV-0046",
+    "span_id": "ORV-0046:P1"
+   },
+   {
+    "doc_id": "ORV-0044",
+    "span_id": "ORV-0044:P1"
+   },
+   {
+    "doc_id": "ORV-0042",
+    "span_id": "ORV-0042:P4"
+   },
+   {
+    "doc_id": "ORV-0037",
+    "span_id": "ORV-0037:P1"
+   },
+   {
+    "doc_id": "ATL-0010",
+    "span_id": "ATL-0010:P1"
+   }
+  ],
+  "conflicting_refs": [],
+  "created_at": "2027-01-25T00:00:00Z",
+  "decided_by": "RULES",
+  "classification": "ESTABLISHED",
+  "decision": "ACCEPTED",
+  "rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+  "confidence": 0.8
+ }
+]

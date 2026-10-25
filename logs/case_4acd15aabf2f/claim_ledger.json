@@ -1,0 +1,1110 @@
+[
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-01"
+  ],
+  "citations": [
+   "[ORV-0009, P4, 2027-01-19 09:20]",
+   "[ORV-0027, P5, 2027-01-22 09:05]"
+  ],
+  "claim_id": "claim-thor-001",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor estimates a net value shortfall of 57.6% to 60.3% for Midgard Wheat imports, crediting at most half of the documented substitute growth.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Midgard",
+  "estimate": {
+   "high": 60.3,
+   "high_ref": {
+    "calc_id": "calc-r1-thor-01",
+    "field": "envelope.no_credit.high"
+   },
+   "low": 57.6,
+   "low_ref": {
+    "calc_id": "calc-r1-thor-01",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-01",
+    "field": "envelope.half_credit.low",
+    "value": "57.6"
+   },
+   {
+    "calc_id": "calc-r1-thor-01",
+    "field": "envelope.no_credit.high",
+    "value": "60.3"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-thor-01",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 410.69,
+   "unit_price_before": 360.1,
+   "value_change": -216200000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -649000.0,
+   "volume_change_pct": -65.2,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-thor-010"
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-02"
+  ],
+  "citations": [
+   "[ORV-0046, P4, 2027-01-20 10:05]",
+   "[ORV-0044, P5, 2027-01-22 10:50]"
+  ],
+  "claim_id": "claim-thor-002",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor estimates a net value shortfall of 55.6% to 60.3% for Tolan Wheat imports, crediting at most half of the documented substitute growth.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Tolan",
+  "estimate": {
+   "high": 60.3,
+   "high_ref": {
+    "calc_id": "calc-r1-thor-02",
+    "field": "envelope.no_credit.high"
+   },
+   "low": 55.6,
+   "low_ref": {
+    "calc_id": "calc-r1-thor-02",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "envelope.half_credit.low",
+    "value": "55.6"
+   },
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "envelope.no_credit.high",
+    "value": "60.3"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-thor-02",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 395.0,
+   "unit_price_before": 349.89,
+   "value_change": -96000000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -295000.0,
+   "volume_change_pct": -64.8,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-thor-011"
+ },
+ {
+  "agent": "thor",
+  "assumptions": [],
+  "calc_ids": [],
+  "citations": [
+   "[ORV-0006, P1, 2026-10-08 08:45]"
+  ],
+  "claim_id": "claim-thor-003",
+  "claim_kind": "SOURCED_FACT",
+  "claim_text": "A news report states: \"Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.\"",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": null,
+  "metric": null,
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [],
+  "calc_ids": [
+   "calc-r1-thor-01"
+  ],
+  "citations": [
+   "[ORV-0009, P4, 2027-01-19 09:20]"
+  ],
+  "claim_id": "claim-thor-004",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Direct-route value for Midgard Wheat imports changed by -60.3% and volume by -65.2% against the same months one year earlier (4 paired months).",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.8,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": null,
+  "metric": null,
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-01",
+    "field": "passes.with_flagged.direct.value_change_pct",
+    "value": "-60.3"
+   },
+   {
+    "calc_id": "calc-r1-thor-01",
+    "field": "passes.with_flagged.direct.volume_change_pct",
+    "value": "-65.2"
+   },
+   {
+    "calc_id": "calc-r1-thor-01",
+    "field": "passes.with_flagged.paired_month_count",
+    "value": "4"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [],
+  "calc_ids": [
+   "calc-r1-thor-02"
+  ],
+  "citations": [
+   "[ORV-0046, P4, 2027-01-20 10:05]"
+  ],
+  "claim_id": "claim-thor-005",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Direct-route value for Tolan Wheat imports changed by -60.3% and volume by -64.8% against the same months one year earlier (4 paired months).",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.8,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": null,
+  "metric": null,
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "passes.with_flagged.direct.value_change_pct",
+    "value": "-60.3"
+   },
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "passes.with_flagged.direct.volume_change_pct",
+    "value": "-64.8"
+   },
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "passes.with_flagged.paired_month_count",
+    "value": "4"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-03"
+  ],
+  "citations": [
+   "[ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "claim_id": "claim-thor-006",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": {
+   "high": 38.5,
+   "high_ref": {
+    "calc_id": "calc-r1-thor-03",
+    "field": "envelope.no_credit.high"
+   },
+   "low": 38.5,
+   "low_ref": {
+    "calc_id": "calc-r1-thor-03",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-03",
+    "field": "envelope.half_credit.low",
+    "value": "38.5"
+   },
+   {
+    "calc_id": "calc-r1-thor-03",
+    "field": "envelope.no_credit.high",
+    "value": "38.5"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-thor-03",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 406.52,
+   "unit_price_before": 380.0,
+   "value_change": -128700000.0,
+   "value_change_pct": -38.5,
+   "volume_change": -374000.0,
+   "volume_change_pct": -42.5,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Maize",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-thor-012"
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "A missing flow is never read as zero exposure or filled with another cell's rate"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-04"
+  ],
+  "citations": [
+   "[ATL-0010, P2, 2024-01-15 11:15]",
+   "[ORV-0042, P1, 2026-11-25 13:05]",
+   "[ORV-0044, P1, 2027-01-22 10:50]",
+   "[ORV-0046, P1, 2027-01-20 10:05]",
+   "[ORV-0037, P1, 2026-07-22 11:20]"
+  ],
+  "claim_id": "claim-thor-007",
+  "claim_kind": "INFERENCE",
+  "claim_text": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.5,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": "NO_DOCUMENTED_FLOW",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-thor-013"
+ },
+ {
+  "agent": "thor",
+  "assumptions": [],
+  "calc_ids": [],
+  "citations": [
+   "[ORV-0022, P1, 2027-01-12 07:55]"
+  ],
+  "claim_id": "claim-thor-008",
+  "claim_kind": "SOURCED_FACT",
+  "claim_text": "A news report states: \"Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.\"",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": null,
+  "metric": null,
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [],
+  "calc_ids": [
+   "calc-r1-thor-03"
+  ],
+  "citations": [
+   "[ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "claim_id": "claim-thor-009",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Direct-route value for Midgard Maize imports changed by -38.5% and volume by -42.5% against the same months one year earlier (4 paired months).",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.8,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": null,
+  "metric": null,
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-03",
+    "field": "passes.with_flagged.direct.value_change_pct",
+    "value": "-38.5"
+   },
+   {
+    "calc_id": "calc-r1-thor-03",
+    "field": "passes.with_flagged.direct.volume_change_pct",
+    "value": "-42.5"
+   },
+   {
+    "calc_id": "calc-r1-thor-03",
+    "field": "passes.with_flagged.paired_month_count",
+    "value": "4"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "Documented substitute growth fully replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-01"
+  ],
+  "citations": [
+   "[ORV-0009, P4, 2027-01-19 09:20]",
+   "[ORV-0027, P5, 2027-01-22 09:05]"
+  ],
+  "claim_id": "claim-loki-001",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Loki estimates a net value shortfall of 54.8% to 57.7% for Midgard Wheat imports, crediting documented substitute growth in full.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Midgard",
+  "estimate": {
+   "high": 57.7,
+   "high_ref": {
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 54.8,
+   "low_ref": {
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.full_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": "Documented substitute routes from Vanir into Midgard (trade rows) offset part of the direct-route loss.",
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.full_credit.low",
+    "value": "54.8"
+   },
+   {
+    "calc_id": "calc-r1-loki-01",
+    "field": "envelope.half_credit.high",
+    "value": "57.7"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-loki-01",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 410.69,
+   "unit_price_before": 360.1,
+   "value_change": -216200000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -649000.0,
+   "volume_change_pct": -65.2,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "Documented substitute growth fully replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-02"
+  ],
+  "citations": [
+   "[ORV-0046, P4, 2027-01-20 10:05]",
+   "[ORV-0044, P5, 2027-01-22 10:50]"
+  ],
+  "claim_id": "claim-loki-002",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Loki estimates a net value shortfall of 50.8% to 55.8% for Tolan Wheat imports, crediting documented substitute growth in full.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Tolan",
+  "estimate": {
+   "high": 55.8,
+   "high_ref": {
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 50.8,
+   "low_ref": {
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.full_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": "Documented substitute routes from Vanir into Tolan (trade rows) offset part of the direct-route loss.",
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.full_credit.low",
+    "value": "50.8"
+   },
+   {
+    "calc_id": "calc-r1-loki-02",
+    "field": "envelope.half_credit.high",
+    "value": "55.8"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-loki-02",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 395.0,
+   "unit_price_before": 349.89,
+   "value_change": -96000000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -295000.0,
+   "volume_change_pct": -64.8,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [],
+  "calc_ids": [],
+  "citations": [
+   "[ORV-0009, P14, 2027-01-19 09:20]"
+  ],
+  "claim_id": "claim-loki-003",
+  "claim_kind": "SOURCED_FACT",
+  "claim_text": "A trade note states: \"December was the weakest month of the half-year, and rail loadings through Ravik were still rising.\"",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": "Mitigation named in the cited trade note",
+  "metric": null,
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-01"
+  ],
+  "citations": [
+   "[ORV-0027, P5, 2027-01-22 09:05]"
+  ],
+  "claim_id": "claim-loki-004",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Substitute routes into Midgard for Wheat changed by 15.6% in value over the same paired months, offsetting part of the direct-route loss.",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": "Documented substitute routes (trade rows)",
+  "metric": null,
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-01",
+    "field": "passes.with_flagged.substitute.value_change_pct",
+    "value": "15.6"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-02"
+  ],
+  "citations": [
+   "[ORV-0044, P5, 2027-01-22 10:50]"
+  ],
+  "claim_id": "claim-loki-005",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Substitute routes into Tolan for Wheat changed by 18.1% in value over the same paired months, offsetting part of the direct-route loss.",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.7,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": "Documented substitute routes (trade rows)",
+  "metric": null,
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-02",
+    "field": "passes.with_flagged.substitute.value_change_pct",
+    "value": "18.1"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [],
+  "calc_ids": [],
+  "citations": [
+   "[ORV-0042, P1, 2026-11-25 13:05]"
+  ],
+  "claim_id": "claim-loki-006",
+  "claim_kind": "SOURCED_FACT",
+  "claim_text": "A company statement states: \"Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.\"",
+  "claim_type": "SUPPORTING",
+  "confidence": 0.5,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": null,
+  "mechanism": "Mitigation named in the cited company statement",
+  "metric": null,
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Wheat",
+  "status": "withdrawn",
+  "supersedes": null,
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "Documented substitute growth fully replaces lost direct-route value"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-03"
+  ],
+  "citations": [
+   "[ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "claim_id": "claim-loki-007",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": {
+   "high": 38.5,
+   "high_ref": {
+    "calc_id": "calc-r1-loki-03",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 38.5,
+   "low_ref": {
+    "calc_id": "calc-r1-loki-03",
+    "field": "envelope.full_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": "No documented substitute growth; the estimate credits nothing beyond the direct-route record.",
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-03",
+    "field": "envelope.full_credit.low",
+    "value": "38.5"
+   },
+   {
+    "calc_id": "calc-r1-loki-03",
+    "field": "envelope.half_credit.high",
+    "value": "38.5"
+   }
+  ],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-loki-03",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 406.52,
+   "unit_price_before": 380.0,
+   "value_change": -128700000.0,
+   "value_change_pct": -38.5,
+   "volume_change": -374000.0,
+   "volume_change_pct": -42.5,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Maize",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-loki-009"
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "A missing flow is never read as zero exposure or filled with another cell's rate"
+  ],
+  "calc_ids": [
+   "calc-r1-loki-04"
+  ],
+  "citations": [
+   "[ORV-0042, P1, 2026-11-25 13:05]",
+   "[ORV-0044, P1, 2027-01-22 10:50]",
+   "[ORV-0046, P1, 2027-01-20 10:05]",
+   "[ORV-0037, P1, 2026-07-22 11:20]",
+   "[ATL-0010, P1, 2024-01-15 11:15]"
+  ],
+  "claim_id": "claim-loki-008",
+  "claim_kind": "INFERENCE",
+  "claim_text": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.5,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": "NO_DOCUMENTED_FLOW",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [],
+  "round": 1,
+  "run": 1,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "superseded",
+  "supersedes": null,
+  "superseded_by": "claim-loki-010"
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes",
+   "Revised in cross-examination after challenge-loki-001 (ASSUMPTION_ATTACK)"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-05"
+  ],
+  "citations": [
+   "[ORV-0009, P4, 2027-01-19 09:20]",
+   "[ORV-0027, P5, 2027-01-22 09:05]"
+  ],
+  "claim_id": "claim-thor-010",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor narrows its Midgard Wheat estimate to 57.6% to 57.7% (half of the documented substitute growth credited) after challenge-loki-001.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Midgard",
+  "estimate": {
+   "high": 57.7,
+   "high_ref": {
+    "calc_id": "calc-r1-thor-05",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 57.6,
+   "low_ref": {
+    "calc_id": "calc-r1-thor-05",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-05",
+    "field": "envelope.half_credit.low",
+    "value": "57.6"
+   },
+   {
+    "calc_id": "calc-r1-thor-05",
+    "field": "envelope.half_credit.high",
+    "value": "57.7"
+   }
+  ],
+  "round": 2,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-thor-05",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 410.69,
+   "unit_price_before": 360.1,
+   "value_change": -216200000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -649000.0,
+   "volume_change_pct": -65.2,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": "claim-thor-001",
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value",
+   "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes",
+   "Revised in cross-examination after challenge-loki-002 (ASSUMPTION_ATTACK)"
+  ],
+  "calc_ids": [
+   "calc-r1-thor-06"
+  ],
+  "citations": [
+   "[ORV-0046, P4, 2027-01-20 10:05]",
+   "[ORV-0044, P5, 2027-01-22 10:50]"
+  ],
+  "claim_id": "claim-thor-011",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor narrows its Tolan Wheat estimate to 55.6% to 55.8% (half of the documented substitute growth credited) after challenge-loki-002.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.6,
+  "country": "Tolan",
+  "estimate": {
+   "high": 55.8,
+   "high_ref": {
+    "calc_id": "calc-r1-thor-06",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 55.6,
+   "low_ref": {
+    "calc_id": "calc-r1-thor-06",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-06",
+    "field": "envelope.half_credit.low",
+    "value": "55.6"
+   },
+   {
+    "calc_id": "calc-r1-thor-06",
+    "field": "envelope.half_credit.high",
+    "value": "55.8"
+   }
+  ],
+  "round": 2,
+  "run": 1,
+  "secondary_metrics": {
+   "calc_id": "calc-r1-thor-06",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 395.0,
+   "unit_price_before": 349.89,
+   "value_change": -96000000.0,
+   "value_change_pct": -60.3,
+   "volume_change": -295000.0,
+   "volume_change_pct": -64.8,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Wheat",
+  "status": "submitted",
+  "supersedes": "claim-thor-002",
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "At most half of documented substitute growth replaces lost direct-route value"
+  ],
+  "calc_ids": [
+   "calc-r2-thor-07"
+  ],
+  "citations": [
+   "[ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "claim_id": "claim-thor-012",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": {
+   "high": 38.5,
+   "high_ref": {
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.no_credit.high"
+   },
+   "low": 38.5,
+   "low_ref": {
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.half_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.half_credit.low",
+    "value": "38.5"
+   },
+   {
+    "calc_id": "calc-r2-thor-07",
+    "field": "envelope.no_credit.high",
+    "value": "38.5"
+   }
+  ],
+  "round": 1,
+  "run": 2,
+  "secondary_metrics": {
+   "calc_id": "calc-r2-thor-07",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 406.52,
+   "unit_price_before": 380.0,
+   "value_change": -128700000.0,
+   "value_change_pct": -38.5,
+   "volume_change": -374000.0,
+   "volume_change_pct": -42.5,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": "claim-thor-006",
+  "superseded_by": null
+ },
+ {
+  "agent": "thor",
+  "assumptions": [
+   "A missing flow is never read as zero exposure or filled with another cell's rate"
+  ],
+  "calc_ids": [
+   "calc-r2-thor-08"
+  ],
+  "citations": [
+   "[ORV-0046, P1, 2027-01-20 10:05]",
+   "[ORV-0044, P1, 2027-01-22 10:50]",
+   "[ORV-0042, P4, 2026-11-25 13:05]",
+   "[ORV-0037, P1, 2026-07-22 11:20]",
+   "[ATL-0010, P1, 2024-01-15 11:15]"
+  ],
+  "claim_id": "claim-thor-013",
+  "claim_kind": "INFERENCE",
+  "claim_text": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.5,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": "NO_DOCUMENTED_FLOW",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [],
+  "round": 1,
+  "run": 2,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": "claim-thor-007",
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+   "Documented substitute growth fully replaces lost direct-route value"
+  ],
+  "calc_ids": [
+   "calc-r2-loki-05"
+  ],
+  "citations": [
+   "[ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "claim_id": "claim-loki-009",
+  "claim_kind": "INFERENCE",
+  "claim_text": "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.7,
+  "country": "Midgard",
+  "estimate": {
+   "high": 38.5,
+   "high_ref": {
+    "calc_id": "calc-r2-loki-05",
+    "field": "envelope.half_credit.high"
+   },
+   "low": 38.5,
+   "low_ref": {
+    "calc_id": "calc-r2-loki-05",
+    "field": "envelope.full_credit.low"
+   },
+   "unit": "percent"
+  },
+  "estimate_status": "ESTIMATED",
+  "mechanism": "No documented substitute growth; the estimate credits nothing beyond the direct-route record.",
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [
+   {
+    "calc_id": "calc-r2-loki-05",
+    "field": "envelope.full_credit.low",
+    "value": "38.5"
+   },
+   {
+    "calc_id": "calc-r2-loki-05",
+    "field": "envelope.half_credit.high",
+    "value": "38.5"
+   }
+  ],
+  "round": 1,
+  "run": 2,
+  "secondary_metrics": {
+   "calc_id": "calc-r2-loki-05",
+   "currency": "USD",
+   "pass": "with_flagged",
+   "unit_price_after": 406.52,
+   "unit_price_before": 380.0,
+   "value_change": -128700000.0,
+   "value_change_pct": -38.5,
+   "volume_change": -374000.0,
+   "volume_change_pct": -42.5,
+   "volume_unit": "tonnes"
+  },
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": "claim-loki-007",
+  "superseded_by": null
+ },
+ {
+  "agent": "loki",
+  "assumptions": [
+   "A missing flow is never read as zero exposure or filled with another cell's rate"
+  ],
+  "calc_ids": [
+   "calc-r2-loki-06"
+  ],
+  "citations": [
+   "[ORV-0046, P1, 2027-01-20 10:05]",
+   "[ORV-0044, P1, 2027-01-22 10:50]",
+   "[ORV-0042, P4, 2026-11-25 13:05]",
+   "[ORV-0037, P1, 2026-07-22 11:20]",
+   "[ATL-0010, P1, 2024-01-15 11:15]"
+  ],
+  "claim_id": "claim-loki-010",
+  "claim_kind": "INFERENCE",
+  "claim_text": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+  "claim_type": "CELL_ESTIMATE",
+  "confidence": 0.5,
+  "country": "Tolan",
+  "estimate": null,
+  "estimate_status": "NO_DOCUMENTED_FLOW",
+  "mechanism": null,
+  "metric": "net_value_shortfall_pct",
+  "number_refs": [],
+  "round": 1,
+  "run": 2,
+  "secondary_metrics": null,
+  "sector": "Maize",
+  "status": "submitted",
+  "supersedes": "claim-loki-008",
+  "superseded_by": null
+ }
+]

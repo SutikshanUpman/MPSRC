@@ -68,6 +68,8 @@ def main(argv=None):
                            for l in f.read_text(encoding="utf-8").splitlines() if l.strip())
         else:
             text = f.read_text(encoding="utf-8")
+        for variant in {str(ROOT), ROOT.as_posix(), str(ROOT).replace("\\", "\\\\")}:
+            text = text.replace(variant, "<repo>")                # no local paths in committed logs
         if SECRET.search(text):
             print(f"REFUSED: {name} contains something that looks like a key; nothing was copied")
             shutil.rmtree(dst)
