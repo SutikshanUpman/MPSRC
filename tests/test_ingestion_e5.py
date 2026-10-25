@@ -188,12 +188,20 @@ class TestTradeRows(unittest.TestCase):
         r = self.rows()["ORV-0030|2025-07"]
         self.assertEqual(r["paragraph"], "P8")
 
-    def test_repeated_rows_flagged_never_silently_used(self):
+    def test_repeated_rows_flagged_kept_and_marked_for_sensitivity(self):
         rows = self.rows()
-        for key in ("ORV-0029|2026-07", "ORV-0029|2026-08"):
-            self.assertIn("TRADE_ROW_REPEATED_VALUES", rows[key]["flags"])
-            self.assertFalse(rows[key]["usable_for_arithmetic"])
-            self.assertIsNotNone(rows[key]["value_amount"])   # kept, not dropped
+        flagged = [r for r in rows.values() if r["flags"]]
+        self.assertEqual(len(flagged), 14)
+        for r in flagged:
+            self.assertIn("TRADE_ROW_REPEATED_VALUES", r["flags"])
+            self.assertTrue(r["usable_for_arithmetic"])        # visible and used...
+            self.assertTrue(r["sensitivity_row"])              # ...and also left out in the second pass
+            self.assertIsNotNone(r["value_amount"])
+        self.assertEqual(rows["ORV-0029|2026-07"]["repeat_cases"], ["d"])
+        self.assertEqual(rows["ORV-0027|2026-09"]["repeat_cases"], ["b"])
+        self.assertEqual(rows["ORV-0044|2025-07"]["repeat_months"], ["2026-09"])
+        cases = sorted(c for r in flagged for c in r["repeat_cases"])
+        self.assertEqual((cases.count("a"), cases.count("b"), cases.count("c"), cases.count("d")), (0, 4, 0, 10))
 
     def test_route_from_content_not_header(self):
         r = self.rows()["ORV-0030|2026-10"]

@@ -10,7 +10,12 @@ Rules that matter downstream:
 - A row-like sentence or table line that cannot be parsed is kept as a
   TRADE_ROW_INVALID record with its raw text. Nothing is guessed or dropped.
 - Repeated value+volume rows and repeated months are flagged on every copy and
-  marked not usable for arithmetic until a person or Odin resolves them.
+  stay visible and usable. They carry `sensitivity_row` and `repeat_cases`
+  ("a" same month repeated, "b" same values in a different year, "d" same
+  values in another month of the same year; "c" cross-document matches are
+  recorded by the pipeline), so exposure is computed with and without them.
+  The marker is per row: only the exposure cells that use a flagged row are
+  widened; nothing here applies to a whole table or document.
 """
 import re
 
@@ -39,10 +44,12 @@ MASS_UNITS = {
     "kg": 1e-3, "kgs": 1e-3, "kilograms": 1e-3, "kilogrammes": 1e-3,
 }
 MISSING_WORDS = re.compile(r"^(n/?a|na|-+|—|–|\?|none|null|missing|unknown|not (available|reported|known|given))\.?$", re.I)
+# Rows with these flags have no trustworthy number and stay out of arithmetic.
 BLOCKING_FLAGS = {
-    "TRADE_ROW_INVALID", "TRADE_ROW_DUPLICATE", "TRADE_ROW_MISSING_VALUE", "TRADE_ROW_BAD_NUMBER",
-    "TRADE_ROW_REPEATED_VALUES", "TRADE_TABLE_TRUNCATED",
+    "TRADE_ROW_INVALID", "TRADE_ROW_MISSING_VALUE", "TRADE_ROW_BAD_NUMBER", "TRADE_TABLE_TRUNCATED",
 }
+# Rows with these flags are used, but exposure is also computed without them.
+SENSITIVITY_FLAGS = {"TRADE_ROW_DUPLICATE", "TRADE_ROW_REPEATED_VALUES"}
 
 _SCALE_RE = r"(?:thousand|million|billion|trillion|mln|mn|bn|[KkMmBb])"
 _NUM_RE = r"\d[\d.,\s]*?"
@@ -161,6 +168,7 @@ def _new_row(doc_id, layout, para_id, synthetic, raw):
         "volume_amount": None, "volume_unit": None, "volume_unit_raw": None,
         "raw_text": raw, "paragraph": para_id, "synthetic_paragraph": synthetic,
         "parse_status": "valid", "flags": [], "reasons": [], "usable_for_arithmetic": True,
+        "sensitivity_row": False, "repeat_cases": [], "repeat_months": [], "cross_doc_matches": [],
     }
 
 
@@ -450,22 +458,44 @@ def finalise_rows(rows, citation_for):
         if r["value_amount"] is not None and r["volume_amount"] is not None:
             key = (r["value_amount"], r["value_currency"], r["volume_amount"], r["volume_unit"])
             by_values.setdefault(key, []).append(r)
+    def case(r, other):
+        if r["month"] == other["month"]:
+            return "a"
+        if (r["month"] or "")[:4] != (other["month"] or "")[:4]:
+            return "b"
+        return "d"
+
     for group in by_month.values():
         if len(group) > 1:
             for r in group:
                 _flag(r, "TRADE_ROW_DUPLICATE", f"month {r['month']} appears {len(group)} times")
+                if "a" not in r["repeat_cases"]:
+                    r["repeat_cases"].append("a")
     for group in by_values.values():
         if len(group) > 1:
             months = sorted(r["month"] or "?" for r in group)
             for r in group:
                 _flag(r, "TRADE_ROW_REPEATED_VALUES", "same value and volume as " + ", ".join(months))
+                for other in group:
+                    if other is not r:
+                        r["repeat_months"].append(other["month"])
+                        c = case(r, other)
+                        if c not in r["repeat_cases"]:
+                            r["repeat_cases"].append(c)
+    used = set()
     for n, r in enumerate(rows):
-        r["row_key"] = f"{r['source_doc_id']}|{r['month'] or 'unparsed-%d' % n}"
+        key = f"{r['source_doc_id']}|{r['month'] or 'unparsed-%d' % n}"
+        if key in used:          # repeat case "a": same month twice keeps both rows addressable
+            key = f"{key}#{n}"
+        used.add(key)
+        r["row_key"] = key
         if any(f in ("TRADE_ROW_INVALID",) for f in r["flags"]):
             r["parse_status"] = "invalid"
         elif r["flags"]:
             r["parse_status"] = "flagged"
         r["usable_for_arithmetic"] = not (set(r["flags"]) & BLOCKING_FLAGS)
+        r["sensitivity_row"] = bool(set(r["flags"]) & SENSITIVITY_FLAGS)
+        r["repeat_cases"].sort()
         r["citation"] = citation_for(r["paragraph"])
     return rows
 

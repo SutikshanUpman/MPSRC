@@ -54,7 +54,8 @@ flowchart TB
     BUDGET -->|case cap reached| SUFF
     SUFF -->|insufficient, run 2 allowed| H
     SUFF -->|sufficient| BRIEF[Final briefing<br/>from rulings only]
-    SUFF -->|run 2 still insufficient or limit reached| INCOMPLETE[Incomplete briefing<br/>per-cell INSUFFICIENT_EVIDENCE]
+    SUFF -->|gaps searched, none found: cell flagged| BRIEF
+    SUFF -->|stopped early on budget or limits| INCOMPLETE[Incomplete briefing<br/>labelled INCOMPLETE]
     ODIN --> BRIEF
     ODIN --> EXP[Exposure table]
 
@@ -74,5 +75,5 @@ flowchart TB
     BRIEF --> UI
     EXP --> UI
     INCOMPLETE --> UI
-    INDEX --> SOURCE[Source viewer<br/>DOC_ID + paragraph]
+    INDEX --> SOURCE[Source viewer<br/>DOC_ID + paragraph<br/>named table row highlighted]
     UI --> SOURCE

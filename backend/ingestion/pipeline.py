@@ -229,6 +229,31 @@ def _families(records):
                 _add(rec, "EVIDENCE_FAMILY_DUPLICATE")
 
 
+def _cross_doc_rows(records):
+    """Repeat case "c": the same route, month, value and volume in another document.
+
+    Same family = one source (dedupe); different family = corroboration. Either
+    way the row is counted once in arithmetic. This adds no flag.
+    """
+    seen = {}
+    for rec in records.values():
+        for r in rec["trade_rows"]:
+            if r["month"] and r["value_amount"] is not None and r["volume_amount"] is not None:
+                key = (r["origin"], r["destination"], r["sector"], r["month"],
+                       r["value_amount"], r["value_currency"], r["volume_amount"], r["volume_unit"])
+                seen.setdefault(key, []).append((rec["evidence_family_id"], r))
+    for group in seen.values():
+        docs = {r["source_doc_id"] for _, r in group}
+        if len(docs) < 2:
+            continue
+        for fam, r in group:
+            for ofam, o in group:
+                if o["source_doc_id"] != r["source_doc_id"]:
+                    r["cross_doc_matches"].append({"row_key": o["row_key"], "same_family": ofam == fam})
+            if "c" not in r["repeat_cases"]:
+                r["repeat_cases"] = sorted(r["repeat_cases"] + ["c"])
+
+
 def _norm_prefix(short, long):
     a = re.sub(r"\s+", " ", short).strip()
     b = re.sub(r"\s+", " ", long).strip()
@@ -270,6 +295,7 @@ def ingest_pack(pack_dir):
         if rec["metadata_conflicts"]:
             _add(rec, "METADATA_CONFLICT")
     _families(records)
+    _cross_doc_rows(records)
     for rec in records.values():
         rec.pop("_canon", None)
     return Corpus(pack, records, pack_flags)

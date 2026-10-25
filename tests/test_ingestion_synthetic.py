@@ -139,18 +139,38 @@ class SyntheticPack(unittest.TestCase):
         self.assertEqual(r["citation"]["text"], "[SYN-0001, P1, 2031-01-15 09:00]")
         self.assertIn("SYNTHETIC_PARAGRAPH", self.c["SYN-0001"]["flags"])
 
-    def test_damaged_table_rows_flagged_not_used_not_dropped(self):
+    def test_damaged_table_rows_flagged_and_kept(self):
         rows = self.rows
-        self.assertEqual(len([k for k in rows if k.startswith("SYN-0001|")]), 6)
+        self.assertEqual(len([k for k in rows if k.startswith("SYN-0001|")]), 7)
         for k in ("SYN-0001|2030-08", "SYN-0001|2030-09"):
             self.assertIn("TRADE_ROW_REPEATED_VALUES", rows[k]["flags"])
+            self.assertEqual(rows[k]["repeat_cases"], ["d"])
         self.assertIn("TRADE_ROW_MISSING_VALUE", rows["SYN-0001|2030-10"]["flags"])
         self.assertIn("TRADE_ROW_BAD_NUMBER", rows["SYN-0001|2030-11"]["flags"])
         self.assertIsNone(rows["SYN-0001|2030-11"]["value_amount"])
         self.assertIn("TRADE_TABLE_TRUNCATED", rows["SYN-0001|2030-12"]["flags"])
-        for k in ("SYN-0001|2030-08", "SYN-0001|2030-09", "SYN-0001|2030-10", "SYN-0001|2030-11", "SYN-0001|2030-12"):
+        # Broken numbers stay out of arithmetic.
+        for k in ("SYN-0001|2030-10", "SYN-0001|2030-11", "SYN-0001|2030-12"):
             self.assertFalse(rows[k]["usable_for_arithmetic"], k)
-        self.assertTrue(rows["SYN-0001|2030-07"]["usable_for_arithmetic"])
+            self.assertFalse(rows[k]["sensitivity_row"], k)
+        # Repeated rows stay in, flagged, and are dropped only in the sensitivity pass.
+        for k in ("SYN-0001|2030-08", "SYN-0001|2030-09", "SYN-0001|2030-07", "SYN-0001|2030-07#6"):
+            self.assertTrue(rows[k]["usable_for_arithmetic"], k)
+            self.assertTrue(rows[k]["sensitivity_row"], k)
+
+    def test_repeat_case_a_same_month(self):
+        a, b = self.rows["SYN-0001|2030-07"], self.rows["SYN-0001|2030-07#6"]
+        for r in (a, b):
+            self.assertIn("TRADE_ROW_DUPLICATE", r["flags"])
+            self.assertIn("a", r["repeat_cases"])
+        self.assertEqual(b["native_row_number"], 7)
+
+    def test_repeat_case_c_cross_doc(self):
+        a, b = self.rows["SYN-0007|2031-01"], self.rows["SYN-0008|2031-01"]
+        self.assertEqual(a["repeat_cases"], ["c"])
+        self.assertEqual(a["cross_doc_matches"], [{"row_key": "SYN-0008|2031-01", "same_family": True}])
+        self.assertFalse(a["flags"])                    # case c adds no flag
+        self.assertTrue(b["usable_for_arithmetic"])
         table = self.c["SYN-0001"]["trade_tables"][0]
         self.assertEqual(table["missing_months"], ["2031-01"])
 

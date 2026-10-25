@@ -59,6 +59,7 @@ DUP_BODY = [
     "Brenn buyers turn to rail as Velka canal stays shut",
     "[P1] Brenn importers have booked extra rail paths through Tarsk since the canal closed.",
     "[P2] Rail can carry only a small share of the gas that used to move by sea.",
+    "[P3] In January 2031, the value was EUR 10M and the volume was 200,000 MMBtu.",
 ]
 
 
@@ -99,7 +100,8 @@ def build(root):
              "3 | 2030-09 | 44.0 | 3,100,000\n"
              "4 | 2030-10 | n/a | 2,000,000\n"
              "5 | 2030-11 | 4O.1 | 1,900,000\n"
-             "6 | 2030-12 | 31.0\n")
+             "6 | 2030-12 | 31.0\n"
+             "7 | 2030-07 | 45.5 | 3,200,000\n")
     add("SYN-0001", ".txt", (header("SYN-0001", EVENT, m["TITLE"], m["SOURCE_NAME"], m["SOURCE_TYPE"], 1,
                                     m["PUB_DATE"], m["PUB_TIME"], "Brenn", "LNG") + m["TITLE"] + "\n\n" + table).encode(), m)
 

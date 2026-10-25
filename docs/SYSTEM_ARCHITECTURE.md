@@ -551,7 +551,8 @@ flowchart TB
     BUDGET -->|case cap reached| SUFF
     SUFF -->|insufficient, run 2 allowed| H
     SUFF -->|sufficient| BRIEF[Final briefing<br/>from rulings only]
-    SUFF -->|run 2 still insufficient or limit reached| INCOMPLETE[Incomplete briefing<br/>per-cell INSUFFICIENT_EVIDENCE]
+    SUFF -->|gaps searched, none found: cell flagged| BRIEF
+    SUFF -->|stopped early on budget or limits| INCOMPLETE[Incomplete briefing<br/>labelled INCOMPLETE]
     ODIN --> BRIEF
     ODIN --> EXP[Exposure table]
 
@@ -571,7 +572,7 @@ flowchart TB
     BRIEF --> UI
     EXP --> UI
     INCOMPLETE --> UI
-    INDEX --> SOURCE[Source viewer<br/>DOC_ID + paragraph]
+    INDEX --> SOURCE[Source viewer<br/>DOC_ID + paragraph<br/>named table row highlighted]
     UI --> SOURCE
 ```
 
@@ -952,7 +953,7 @@ Each document should be normalized into one JSON record:
 }
 ```
 
-`value_amount` is the absolute amount after applying the scale word (K, M, B, bn, thousand, million, billion). `value_currency` and `volume_unit` are whatever the source says; nothing assumes USD or tonnes (section 14.6). `citation` is always `{doc_id, paragraph, published_at}`; `native_row_number` is internal and is never emitted as a citation locator (section 20, open decision OD-1).
+`value_amount` is the absolute amount after applying the scale word (K, M, B, bn, thousand, million, billion). `value_currency` and `volume_unit` are whatever the source says; nothing assumes USD or tonnes (section 14.6). `citation` is always `{doc_id, paragraph, published_at}`; `table_id` and `native_row_number` are never a citation locator; they name the row in the sentence text and drive the click-through highlight (section 20, decision OD-1).
 
 ### 12.4 Search request JSON
 
@@ -1315,7 +1316,7 @@ normalized_body_sha256
 
 Duplicate content may be displayed as corroborating copies, but it must not be counted as independent corroboration and must not satisfy the Run 2 new-evidence requirement by itself.
 
-Rule: every evidence family counts as ONE source for corroboration and confidence, however many copies it has. Run 2 "new evidence" means at least one `evidence_family_id` not retrieved in Run 1. A damaged copy and its clean twin (same title, publication date and source, where one body is empty, truncated or a prefix of the other, e.g. `ORV-0023`/`ORV-0031`, `ORV-0048`/`ORV-0024`, `ORV-0007`/`ORV-0047`) join the same family, and the clean copy is the preferred citation.
+Rule: every evidence family counts as ONE source for corroboration and confidence, however many copies it has. Run 2 "new evidence" means at least one `evidence_family_id` not retrieved in Run 1. A damaged copy and its clean twin (same title, publication date and source, where one body is empty, truncated or a prefix of the other, e.g. `ORV-0023`/`ORV-0031`, `ORV-0048`/`ORV-0024`) join the same family, and the clean copy is the preferred citation. `ORV-0007` (TXT, UTF-16LE body) and `ORV-0047` (PDF) are not a damaged/clean pair: once `ORV-0007` is decoded, their normalised bodies are identical, so body-hash dedupe puts them in one family exactly like `ORV-0006`/`ORV-0040`.
 
 ### 14.6 Trade-note and trade-table parsing
 
@@ -1341,7 +1342,7 @@ Two layouts are supported. Both produce the trade-row JSON in section 12.3.
 
 **PS fixed-layout TXT tables.** Header block (table ID, country pair, sector, unit, period, event ID), one column-name line, then one row per month with the row number in the first column. Keep the native row number as `native_row_number` for display. The same unit-agnostic number rules apply: the unit comes from the table header or column name, and a cell that cannot be parsed is flagged, never guessed.
 
-**Citation.** A trade row is always cited as `[DOC_ID, P#, timestamp]`. That is the only citation format (section 20). If the table rows sit inside a `[Pn]` paragraph, the citation uses that `P#`. The PS (§4.2, "Trade table layout") describes the fixed layout as header, column line and numbered rows, with no `[Pn]` labels, and says a trade row "is identified by its table ID and row number". How to cite a row in a table that has no `[Pn]` label is **open decision OD-1** (section 20). Until the user decides, the interim rule applies: the table block is one paragraph, numbered by its position among the document's paragraph blocks and flagged `SYNTHETIC_PARAGRAPH`, the table ID and `native_row_number` stay internal (shown in the source drawer), and internal keys are never emitted as citations. No `R<n>` locator is introduced.
+**Citation.** A trade row is always cited as `[DOC_ID, P#, timestamp]`. That is the only citation format (section 20). If the table rows sit inside a `[Pn]` paragraph, the citation uses that `P#`. The PS (§4.2, "Trade table layout") describes the fixed layout as header, column line and numbered rows, with no `[Pn]` labels, and says a trade row "is identified by its table ID and row number". Rows of a table without a `[Pn]` label follow **decision OD-1** (section 20): the table block is one paragraph, numbered by its position among the document's paragraph blocks and flagged `SYNTHETIC_PARAGRAPH`; the sentence before the citation names the row in plain words ("Table T2, row 5"); the dashboard click-through highlights that row. Internal keys are never emitted as citations, and no `R<n>` locator exists.
 
 **Damaged-table handling.** Flag, never silently use, never silently drop:
 
@@ -1349,9 +1350,20 @@ Two layouts are supported. Both produce the trade-row JSON in section 12.3.
 |---|---|---|
 | Table or note ends mid-row or mid-sentence | `TRADE_TABLE_TRUNCATED` | Use only complete rows; mark the table incomplete |
 | Month in the stated period has no row | `TRADE_TABLE_MISSING_MONTH` | Record the gap; never interpolate |
-| Two rows with identical value and volume | `TRADE_ROW_REPEATED_VALUES` | Keep both, flag both; an agent citing either must acknowledge the flag and Odin rules on it |
-| Same month appears twice | `TRADE_ROW_DUPLICATE` | Keep both, exclude from arithmetic until resolved |
+| Two rows with identical value and volume | `TRADE_ROW_REPEATED_VALUES` | Repeated-row rule below |
+| Same month appears twice | `TRADE_ROW_DUPLICATE` | Repeated-row rule below |
 | Value or volume missing or unparseable | `TRADE_ROW_MISSING_VALUE` / `TRADE_ROW_BAD_NUMBER` | Exclude from arithmetic |
+
+**Repeated-row rule.** A repeated row is flagged, kept visible to agents with its flag, and used. Exposure is computed two ways, with and without the flagged rows (section 21, "Repeated-row sensitivity"), and the difference widens the reported range **only for the cells whose inputs contain a flagged row**; every other cell keeps its single-pass range. Agents citing a flagged row must name the flag; Odin rules on it. Ingestion records the case on each row (`sensitivity_row: true`, `repeat_cases`, `repeat_months`):
+
+| Case | What repeats | Ingestion record | Use in arithmetic |
+|---|---|---|---|
+| (a) | The same month and year twice inside one document (`TRADE_ROW_DUPLICATE`, plus `TRADE_ROW_REPEATED_VALUES` if the numbers also match) | Both rows kept; the second gets a suffixed `row_key` (`DOC|YYYY-MM#n`) | "With" pass: if the numbers match, the month is counted once; if they differ, each copy is tried and the pass keeps the lower and higher result. "Without" pass: the month is left out |
+| (b) | The same value and volume in a different year (e.g. a 2025 month matching a 2026 month) | Both rows flagged `TRADE_ROW_REPEATED_VALUES`, `repeat_cases: ["b"]` | "With" pass uses both as written; "without" pass drops both, so the baseline or post-event month falls back to the remaining rows |
+| (c) | The same route, month, value and volume in two documents | Field `cross_doc_matches` with `same_family`; no flag | Counted once, never summed. Same evidence family = one source (dedupe); different families = corroboration |
+| (d) | The same value and volume in two different months of the same year inside one document | Both rows flagged `TRADE_ROW_REPEATED_VALUES`, `repeat_cases: ["d"]` | As (b) |
+
+Case (d) is not one of the three cases first named for this rule; E5 has ten such rows (see docs/FIX_PASS6.md).
 
 ---
 
@@ -1610,30 +1622,25 @@ ODIN_RULING
           ↓
 SUFFICIENCY_CHECK
   ├── SUFFICIENT → BRIEFING_GENERATION → COMPLETE
-  └── INSUFFICIENT → RESEARCH_REQUESTED
+  └── INSUFFICIENT → RESEARCH_REQUESTED   (Odin lists evidence_gaps, ≥2 targeted queries each)
           ↓
-     RUN_COUNTER_CHECK
-     ├── max_runs reached → INCOMPLETE_NO_NEW_EVIDENCE → INCOMPLETE_BRIEFING
-     └── run 2 allowed
+     RUN_COUNTER_CHECK / BUDGET_CHECK
+     ├── limit or cap reached before Run 2 searches → INCOMPLETE_NO_NEW_EVIDENCE → INCOMPLETE_BRIEFING
+     └── within limits
           ↓
-     BUDGET_CHECK
-     ├── case or project cap reached → INCOMPLETE_BUDGET_LIMIT → INCOMPLETE_BRIEFING
-     └── within cap
-          ↓
-RUN_2_STARTED
-  ↓
-HEIMDALL_RESEARCHING       (targets Odin's evidence_gaps)
-  ↓
-ROUND_1_STARTED → ROUND_2_STARTED
-  ↓
-ODIN_FINAL_RULING
+RUN_2_STARTED → HEIMDALL_RESEARCHING → ROUND_1_STARTED → ROUND_2_STARTED → ODIN_FINAL_RULING
   ↓
 FINAL_SUFFICIENCY_CHECK
   ├── SUFFICIENT → BRIEFING_GENERATION → COMPLETE
-  └── STILL_INSUFFICIENT → INCOMPLETE_NO_NEW_EVIDENCE → INCOMPLETE_BRIEFING
+  ├── GAPS_SEARCHED_PROPERLY → cells RESOLVED_INSUFFICIENT → BRIEFING_GENERATION → COMPLETE
+  └── Run 2 stopped early (budget, limit, agent failure) → INCOMPLETE_NO_NEW_EVIDENCE → INCOMPLETE_BRIEFING
 ```
 
-`INCOMPLETE_BRIEFING`: Odin still publishes a briefing from his rulings, paid from `odin_briefing_reserve_usd` (or, if that cannot cover it, rendered as a deterministic template from the ruling ledger with no model call), but it is labelled `INCOMPLETE` in the header, every unresolved country/sector cell is `INSUFFICIENT_EVIDENCE` with `low: null` and `high: null` (section 21), and the run record stores `new_evidence_found_in_run_2: true|false`. The system never reports `COMPLETE` for such a case.
+Odin sends the case back once. A gap is **searched properly** when every targeted query Odin listed for it was executed in Run 2, within event scope and the as-of gate, and the results were reviewed by Heimdall. Each such query is logged with its result document IDs. A searched-properly gap with no eligible evidence becomes `INSUFFICIENT_EVIDENCE` (low/high null, with the queries attached). It is a resolved finding, not a failure, and the briefing is `COMPLETE` with the cell flagged.
+
+`INCOMPLETE_NO_NEW_EVIDENCE` is used only when Run 2 stopped before its targeted searches ran (budget cap, run or search limit, wall clock, agent failure). The run record stores the stop reason (`INCOMPLETE_BUDGET_LIMIT` when the budget guard stopped it). Odin then publishes an `INCOMPLETE_BRIEFING` labelled `INCOMPLETE`, paid from `odin_briefing_reserve_usd`; if no Odin budget remains, it is a template briefing rendered from the ruling ledger with no model call. The system never reports `COMPLETE` for such a case.
+
+Independently of status, the run record stores `run2_new_evidence_families: [ids]`. AC8/FR5.4 are demonstrated only when that list is non-empty: Run 2 must bring at least one evidence family, counted across all cells, that Run 1 did not retrieve. If it is empty, the case may still be COMPLETE, but the UI and trace show "Run 2 found no new evidence" and the case must not be submitted as the two-run demonstration.
 
 ### State machine invariants
 
@@ -1641,7 +1648,7 @@ FINAL_SUFFICIENCY_CHECK
 - No Thor/Loki claims before Heimdall verification.
 - No final briefing before Odin rules on all submitted claims.
 - No second run without an Odin evidence-gap decision.
-- Run 2 must use at least one new evidence family or explicitly record that re-search found no new eligible evidence.
+- Run 2 must execute every targeted query Odin listed and record `run2_new_evidence_families`; an empty list is shown as "Run 2 found no new evidence" and disqualifies the case as the AC8 demonstration.
 - No claim without at least one citation.
 - No citation to a future document.
 - No final status if a required stage failed silently.
@@ -1692,7 +1699,7 @@ Optional, not part of the 24h build: transactional reservations in database tabl
 
 The Run 2 demonstration must be driven by an actual Odin evidence-gap decision, not by a scripted trigger. A test fixture may make the gap deterministic, but the production transition must depend on evidence coverage.
 
-If Run 2 is still insufficient, whether or not it found a new evidence family, the state is `INCOMPLETE_NO_NEW_EVIDENCE` and Odin publishes an `INCOMPLETE_BRIEFING` (see above). If Run 2 found no new eligible evidence family, the system must also not claim that the PS's second-run requirement was satisfied.
+See the FINAL_SUFFICIENCY_CHECK rules above. `INCOMPLETE_NO_NEW_EVIDENCE` means only that Run 2 stopped before its targeted searches ran.
 
 ---
 
@@ -1855,19 +1862,18 @@ The source citation format is always based on a real manifest `DOC_ID`, paragrap
 [ORV-0030, P5, 2027-01-21 09:35]
 ```
 
-`[DOC_ID, P#, timestamp]` is the only citation format. There is no row locator (`R<n>`), no `TABLE:` identifier and no other variant. For a fixed-layout trade table, preserve the table ID and `native_row_number` internally, show them in the source drawer, and cite the paragraph that holds the row (section 14.6).
+`[DOC_ID, P#, timestamp]` is the only citation format. There is no row locator (`R<n>`), no `TABLE:` identifier and no other variant. For a fixed-layout trade table, cite the paragraph that holds the row, name the row in words just before the citation, and keep the table ID and `native_row_number` in `row_refs` for the click-through (decision OD-1 below).
 
-#### Open decision OD-1: citing rows of a fixed-layout table that has no `[Pn]` label
+#### Decision OD-1 (closed): citing rows of a fixed-layout table
 
-**For the user to decide. Not resolved in this document.**
+**Decided by the user.** `[DOC_ID, P#, timestamp]` is the only bracketed citation format, for table rows too.
 
-- **What the PS says.** §4.2 "Trade table layout": header block, one column-name line, then one row per month with the row number as the first column; "A trade row is identified by its table ID and row number. Citations and click-through use these IDs." The layout description contains no `[Pn]` labels. FR8.3 asks only for "inline citations with Runemark document IDs and timestamps", and the dev-pack README asks for "inline paragraph-level citations".
-- **What the project rule says.** The citation format is only `[DOC_ID, P#, timestamp]`.
-- **Conflict.** If a live table has no `[Pn]` label, there is no real `P#` to cite, and the PS wording points at a table-ID + row-number identifier, which the project rule does not allow. E5 has no fixed-layout table, so the live layout cannot be checked in advance.
-- **Options.** (A) Keep the interim rule below: cite `[DOC_ID, P#, timestamp]`, where `P#` is the table block's position among the document's paragraph blocks, flagged `SYNTHETIC_PARAGRAPH`; row number and table ID appear only in the source drawer and the sentence text. (B) Allow a row locator as the PS wording suggests, which changes the citation contract. (C) Something else the user specifies.
-- **Interim rule until decided (option A).** If table rows sit inside a `[Pn]` paragraph, cite that `P#`. If not, the parser numbers paragraph blocks by position (blank-line-separated, header excluded), the table block gets one `P#` and the flag `SYNTHETIC_PARAGRAPH`, and the briefing may name the row in prose ("row 5"), outside the citation brackets.
+1. **Bracket.** A table row is cited with the `DOC_ID` and `P#` of the paragraph that holds it, plus the manifest timestamp. If the table rows sit inside a `[Pn]` paragraph, that `P#` is used. If the table has no `[Pn]` label, the parser numbers paragraph blocks by position (blank-line-separated, header excluded) and the table block gets one `P#`, flagged `SYNTHETIC_PARAGRAPH` (section 14.6).
+2. **Row named in words.** The sentence right before the citation names the row in plain words, using the table's own table ID and the row number from its first column: "… fell to EUR 31.0M in December (Table T2, row 5) [SYN-0001, P1, 2031-01-15 09:00]." The table ID and row number never appear inside the brackets, and no `R<n>` or `TABLE:` locator exists. They are identifiers, not reported figures, so the briefing number check ignores them.
+3. **Click-through.** Each briefing paragraph stores `row_refs` (`doc_id`, `table_id`, `native_row_number`) next to its `citation_refs` (section 22). Clicking the citation opens the source drawer on that paragraph and highlights the named row (section 23, "Get source span"; section 24, Page 5).
+4. **Why.** PS §4.2 identifies a trade row "by its table ID and row number"; PS §4.2, NFR2 and §5 check citations against the manifest. The bracket carries a manifest `DOC_ID` and timestamp, so it resolves; the words carry the row identifiers; the click-through reaches the row (FR7.4). PS quotes are in `docs/FIX_PASS6.md`, OD-1.
 
-The UI should render every citation as a link to a source drawer. The API should resolve the document ID and paragraph to a `DocumentSpan`, and may additionally resolve the associated internal `TradeRow`.
+The UI should render every citation as a link to a source drawer. The API resolves the document ID and paragraph to a `DocumentSpan`; when the briefing paragraph has `row_refs`, it also resolves the `TradeRow` so the drawer highlights it.
 
 ### Citation validation
 
@@ -1875,7 +1881,7 @@ Before briefing publication:
 
 1. Parse every citation; reject any locator that is not `P<n>`.
 2. Confirm the document exists in the manifest.
-3. Confirm the paragraph `P<n>` exists in that document (including `SYNTHETIC_PARAGRAPH` blocks under OD-1's interim rule).
+3. Confirm the paragraph `P<n>` exists in that document (including `SYNTHETIC_PARAGRAPH` blocks, decision OD-1). If the paragraph has `row_refs`, confirm each named row exists in that paragraph's table.
 4. Confirm publication date is on or before the as-of date.
 5. Confirm the cited text supports the paragraph's statement.
 6. Reject or mark the paragraph if any citation fails.
@@ -1986,13 +1992,18 @@ If targeted re-search does not find eligible evidence, the system must not turn 
   "country": "Tolan",
   "sector": "Maize",
   "status": "INSUFFICIENT_EVIDENCE",
+  "resolution": "RESOLVED_AFTER_TARGETED_SEARCH",
   "low": null,
   "high": null,
   "reason": "No eligible destination-specific maize trade flow was found by the as-of date.",
-  "searches_performed": ["..."],
-  "new_evidence_found_in_run_2": false
+  "targeted_queries": [
+    {"query": "...", "run": 2, "result_doc_ids": ["..."]}
+  ],
+  "run2_new_evidence_families": ["..."]
 }
 ```
+
+This cell is a resolved finding: the briefing is `COMPLETE` with the cell flagged `Insufficient evidence` (section 17, FINAL_SUFFICIENCY_CHECK).
 
 The UI should display this as `Insufficient evidence`, not as a misleading numeric zero. Odin may provide a clearly labeled scenario bound only when the assumptions and supporting evidence justify one.
 
@@ -2037,6 +2048,21 @@ Show the impact of changing major assumptions:
 
 This makes the range explainable to judges and decision-makers.
 
+### Repeated-row sensitivity
+
+For every cell whose inputs include a row with `sensitivity_row: true` (section 14.6, repeated-row rule), the calculator runs twice over that cell's inputs:
+
+```text
+with_flagged     = all rows with usable_for_arithmetic: true (repeated rows included, case (a) handled as in 14.6)
+without_flagged  = the same rows minus every sensitivity_row
+reported low     = min(low(with_flagged),  low(without_flagged))
+reported high    = max(high(with_flagged), high(without_flagged))
+```
+
+The calculation record stores both results, the flagged `row_key`s and their `repeat_cases`, and `repeat_sensitivity_pct = |high(with) - high(without)|`. If a pass has no usable row left for a month that the metric needs, that pass reports the gap instead of a number and the cell keeps the other pass's range, marked `REPEATED_ROW_DEPENDENT`. Rows flagged missing, bad-number, invalid or truncated are never in either pass.
+
+**Scope: per cell, never per table.** The widening applies only to the Case File cells (country × sector) whose calculation actually uses a flagged row as an input: a baseline, post-event, substitute or contract row for that cell. A cell is affected when the calculation record's input `row_key`s include a `sensitivity_row`; a flagged row that sits in the same document or table but feeds a different cell, or feeds no cell, changes nothing. Cells without flagged inputs run once and report their single-pass range, so their calibration stays narrow. The exposure table marks widened cells with `repeat_sensitivity_pct` and lists the flagged rows behind them; nothing is widened table-wide or pack-wide.
+
 ---
 
 ## 22. Odin briefing architecture
@@ -2050,7 +2076,9 @@ Odin's output should be generated from the ruling ledger, not from raw Thor or L
    - Case ID
    - Event
    - As-of date
-   - Completion status
+   - Completion status: COMPLETE, or INCOMPLETE (only when Run 2 stopped early, section 17)
+   - Flagged cells: every cell resolved INSUFFICIENT_EVIDENCE after a proper targeted search
+   - "Run 2 found no new evidence" notice when run2_new_evidence_families is empty
 
 2. Executive judgement
    - One-paragraph answer
@@ -2071,6 +2099,7 @@ Odin's output should be generated from the ruling ledger, not from raw Thor or L
    - Thor range
    - Loki range
    - Odin range
+   - INSUFFICIENT_EVIDENCE cells shown as "Insufficient evidence" with their targeted queries, never as zero
 
 8. Next-quarter outlook
    - Drivers
@@ -2091,6 +2120,7 @@ Every paragraph must include:
 - `finding_classification`
 - `claim_refs`
 - `citation_refs`
+- `row_refs` (table rows named in the text: `doc_id`, `table_id`, `native_row_number`; decision OD-1)
 - `confidence`
 
 The UI must visibly distinguish:
@@ -2140,8 +2170,10 @@ GET /api/runs/{run_id}
 ### Get source span
 
 ```http
-GET /api/sources/{doc_id}/spans/{span_id}
+GET /api/sources/{doc_id}/spans/{span_id}?table_id={table_id}&row={native_row_number}
 ```
+
+`table_id` and `row` are optional. When given (from a paragraph's `row_refs`, decision OD-1), the response marks that row so the source drawer highlights it.
 
 ### Get exposure table
 
@@ -2235,7 +2267,7 @@ Render the briefing with:
 
 - Executive summary.
 - Finding filters.
-- Inline source links.
+- Inline source links. A citation after a named table row ("Table T2, row 5") opens the source drawer on that paragraph with the row highlighted (decision OD-1).
 - Assumption panel.
 - Next-quarter outlook.
 - Export to Markdown and JSON.
@@ -2295,7 +2327,7 @@ If Odin fails:
 The trial is incomplete. No final briefing is published.
 ```
 
-This is an Odin failure. It is different from `INCOMPLETE_BRIEFING` (section 17), which Odin does publish when he rules successfully but the evidence stays insufficient.
+This is an Odin failure. It is different from `INCOMPLETE_BRIEFING` (section 17), which Odin does publish when Run 2 stopped early on budget or limits. Evidence that stays insufficient after a proper targeted search is not INCOMPLETE: those cells are flagged `INSUFFICIENT_EVIDENCE` in a COMPLETE briefing.
 
 ### Provider failures
 
@@ -2444,7 +2476,7 @@ backend/providers/
 - At least one claim is specifically rejected or conceded, satisfying the PS minimum.
 - Odin rules on every submitted claim.
 - Odin can return the case for more evidence.
-- Run 2 contains new evidence.
+- Run 2 contains new evidence (`run2_new_evidence_families` non-empty).
 - Run 2 is triggered by a real evidence gap, not a scripted branch.
 - Agent private memory changes later behavior.
 
@@ -2633,7 +2665,7 @@ Run the E5 question and assert:
 6. Odin rules on every claim.
 7. At least one claim is specifically rejected (deterministic pre-ruling check or Odin `decision: REJECTED`, section 18) or conceded.
 8. Odin returns the case for more evidence because of an observed evidence gap.
-9. Run 2 retrieves at least one new eligible evidence family, or the case is marked `INCOMPLETE_NO_NEW_EVIDENCE`.
+9. Run 2 executes every targeted query and `run2_new_evidence_families` is non-empty. Cells still without evidence are `INSUFFICIENT_EVIDENCE` and the case status is COMPLETE.
 10. The final briefing contains valid citations.
 11. No cited document is after January 25, 2027.
 12. Exposure cells exist for every Case File cell (for E5: Midgard/Tolan × Wheat/Maize, derived from the Case File, not hard-coded), with `Insufficient evidence` where no defensible numeric range exists.
