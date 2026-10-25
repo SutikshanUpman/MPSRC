@@ -23,7 +23,7 @@ Test line: see the end of this file (`python tests/run_tests.py`).
 | 3.5 `.env.example`, `prices_verified: false` | DONE | `.env.example`, `config/runtime_config.json` |
 | 3.6 `live_check.py` | DONE | `scripts/live_check.py` (no call, no key read) |
 | 4.1-4.7 Fallbacks | DONE (4.5 and 4.6 see notes) | table below |
-| 5 Dashboard (5.1-5.5) | DONE | `server.py` (127.0.0.1, `web/` only, traversal refused, mock/replay only), `web/`, `docs/DASHBOARD.md`, `docs/screenshots/` (Edge headless on `demo_E5`), `tests/test_server.py` |
+| 5 Dashboard (5.1-5.5) | DONE, then rebuilt on AdverSI's console | `server.py` (127.0.0.1, `web/` only, traversal refused, mock/replay only), `backend/runtime/trial_view.py`, `ui/` + `web/` (AdverSI's React console, renamed to the problem statement, see `docs/MERGE_ADVERSI.md`), `docs/DASHBOARD.md`, `docs/screenshots/`, `tests/test_server.py` |
 | 6.1 Demo data + memory demo | DONE | `--demo`; `MemoryAcrossCases` shows a verified `DECISION_CHANGED` in a second case |
 | 6.2 `export_logs.py` on the two-run case; synthetic end to end | DONE | `logs/`, `SyntheticEndToEnd` |
 | 7.1 Trap Report | DONE | `backend/briefing/trap_report.py:13`; `trap_report.json` (12 trap types, from the corpus, Case File and trace; no pack-specific code) |
@@ -86,6 +86,6 @@ Trap Report, "Why this number" (`calc_explain`), per-cell calibration, reproduci
 
 ## Exact test line
 
-`python tests/run_tests.py` -> `PASSED 220  FAILED 0  SKIPPED 0` (baseline before this build: `PASSED 164  FAILED 0  SKIPPED 0`).
+`python tests/run_tests.py` -> `PASSED 224  FAILED 0  SKIPPED 0` (baseline before this build: `PASSED 164  FAILED 0  SKIPPED 0`).
 
 Note: the Trap Report lists tier-4 claims only when an agent cites one; the mock agents never do, so `TIER_4_REJECTED` is 0 on E5 (the rule itself is tested in `OdinPreRulingChecks.test_tier_4_only`).

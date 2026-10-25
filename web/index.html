@@ -1,64 +1,35 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trial of the Nine Realms</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="top">
-  <div>
-    <h1>Trial of the Nine Realms</h1>
-    <p class="sub">Heimdall opens the case, Thor and Loki argue, Odin rules. Every number has a source.</p>
-  </div>
-  <div class="meter" id="meter" title="Cost of the selected case"></div>
-</header>
-
-<section class="ask card">
-  <label for="question">Question</label>
-  <textarea id="question" rows="2" placeholder="As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports."></textarea>
-  <div class="row">
-    <button id="run" class="primary">Run case (mock, $0)</button>
-    <label class="inline" for="case-pick">Saved case</label>
-    <select id="case-pick"></select>
-    <button id="replay" title="Re-runs the saved case from its recorded model calls: $0, byte-identical">Replay at $0</button>
-    <span id="status" role="status" class="status"></span>
-  </div>
-  <p class="note">The dashboard never makes a live model call. Live runs are started by the budget owner from the command line.</p>
-</section>
-
-<nav class="tabs" role="tablist" id="tabs">
-  <button role="tab" data-tab="feed" aria-selected="true">Live feed</button>
-  <button role="tab" data-tab="trial">Trial</button>
-  <button role="tab" data-tab="exposure">Exposure</button>
-  <button role="tab" data-tab="briefing">Briefing</button>
-  <button role="tab" data-tab="insight">Traps &amp; numbers</button>
-</nav>
-
-<main>
-  <section id="tab-feed" class="panel">
-    <div class="row">
-      <button id="play">Play</button>
-      <button id="pause">Pause</button>
-      <button id="rewind">Rewind</button>
-      <label class="inline" for="speed">Speed</label>
-      <select id="speed"><option value="400">slow</option><option value="120" selected>normal</option><option value="30">fast</option></select>
-      <span class="status" id="feed-pos"></span>
-    </div>
-    <ol id="feed" class="feed"></ol>
-  </section>
-  <section id="tab-trial" class="panel" hidden><div id="trial"></div></section>
-  <section id="tab-exposure" class="panel" hidden><div id="exposure"></div></section>
-  <section id="tab-briefing" class="panel" hidden><div id="briefing" class="briefing"></div></section>
-  <section id="tab-insight" class="panel" hidden><div id="insight"></div></section>
-</main>
-
-<aside id="drawer" class="drawer" hidden aria-label="Source" tabindex="-1">
-  <div class="drawer-head"><strong id="drawer-title">Source</strong><button id="drawer-close" aria-label="Close source">Close</button></div>
-  <div id="drawer-body"></div>
-</aside>
-
-<script src="app.js"></script>
-</body>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F3EFE6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17171A" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="Trial of the Nine Realms — Heimdall opens the case, Thor and Loki argue, Odin rules. A supply-chain disruption briefing in which every number traces to a Runemark document."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plex-mono-400.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      // Resolve the theme before first paint so the record is not rendered twice.
+      (function () {
+        try {
+          var stored = localStorage.getItem("nine-realms.theme");
+          var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.dataset.theme = stored === "dark" || stored === "light" ? stored : dark ? "dark" : "light";
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <title>Trial of the Nine Realms · Ragnarok Trial Console</title>
+    <script type="module" crossorigin src="/assets/index-Ok62BFcG.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-IWdDwVK1.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

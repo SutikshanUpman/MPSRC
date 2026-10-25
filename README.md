@@ -47,9 +47,9 @@ python scripts/export_logs.py <case_id>                        # 3. copy the cas
 
 The provider refuses unless `LIVE=1`, `BUDGET_OWNER` and verified prices are all set. The project ledger (`data/ledger.json`) refuses a live run when spend so far plus one case's worst case would pass $1.50 (`--final-round` raises the ceiling to $4.00). The live run is a one-shot: afterwards the demo and the dashboard use **replay** only.
 
-## Dashboard
+## The console
 
-`python scripts/run_case.py --demo` once, then `python server.py` serves the dashboard on `http://127.0.0.1:8000` (override with `HOST`/`PORT`): question box, live feed, trial view, exposure table, click-through to sources, briefing, trap report. It runs the mock or replay provider only and never makes a live call. See `docs/DASHBOARD.md`.
+`python scripts/run_case.py --demo` once, then `python server.py` serves the **Trial of the Nine Realms console** on `http://127.0.0.1:8000` (override with `HOST`/`PORT`). Its design is AdverSI's (merged in; see [docs/MERGE_ADVERSI.md](docs/MERGE_ADVERSI.md)), its engine is this repository's. Open `/app`: question box, live feed while a trial runs, Briefing, Case File, Runemark map, Document feed, Trial (Thor and Loki side by side, challenges and defences, Odin's rulings), Exposure (ranges, "why this number") and Audit (trap report, memory audit, replay at $0). Every citation opens the source. The console runs the mock or replay provider only and never makes a live call. See [docs/DASHBOARD.md](docs/DASHBOARD.md).
 
 ## Folder layout
 
@@ -61,6 +61,7 @@ The provider refuses unless `LIVE=1`, `BUDGET_OWNER` and verified prices are all
 | `backend/runtime` | Config, budget guard, project ledger, Run 2, orchestrator |
 | `backend/briefing` | Briefing builder and gate, trap report, "why this number" |
 | `backend/llm` | Provider boundary: mock, live (stdlib `urllib`), recording, replay |
+| `ui/`, `web/` | The console: React source (`ui/`, from AdverSI, rebuilt with `npm run build`) and its committed build (`web/`) |
 | `prompts/` | Live-path prompts: `thor.md`, `loki.md` (round 1, round 2, run 2), `odin.md`, `odin_briefing.md` |
 | `config/runtime_config.json` | Limits, token caps, models, prices (UNVERIFIED) |
 | `logs/` | Saved logs of a full two-run case (committed) |

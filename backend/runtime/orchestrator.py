@@ -111,7 +111,7 @@ def _unverified(cf):
 
 
 def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, case_id=None, created_at=None, out_name=None,
-                  final_round=False, ledger_path=ledger_mod.DEFAULT_PATH, stop_after=None):
+                  final_round=False, ledger_path=ledger_mod.DEFAULT_PATH, stop_after=None, on_event=None):
     case_id = case_id or f"case-{uuid.uuid4().hex[:12]}"
     out = Path(out_root) / (out_name or case_id)
     out.mkdir(parents=True, exist_ok=True)
@@ -134,6 +134,10 @@ def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, 
 
     cf, trace, guard = open_case(question, pack_paths, config, provider, case_id=case_id, created_at=created_at)
     guard.project_spent = ledger["total_spent_usd"]
+    if on_event:                                     # the live feed: what is already written, then everything that follows
+        for e in trace.events:
+            on_event(e)
+        trace.on_emit = on_event
     sides, rulings, cells, b, mode, run2rec = {}, [], [], None, "NONE", None
     modes = []
     corpus = index = None

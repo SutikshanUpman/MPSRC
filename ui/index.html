@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F3EFE6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17171A" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="Trial of the Nine Realms — Heimdall opens the case, Thor and Loki argue, Odin rules. A supply-chain disruption briefing in which every number traces to a Runemark document."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plex-mono-400.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      // Resolve the theme before first paint so the record is not rendered twice.
+      (function () {
+        try {
+          var stored = localStorage.getItem("nine-realms.theme");
+          var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.dataset.theme = stored === "dark" || stored === "light" ? stored : dark ? "dark" : "light";
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <title>Trial of the Nine Realms · Ragnarok Trial Console</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

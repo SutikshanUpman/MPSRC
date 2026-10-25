@@ -1,0 +1,5124 @@
+{
+ "schema_version": "trial-2",
+ "run_id": "demo_E5",
+ "question": "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.",
+ "case_file": {
+  "question": "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.",
+  "as_of": "2027-01-25",
+  "corpus_pack": "dev_pack_E5",
+  "corpus_version": "cd1251fafa",
+  "event_id": "E5",
+  "event_name": "Orvan grain corridor collapse",
+  "event_verified": true,
+  "verification_summary": "current Tier 1-2 case-event document asserts the event",
+  "countries": [
+   "Midgard",
+   "Tolan"
+  ],
+  "sectors": [
+   "Wheat",
+   "Maize"
+  ],
+  "relevant_source_ids": [
+   "ORV-0001",
+   "ORV-0002",
+   "ORV-0003",
+   "ORV-0004",
+   "ORV-0005",
+   "ORV-0006",
+   "ORV-0007",
+   "ORV-0008",
+   "ORV-0009",
+   "ORV-0010",
+   "ORV-0012",
+   "ORV-0013",
+   "ORV-0015",
+   "ORV-0016",
+   "ORV-0017",
+   "ORV-0018",
+   "ORV-0019",
+   "ORV-0020",
+   "ORV-0021",
+   "ORV-0022",
+   "ORV-0023",
+   "ORV-0024",
+   "ORV-0026",
+   "ORV-0027",
+   "ORV-0028",
+   "ORV-0029",
+   "ORV-0030",
+   "ORV-0031",
+   "ORV-0032",
+   "ORV-0033",
+   "ORV-0034",
+   "ORV-0035",
+   "ORV-0040",
+   "ORV-0042",
+   "ORV-0043",
+   "ORV-0044",
+   "ORV-0045",
+   "ORV-0046",
+   "ORV-0047",
+   "ORV-0048",
+   "ORV-0049",
+   "ORV-0050"
+  ],
+  "contradictions": [
+   "[ORV-0013, P2, 2026-09-10 09:10] corrects [ORV-0043, P1, 2026-09-09 17:30]",
+   "[ORV-0003, P1, 2026-08-18 10:10] superseded by [ORV-0013, P2, 2026-09-10 09:10]",
+   "[ORV-0049, P1, 2026-08-25 09:25] superseded by [ORV-0013, P2, 2026-09-10 09:10]",
+   "[ORV-0043, P1, 2026-09-09 17:30] superseded by [ORV-0013, P2, 2026-09-10 09:10]",
+   "[ORV-0015, P1, 2026-09-09 19:05] superseded by [ORV-0013, P2, 2026-09-10 09:10]"
+  ],
+  "assumptions": [],
+  "issues": [
+   "Midgard Maize: coverage PARTIAL",
+   "Tolan Maize: coverage NO_DIRECT_FLOW"
+  ],
+  "coverage": [
+   {
+    "country": "Midgard",
+    "sector": "Wheat",
+    "status": "COVERED"
+   },
+   {
+    "country": "Midgard",
+    "sector": "Maize",
+    "status": "PARTIAL"
+   },
+   {
+    "country": "Tolan",
+    "sector": "Wheat",
+    "status": "COVERED"
+   },
+   {
+    "country": "Tolan",
+    "sector": "Maize",
+    "status": "NO_DIRECT_FLOW"
+   }
+  ],
+  "evidence_gaps": [
+   {
+    "country": "Midgard",
+    "sector": "Maize",
+    "missing": "substitute_flow",
+    "queries": [
+     "Midgard Maize alternative suppliers",
+     "Midgard Maize rail road substitute imports"
+    ]
+   },
+   {
+    "country": "Tolan",
+    "sector": "Maize",
+    "missing": "direct_flow",
+    "queries": [
+     "Orvan to Tolan Maize trade note",
+     "Tolan Maize imports from Orvan"
+    ]
+   },
+   {
+    "country": "Tolan",
+    "sector": "Maize",
+    "missing": "substitute_flow",
+    "queries": [
+     "Tolan Maize alternative suppliers",
+     "Tolan Maize rail road substitute imports"
+    ]
+   },
+   {
+    "country": "Tolan",
+    "sector": "Maize",
+    "missing": "contract_delay",
+    "queries": [
+     "Tolan Maize contracts delayed deliveries",
+     "Tolan Maize protected volumes contract"
+    ]
+   }
+  ],
+  "event_status": "VERIFIED"
+ },
+ "runs": [
+  {
+   "run_number": 1,
+   "started_at": "2026-10-25T22:50:33Z",
+   "finished_at": "2026-10-25T22:50:34Z",
+   "new_evidence_ids": [],
+   "new_evidence_families": [],
+   "query_count": 12,
+   "claims": [
+    {
+     "id": "claim-thor-001",
+     "side": "thor",
+     "statement": "Thor estimates a net value shortfall of 57.6% to 60.3% for Midgard Wheat imports, crediting at most half of the documented substitute growth.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 57.6,
+     "estimate_high": 60.3,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-thor-010 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-thor-010",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-002",
+     "side": "thor",
+     "statement": "Thor estimates a net value shortfall of 55.6% to 60.3% for Tolan Wheat imports, crediting at most half of the documented substitute growth.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 55.6,
+     "estimate_high": 60.3,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-thor-011 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-thor-011",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-003",
+     "side": "thor",
+     "statement": "A news report states: \"Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.\"",
+     "nature": "sourced_fact",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0006",
+       "row_id": null,
+       "excerpt": "By Lena Sorn. Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.",
+       "published_at": "2026-10-08T08:45:00Z",
+       "title": "Millers look beyond Orvan as wheat cargoes slip",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0006:P1"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-004",
+     "side": "thor",
+     "statement": "Direct-route value for Midgard Wheat imports changed by -60.3% and volume by -65.2% against the same months one year earlier (4 paired months).",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.8,
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-005",
+     "side": "thor",
+     "statement": "Direct-route value for Tolan Wheat imports changed by -60.3% and volume by -64.8% against the same months one year earlier (4 paired months).",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.8,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-006",
+     "side": "thor",
+     "statement": "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 38.5,
+     "estimate_high": 38.5,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-thor-012 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-thor-012",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-007",
+     "side": "thor",
+     "statement": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": "NO_DOCUMENTED_FLOW",
+     "period": null,
+     "confidence": 0.5,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      },
+      {
+       "source_id": "ATL-0010",
+       "row_id": null,
+       "excerpt": "Tolan is an island importer with a narrow economic base. It produces few goods of its own and depends on imported rice, wheat and fuel for most of its needs.",
+       "published_at": "2024-01-15T11:15:00Z",
+       "title": "Country profile: Tolan",
+       "source_type": "atlas",
+       "reliability": 1,
+       "locator": "ATL-0010:P1"
+      }
+     ],
+     "assumptions": [
+      "A missing flow is never read as zero exposure or filled with another cell's rate"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-thor-013 after a challenge; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-thor-013",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-008",
+     "side": "thor",
+     "statement": "A news report states: \"Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.\"",
+     "nature": "sourced_fact",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0022",
+       "row_id": null,
+       "excerpt": "By Lena Sorn. Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.",
+       "published_at": "2027-01-12T07:55:00Z",
+       "title": "December grain arrivals point to a smaller Orvan share",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0022:P1"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-009",
+     "side": "thor",
+     "statement": "Direct-route value for Midgard Maize imports changed by -38.5% and volume by -42.5% against the same months one year earlier (4 paired months).",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.8,
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-001",
+     "side": "loki",
+     "statement": "Loki estimates a net value shortfall of 54.8% to 57.7% for Midgard Wheat imports, crediting documented substitute growth in full.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 54.8,
+     "estimate_high": 57.7,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "Documented substitute growth fully replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-002",
+     "side": "loki",
+     "statement": "Loki estimates a net value shortfall of 50.8% to 55.8% for Tolan Wheat imports, crediting documented substitute growth in full.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 50.8,
+     "estimate_high": 55.8,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "Documented substitute growth fully replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-003",
+     "side": "loki",
+     "statement": "A trade note states: \"December was the weakest month of the half-year, and rail loadings through Ravik were still rising.\"",
+     "nature": "sourced_fact",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "December was the weakest month of the half-year, and rail loadings through Ravik were still rising.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P14"
+      }
+     ],
+     "assumptions": [],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-004",
+     "side": "loki",
+     "statement": "Substitute routes into Midgard for Wheat changed by 15.6% in value over the same paired months, offsetting part of the direct-route loss.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "assumptions": [
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-005",
+     "side": "loki",
+     "statement": "Substitute routes into Tolan for Wheat changed by 18.1% in value over the same paired months, offsetting part of the direct-route loss.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "assumptions": [
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes"
+     ],
+     "status": "established",
+     "ruling_rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-006",
+     "side": "loki",
+     "statement": "A company statement states: \"Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.\"",
+     "nature": "sourced_fact",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": null,
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": null,
+     "period": null,
+     "confidence": 0.5,
+     "citations": [
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      }
+     ],
+     "assumptions": [],
+     "status": "conceded",
+     "ruling_rationale": "The author conceded this claim after a INTERESTED_PARTY challenge: No independent top-tier evidence answers INTERESTED_PARTY (challenge-thor-001).",
+     "decision": "REJECTED",
+     "claim_status": "withdrawn",
+     "supersedes": null,
+     "superseded_by": null,
+     "claim_type": "SUPPORTING",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-007",
+     "side": "loki",
+     "statement": "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 38.5,
+     "estimate_high": 38.5,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "Documented substitute growth fully replaces lost direct-route value"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-loki-009 after a BASELINE_CHOICE; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-loki-009",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-008",
+     "side": "loki",
+     "statement": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": "NO_DOCUMENTED_FLOW",
+     "period": null,
+     "confidence": 0.5,
+     "citations": [
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      },
+      {
+       "source_id": "ATL-0010",
+       "row_id": null,
+       "excerpt": "Tolan is an island importer with a narrow economic base. It produces few goods of its own and depends on imported rice, wheat and fuel for most of its needs.",
+       "published_at": "2024-01-15T11:15:00Z",
+       "title": "Country profile: Tolan",
+       "source_type": "atlas",
+       "reliability": 1,
+       "locator": "ATL-0010:P1"
+      }
+     ],
+     "assumptions": [
+      "A missing flow is never read as zero exposure or filled with another cell's rate"
+     ],
+     "status": "contested",
+     "ruling_rationale": "Narrowed by claim-loki-010 after a challenge; the revised claim stands in its place.",
+     "decision": "QUALIFIED",
+     "claim_status": "superseded",
+     "supersedes": null,
+     "superseded_by": "claim-loki-010",
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-010",
+     "side": "thor",
+     "statement": "Thor narrows its Midgard Wheat estimate to 57.6% to 57.7% (half of the documented substitute growth credited) after challenge-loki-001.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 57.6,
+     "estimate_high": 57.7,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Midgard 2025-07, Vanir to Midgard 2026-09) are used in one pass and left out in the other; the range covers both passes",
+      "Revised in cross-examination after challenge-loki-001 (ASSUMPTION_ATTACK)"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": "claim-thor-001",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 2
+    },
+    {
+     "id": "claim-thor-011",
+     "side": "thor",
+     "statement": "Thor narrows its Tolan Wheat estimate to 55.6% to 55.8% (half of the documented substitute growth credited) after challenge-loki-002.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Wheat",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 55.6,
+     "estimate_high": 55.8,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.6,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value",
+      "Rows flagged TRADE_ROW_REPEATED_VALUES (Vanir to Tolan 2025-07, Vanir to Tolan 2026-09) are used in one pass and left out in the other; the range covers both passes",
+      "Revised in cross-examination after challenge-loki-002 (ASSUMPTION_ATTACK)"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": "claim-thor-002",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 2
+    }
+   ],
+   "challenges": [
+    {
+     "id": "challenge-thor-001",
+     "attacker": "thor",
+     "target_claim_id": "claim-loki-006",
+     "argument": "claim-loki-006 rests only on a company statement, an interested party under the source rules.",
+     "citations": [
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      }
+     ],
+     "response": "claim-loki-006 is withdrawn.",
+     "response_citations": [],
+     "concedes": true,
+     "outcome": "concede",
+     "kind": "INTERESTED_PARTY",
+     "response_type": "CONCEDE"
+    },
+    {
+     "id": "challenge-thor-002",
+     "attacker": "thor",
+     "target_claim_id": "claim-loki-007",
+     "argument": "claim-loki-007: the origin's port-wide index (normal 100) read 40, 38, 32 in the post-event months (cited), a loss deeper than its high of 38.5% for Midgard Maize. It is not a route cross-check; it is offered as an inference.",
+     "citations": [
+      {
+       "source_id": "ORV-0012",
+       "row_id": null,
+       "excerpt": "The Realm Trade Ministry publishes the port loading index for grain leaving Orvan Grain Port by sea. The old normal is 100.",
+       "published_at": "2026-12-15T10:00:00Z",
+       "title": "Orvan Grain Port loadings: September to November 2026",
+       "source_type": "gov_notice",
+       "reliability": 1,
+       "locator": "ORV-0012:P1"
+      },
+      {
+       "source_id": "ORV-0012",
+       "row_id": null,
+       "excerpt": "In September 2026 the index was 40.",
+       "published_at": "2026-12-15T10:00:00Z",
+       "title": "Orvan Grain Port loadings: September to November 2026",
+       "source_type": "gov_notice",
+       "reliability": 1,
+       "locator": "ORV-0012:P2"
+      },
+      {
+       "source_id": "ORV-0012",
+       "row_id": null,
+       "excerpt": "In October 2026 the index was 38.",
+       "published_at": "2026-12-15T10:00:00Z",
+       "title": "Orvan Grain Port loadings: September to November 2026",
+       "source_type": "gov_notice",
+       "reliability": 1,
+       "locator": "ORV-0012:P3"
+      },
+      {
+       "source_id": "ORV-0012",
+       "row_id": null,
+       "excerpt": "In November 2026 the index was 32.",
+       "published_at": "2026-12-15T10:00:00Z",
+       "title": "Orvan Grain Port loadings: September to November 2026",
+       "source_type": "gov_notice",
+       "reliability": 1,
+       "locator": "ORV-0012:P4"
+      }
+     ],
+     "response": "claim-loki-007 stands: the cited index is port-wide, so it is not a measure of this route. A source it did not cite before states: \"The index covers all grain loaded at the port, not only the routes covered by the monthly trade notes.\"",
+     "response_citations": [
+      {
+       "source_id": "ORV-0012",
+       "row_id": null,
+       "excerpt": "The index covers all grain loaded at the port, not only the routes covered by the monthly trade notes. It is not a forecast.",
+       "published_at": "2026-12-15T10:00:00Z",
+       "title": "Orvan Grain Port loadings: September to November 2026",
+       "source_type": "gov_notice",
+       "reliability": 1,
+       "locator": "ORV-0012:P7"
+      }
+     ],
+     "concedes": false,
+     "outcome": "defend",
+     "kind": "BASELINE_CHOICE",
+     "response_type": "DEFEND"
+    },
+    {
+     "id": "challenge-loki-001",
+     "attacker": "loki",
+     "target_claim_id": "claim-thor-001",
+     "argument": "claim-thor-001 sets its high (60.3%) for Midgard Wheat with no credit for substitutes, although the substitute routes behind its own calc grew 15.6% in value (cited rows).",
+     "citations": [
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "response": "claim-thor-001 is narrowed to 57.6% to 57.7% as claim-thor-010: no new evidence answers challenge-loki-001.",
+     "response_citations": [],
+     "concedes": false,
+     "outcome": "qualify",
+     "kind": "ASSUMPTION_ATTACK",
+     "response_type": "QUALIFY"
+    },
+    {
+     "id": "challenge-loki-002",
+     "attacker": "loki",
+     "target_claim_id": "claim-thor-002",
+     "argument": "claim-thor-002 sets its high (60.3%) for Tolan Wheat with no credit for substitutes, although the substitute routes behind its own calc grew 18.1% in value (cited rows).",
+     "citations": [
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "response": "claim-thor-002 is narrowed to 55.6% to 55.8% as claim-thor-011: no new evidence answers challenge-loki-002.",
+     "response_citations": [],
+     "concedes": false,
+     "outcome": "qualify",
+     "kind": "ASSUMPTION_ATTACK",
+     "response_type": "QUALIFY"
+    },
+    {
+     "id": "challenge-loki-003",
+     "attacker": "loki",
+     "target_claim_id": "claim-thor-006",
+     "argument": "claim-thor-006 credits no mitigation for Midgard Maize, but a cited source documents contract or delayed-delivery terms: \"The October volume held up longer than the wheat routes because a share of the maize trade was on delayed delivery terms.\"",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "The October volume held up longer than the wheat routes because a share of the maize trade was on delayed delivery terms.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P14"
+      }
+     ],
+     "response": "claim-thor-006 stands: those cargoes are already inside the observed post-event rows of the same note. A source it did not cite before states: \"The October volume held up longer than the wheat routes because a share of the maize trade was on delayed delivery terms.\"",
+     "response_citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "The October volume held up longer than the wheat routes because a share of the maize trade was on delayed delivery terms.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P14"
+      }
+     ],
+     "concedes": false,
+     "outcome": "defend",
+     "kind": "ASSUMPTION_ATTACK",
+     "response_type": "DEFEND"
+    }
+   ],
+   "rulings": [
+    {
+     "claim_id": "claim-loki-001",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "missing_evidence": [
+      "RANGE_WIDENED_BY_FLAGGED_ROWS"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-002",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "missing_evidence": [
+      "RANGE_WIDENED_BY_FLAGGED_ROWS"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-003",
+     "classification": "established",
+     "nature": "sourced_fact",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "December was the weakest month of the half-year, and rail loadings through Ravik were still rising.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P14"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-004",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-005",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-006",
+     "classification": "conceded",
+     "nature": "sourced_fact",
+     "rationale": "The author conceded this claim after a INTERESTED_PARTY challenge: No independent top-tier evidence answers INTERESTED_PARTY (challenge-thor-001).",
+     "citations": [
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      }
+     ],
+     "missing_evidence": [
+      "CONCEDED_BY_AUTHOR"
+     ],
+     "decision": "REJECTED",
+     "decided_by": "RULES",
+     "rejected_by": "CONCESSION"
+    },
+    {
+     "claim_id": "claim-loki-007",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-loki-009 after a BASELINE_CHOICE; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-008",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-loki-010 after a challenge; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-001",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-thor-010 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-002",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-thor-011 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-003",
+     "classification": "established",
+     "nature": "sourced_fact",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0006",
+       "row_id": null,
+       "excerpt": "By Lena Sorn. Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.",
+       "published_at": "2026-10-08T08:45:00Z",
+       "title": "Millers look beyond Orvan as wheat cargoes slip",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0006:P1"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-004",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-005",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-006",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-thor-012 after a ASSUMPTION_ATTACK; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-007",
+     "classification": "contested",
+     "nature": "inference",
+     "rationale": "Narrowed by claim-thor-013 after a challenge; the revised claim stands in its place.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      }
+     ],
+     "missing_evidence": [
+      "NARROWED_AFTER_CHALLENGE"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-008",
+     "classification": "established",
+     "nature": "sourced_fact",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0022",
+       "row_id": null,
+       "excerpt": "By Lena Sorn. Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.",
+       "published_at": "2027-01-12T07:55:00Z",
+       "title": "December grain arrivals point to a smaller Orvan share",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0022:P1"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-009",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "Supported by cited Tier 1-2 material and checked calc inputs.",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-010",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0009",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+       "published_at": "2027-01-19T09:20:00Z",
+       "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0009:P4"
+      },
+      {
+       "source_id": "ORV-0027",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+       "published_at": "2027-01-22T09:05:00Z",
+       "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0027:P5"
+      }
+     ],
+     "missing_evidence": [
+      "RANGE_WIDENED_BY_FLAGGED_ROWS",
+      "REVISED_CLAIM"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-011",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P4"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P5"
+      }
+     ],
+     "missing_evidence": [
+      "RANGE_WIDENED_BY_FLAGGED_ROWS",
+      "REVISED_CLAIM"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    }
+   ],
+   "sufficient": false,
+   "returned_by_odin": true,
+   "missing_evidence": [
+    "Midgard Maize: substitute_flow",
+    "Tolan Maize: direct_flow",
+    "Tolan Maize: substitute_flow",
+    "Tolan Maize: contract_delay"
+   ],
+   "errors": [],
+   "no_new_evidence_reason": null
+  },
+  {
+   "run_number": 2,
+   "started_at": "2026-10-25T22:50:34Z",
+   "finished_at": "2026-10-25T22:50:34Z",
+   "new_evidence_ids": [
+    "[ORV-0001, P4, 2026-10-20 09:50]",
+    "[ORV-0018, P8, 2026-12-15 09:40]"
+   ],
+   "new_evidence_families": [
+    "FAM-380e182fb8e2",
+    "FAM-f36f1e94cebd"
+   ],
+   "query_count": 8,
+   "claims": [
+    {
+     "id": "claim-thor-012",
+     "side": "thor",
+     "statement": "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 38.5,
+     "estimate_high": 38.5,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "At most half of documented substitute growth replaces lost direct-route value"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": "claim-thor-006",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-thor-013",
+     "side": "thor",
+     "statement": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": "NO_DOCUMENTED_FLOW",
+     "period": null,
+     "confidence": 0.5,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine provides port services at Tolan Harbour and does not trade grain itself.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P4"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      },
+      {
+       "source_id": "ATL-0010",
+       "row_id": null,
+       "excerpt": "Tolan is an island importer with a narrow economic base. It produces few goods of its own and depends on imported rice, wheat and fuel for most of its needs.",
+       "published_at": "2024-01-15T11:15:00Z",
+       "title": "Country profile: Tolan",
+       "source_type": "atlas",
+       "reliability": 1,
+       "locator": "ATL-0010:P1"
+      }
+     ],
+     "assumptions": [
+      "A missing flow is never read as zero exposure or filled with another cell's rate"
+     ],
+     "status": "established",
+     "ruling_rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": "claim-thor-007",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-009",
+     "side": "loki",
+     "statement": "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full.",
+     "nature": "inference",
+     "country": "Midgard",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": 38.5,
+     "estimate_high": 38.5,
+     "estimate_status": "ESTIMATED",
+     "period": null,
+     "confidence": 0.7,
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "assumptions": [
+      "Baseline = the same months one year earlier on the same route (F11 primary rule)",
+      "Documented substitute growth fully replaces lost direct-route value"
+     ],
+     "status": "established",
+     "ruling_rationale": "The two sides' ranges overlap.",
+     "decision": "QUALIFIED",
+     "claim_status": "submitted",
+     "supersedes": "claim-loki-007",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    },
+    {
+     "id": "claim-loki-010",
+     "side": "loki",
+     "statement": "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given.",
+     "nature": "inference",
+     "country": "Tolan",
+     "sector": "Maize",
+     "estimate": null,
+     "estimate_kind": "net_value_shortfall_pct",
+     "estimate_unit": "percent",
+     "estimate_low": null,
+     "estimate_high": null,
+     "estimate_status": "NO_DOCUMENTED_FLOW",
+     "period": null,
+     "confidence": 0.5,
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine provides port services at Tolan Harbour and does not trade grain itself.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P4"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      },
+      {
+       "source_id": "ATL-0010",
+       "row_id": null,
+       "excerpt": "Tolan is an island importer with a narrow economic base. It produces few goods of its own and depends on imported rice, wheat and fuel for most of its needs.",
+       "published_at": "2024-01-15T11:15:00Z",
+       "title": "Country profile: Tolan",
+       "source_type": "atlas",
+       "reliability": 1,
+       "locator": "ATL-0010:P1"
+      }
+     ],
+     "assumptions": [
+      "A missing flow is never read as zero exposure or filled with another cell's rate"
+     ],
+     "status": "established",
+     "ruling_rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+     "decision": "ACCEPTED",
+     "claim_status": "submitted",
+     "supersedes": "claim-loki-008",
+     "superseded_by": null,
+     "claim_type": "CELL_ESTIMATE",
+     "round": 1
+    }
+   ],
+   "challenges": [],
+   "rulings": [
+    {
+     "claim_id": "claim-loki-009",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "missing_evidence": [
+      "REVISED_CLAIM"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-loki-010",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine provides port services at Tolan Harbour and does not trade grain itself.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P4"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-012",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "The two sides' ranges overlap.",
+     "citations": [
+      {
+       "source_id": "ORV-0030",
+       "row_id": null,
+       "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+       "published_at": "2027-01-21T09:35:00Z",
+       "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 1,
+       "locator": "ORV-0030:P4"
+      }
+     ],
+     "missing_evidence": [
+      "REVISED_CLAIM"
+     ],
+     "decision": "QUALIFIED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    },
+    {
+     "claim_id": "claim-thor-013",
+     "classification": "established",
+     "nature": "inference",
+     "rationale": "NO_DOCUMENTED_FLOW: no range is given, and none is invented.",
+     "citations": [
+      {
+       "source_id": "ORV-0046",
+       "row_id": null,
+       "excerpt": "Route: Orvan to Tolan, wheat.",
+       "published_at": "2027-01-20T10:05:00Z",
+       "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0046:P1"
+      },
+      {
+       "source_id": "ORV-0044",
+       "row_id": null,
+       "excerpt": "Route: Vanir to Tolan, wheat.",
+       "published_at": "2027-01-22T10:50:00Z",
+       "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+       "source_type": "trade_note",
+       "reliability": 2,
+       "locator": "ORV-0044:P1"
+      },
+      {
+       "source_id": "ORV-0042",
+       "row_id": null,
+       "excerpt": "Anchor Marine provides port services at Tolan Harbour and does not trade grain itself.",
+       "published_at": "2026-11-25T13:05:00Z",
+       "title": "Anchor Marine reports busier berths at Tolan Harbour",
+       "source_type": "company_statement",
+       "reliability": 2,
+       "locator": "ORV-0042:P4"
+      },
+      {
+       "source_id": "ORV-0037",
+       "row_id": null,
+       "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+       "published_at": "2026-07-22T11:20:00Z",
+       "title": "Tolan's small boat fleet welcomes a stronger season",
+       "source_type": "news",
+       "reliability": 2,
+       "locator": "ORV-0037:P1"
+      }
+     ],
+     "missing_evidence": [],
+     "decision": "ACCEPTED",
+     "decided_by": "RULES",
+     "rejected_by": null
+    }
+   ],
+   "sufficient": true,
+   "returned_by_odin": false,
+   "missing_evidence": [
+    "Midgard Maize: substitute_flow",
+    "Tolan Maize: contract_delay, direct_flow, substitute_flow"
+   ],
+   "errors": [],
+   "no_new_evidence_reason": null
+  }
+ ],
+ "briefing": {
+  "executive_summary": "As of 2027-01-25, the exposure to Orvan grain corridor collapse is: Midgard Wheat: net value shortfall of 54.8% to 57.7%; Midgard Maize: net value shortfall of 38.5% to 38.5%; Tolan Wheat: net value shortfall of 50.8% to 55.8%; Tolan Maize: insufficient evidence (NO_DOCUMENTED_FLOW), no number given.",
+  "established": [
+   "A news report states: \"Midgard's flour millers are booking wheat from Vanir and asking for more rail capacity from Ravik after Orvan's sea loadings fell in September.\" [ORV-0006, P1, 2026-10-08 08:45]",
+   "Direct-route value for Midgard Wheat imports changed by -60.3% and volume by -65.2% against the same months one year earlier (4 paired months). [ORV-0009, P4, 2027-01-19 09:20]",
+   "Direct-route value for Tolan Wheat imports changed by -60.3% and volume by -64.8% against the same months one year earlier (4 paired months). [ORV-0046, P4, 2027-01-20 10:05]",
+   "A news report states: \"Preliminary customs figures show Midgard's wheat and maize arrivals from Orvan well below the levels of a year earlier in December.\" [ORV-0022, P1, 2027-01-12 07:55]",
+   "Direct-route value for Midgard Maize imports changed by -38.5% and volume by -42.5% against the same months one year earlier (4 paired months). [ORV-0030, P4, 2027-01-21 09:35]",
+   "Loki estimates a net value shortfall of 54.8% to 57.7% for Midgard Wheat imports, crediting documented substitute growth in full. [ORV-0009, P4, 2027-01-19 09:20] [ORV-0027, P5, 2027-01-22 09:05]",
+   "Loki estimates a net value shortfall of 50.8% to 55.8% for Tolan Wheat imports, crediting documented substitute growth in full. [ORV-0046, P4, 2027-01-20 10:05] [ORV-0044, P5, 2027-01-22 10:50]",
+   "A trade note states: \"December was the weakest month of the half-year, and rail loadings through Ravik were still rising.\" [ORV-0009, P14, 2027-01-19 09:20]",
+   "Substitute routes into Midgard for Wheat changed by 15.6% in value over the same paired months, offsetting part of the direct-route loss. [ORV-0027, P5, 2027-01-22 09:05]",
+   "Substitute routes into Tolan for Wheat changed by 18.1% in value over the same paired months, offsetting part of the direct-route loss. [ORV-0044, P5, 2027-01-22 10:50]",
+   "Thor narrows its Midgard Wheat estimate to 57.6% to 57.7% (half of the documented substitute growth credited) after challenge-loki-001. [ORV-0009, P4, 2027-01-19 09:20] [ORV-0027, P5, 2027-01-22 09:05]",
+   "Thor narrows its Tolan Wheat estimate to 55.6% to 55.8% (half of the documented substitute growth credited) after challenge-loki-002. [ORV-0046, P4, 2027-01-20 10:05] [ORV-0044, P5, 2027-01-22 10:50]",
+   "Thor estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting at most half of the documented substitute growth. [ORV-0030, P4, 2027-01-21 09:35]",
+   "No trade row from Orvan into Tolan for Maize is documented in the case scope; the search for this cell (cited results, background documents as context only) found none, so no range is given. [ORV-0046, P1, 2027-01-20 10:05] [ORV-0044, P1, 2027-01-22 10:50] [ORV-0042, P4, 2026-11-25 13:05]",
+   "Loki estimates a net value shortfall of 38.5% to 38.5% for Midgard Maize imports, crediting documented substitute growth in full. [ORV-0030, P4, 2027-01-21 09:35]"
+  ],
+  "contested": [],
+  "conceded": [
+   "A company statement states: \"Anchor Marine says Tolan Harbour is handling more wheat cargoes from Vanir as Tolan buyers replace some Orvan supply.\" Conceded by Loki after a INTERESTED_PARTY challenge. [ORV-0042, P1, 2026-11-25 13:05] Reason given: No independent top-tier evidence answers INTERESTED_PARTY (challenge-thor-001)."
+  ],
+  "rejected": [],
+  "exposure": [
+   {
+    "country": "Midgard",
+    "sector": "Wheat",
+    "unit": "USD",
+    "period": "next quarter",
+    "loki_low": 196500000.0,
+    "thor_high": 206900000.0,
+    "odin_low": 196500000.0,
+    "odin_high": 206900000.0,
+    "confidence": 0.85,
+    "assumptions": [
+     "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast."
+    ],
+    "citation_ids": [
+     "ORV-0009|2025-07",
+     "ORV-0009|2025-08",
+     "ORV-0009|2025-09",
+     "ORV-0009|2025-10",
+     "ORV-0009|2025-11",
+     "ORV-0009|2025-12",
+     "ORV-0009|2026-07",
+     "ORV-0009|2026-08",
+     "ORV-0009|2026-09",
+     "ORV-0009|2026-10",
+     "ORV-0009:P4",
+     "ORV-0027:P5"
+    ],
+    "status": "ASSESSED",
+    "reason": null,
+    "pct_low": 54.8,
+    "pct_high": 57.7,
+    "thor_pct": {
+     "status": "ESTIMATED",
+     "low": 57.6,
+     "high": 57.7
+    },
+    "loki_pct": {
+     "status": "ESTIMATED",
+     "low": 54.8,
+     "high": 57.7
+    },
+    "volume_low": 615000.0,
+    "volume_high": 633500.0,
+    "volume_unit": "tonnes",
+    "widened": true,
+    "calibration": "The range is 2.9 percentage points wide; rests on 2 independent evidence families (tier mix {'1': 2}); the two sides' ranges overlap; it is widened because repeated-value rows are in the inputs.",
+    "targeted_queries": [],
+    "calc_ids": [
+     "calc-r1-loki-01",
+     "calc-r1-thor-05"
+    ]
+   },
+   {
+    "country": "Midgard",
+    "sector": "Maize",
+    "unit": "USD",
+    "period": "next quarter",
+    "loki_low": 128700000.0,
+    "thor_high": 128700000.0,
+    "odin_low": 128700000.0,
+    "odin_high": 128700000.0,
+    "confidence": 0.85,
+    "assumptions": [
+     "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast."
+    ],
+    "citation_ids": [
+     "ORV-0030|2025-07",
+     "ORV-0030|2025-08",
+     "ORV-0030|2025-09",
+     "ORV-0030|2025-10",
+     "ORV-0030|2025-11",
+     "ORV-0030|2025-12",
+     "ORV-0030|2026-07",
+     "ORV-0030|2026-08",
+     "ORV-0030|2026-09",
+     "ORV-0030|2026-10",
+     "ORV-0030:P4"
+    ],
+    "status": "ASSESSED",
+    "reason": null,
+    "pct_low": 38.5,
+    "pct_high": 38.5,
+    "thor_pct": {
+     "status": "ESTIMATED",
+     "low": 38.5,
+     "high": 38.5
+    },
+    "loki_pct": {
+     "status": "ESTIMATED",
+     "low": 38.5,
+     "high": 38.5
+    },
+    "volume_low": 374000.0,
+    "volume_high": 374000.0,
+    "volume_unit": "tonnes",
+    "widened": false,
+    "calibration": "The range is 0.0 percentage points wide; rests on 1 independent evidence families (tier mix {'1': 1}); the two sides' ranges overlap.",
+    "targeted_queries": [],
+    "calc_ids": [
+     "calc-r2-loki-05",
+     "calc-r2-thor-07"
+    ]
+   },
+   {
+    "country": "Tolan",
+    "sector": "Wheat",
+    "unit": "USD",
+    "period": "next quarter",
+    "loki_low": 80900000.0,
+    "thor_high": 88800000.0,
+    "odin_low": 80900000.0,
+    "odin_high": 88800000.0,
+    "confidence": 0.85,
+    "assumptions": [
+     "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast."
+    ],
+    "citation_ids": [
+     "ORV-0046|2025-07",
+     "ORV-0046|2025-08",
+     "ORV-0046|2025-09",
+     "ORV-0046|2025-10",
+     "ORV-0046|2025-11",
+     "ORV-0046|2025-12",
+     "ORV-0046|2026-07",
+     "ORV-0046|2026-08",
+     "ORV-0046|2026-09",
+     "ORV-0046|2026-10",
+     "ORV-0046:P4",
+     "ORV-0044:P5"
+    ],
+    "status": "ASSESSED",
+    "reason": null,
+    "pct_low": 50.8,
+    "pct_high": 55.8,
+    "thor_pct": {
+     "status": "ESTIMATED",
+     "low": 55.6,
+     "high": 55.8
+    },
+    "loki_pct": {
+     "status": "ESTIMATED",
+     "low": 50.8,
+     "high": 55.8
+    },
+    "volume_low": 267000.0,
+    "volume_high": 282000.0,
+    "volume_unit": "tonnes",
+    "widened": true,
+    "calibration": "The range is 5.0 percentage points wide; rests on 2 independent evidence families (tier mix {'2': 2}); the two sides' ranges overlap; it is widened because repeated-value rows are in the inputs.",
+    "targeted_queries": [],
+    "calc_ids": [
+     "calc-r1-loki-02",
+     "calc-r1-thor-06"
+    ]
+   },
+   {
+    "country": "Tolan",
+    "sector": "Maize",
+    "unit": "USD",
+    "period": "next quarter",
+    "loki_low": null,
+    "thor_high": null,
+    "odin_low": null,
+    "odin_high": null,
+    "confidence": null,
+    "assumptions": [
+     "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast."
+    ],
+    "citation_ids": [
+     "ORV-0046:P1",
+     "ORV-0044:P1",
+     "ORV-0042:P4",
+     "ORV-0037:P1",
+     "ATL-0010:P1"
+    ],
+    "status": "INSUFFICIENT_EVIDENCE",
+    "reason": "NO_DOCUMENTED_FLOW",
+    "pct_low": null,
+    "pct_high": null,
+    "thor_pct": {
+     "status": "NO_DOCUMENTED_FLOW",
+     "low": null,
+     "high": null
+    },
+    "loki_pct": {
+     "status": "NO_DOCUMENTED_FLOW",
+     "low": null,
+     "high": null
+    },
+    "volume_low": null,
+    "volume_high": null,
+    "volume_unit": null,
+    "widened": false,
+    "calibration": "No range: the evidence did not support a number.",
+    "targeted_queries": [
+     "Orvan to Tolan Maize trade note",
+     "Tolan Maize imports from Orvan",
+     "Tolan Maize alternative suppliers"
+    ],
+    "calc_ids": [
+     "calc-r2-loki-06",
+     "calc-r2-thor-08"
+    ]
+   }
+  ],
+  "outlook": "Midgard Wheat: documented substitute routes offset part of the direct-route loss. Tolan Wheat: documented substitute routes offset part of the direct-route loss. Tolan Maize: no documented flow or baseline; exposure cannot be quantified. Midgard Wheat: range widened by repeated-value trade rows. Tolan Wheat: range widened by repeated-value trade rows.",
+  "outlook_parts": {
+   "drivers": [
+    "Midgard Wheat: documented substitute routes offset part of the direct-route loss.",
+    "Tolan Wheat: documented substitute routes offset part of the direct-route loss."
+   ],
+   "risks": [
+    "Tolan Maize: no documented flow or baseline; exposure cannot be quantified.",
+    "Midgard Wheat: range widened by repeated-value trade rows.",
+    "Tolan Wheat: range widened by repeated-value trade rows."
+   ],
+   "indicators": [
+    "New monthly trade notes for the assessed routes",
+    "Any later corrections or retractions of the event documents",
+    "Documents that name a substitute route for a flagged cell"
+   ]
+  },
+  "assumptions": [
+   "The event stays in force through the next quarter; the Odin ranges are as-of values held constant, not a forecast.",
+   "Substitute supply keeps the pattern shown by the documented months; no new route is assumed.",
+   "Cells without a documented flow stay unquantified; they are not read as zero exposure.",
+   "Only documents published on or before 2027-01-25 in the case scope are used."
+  ],
+  "source_ids": [
+   "ATL-0010",
+   "ORV-0006",
+   "ORV-0009",
+   "ORV-0022",
+   "ORV-0027",
+   "ORV-0030",
+   "ORV-0037",
+   "ORV-0042",
+   "ORV-0044",
+   "ORV-0046"
+  ],
+  "citations": [
+   {
+    "source_id": "ORV-0009",
+    "row_id": null,
+    "excerpt": "In September 2026, the value was USD 38.2M and the volume was 93,000 tonnes.",
+    "published_at": "2027-01-19T09:20:00Z",
+    "title": "Trade note: Orvan to Midgard, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 1,
+    "locator": "ORV-0009:P4"
+   },
+   {
+    "source_id": "ORV-0027",
+    "row_id": null,
+    "excerpt": "In October 2026, the value was USD 30.9M and the volume was 77,000 tonnes.",
+    "published_at": "2027-01-22T09:05:00Z",
+    "title": "Trade note: Vanir to Midgard, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 1,
+    "locator": "ORV-0027:P5"
+   },
+   {
+    "source_id": "ORV-0030",
+    "row_id": null,
+    "excerpt": "In September 2026, the value was USD 80.2M and the volume was 211,000 tonnes.",
+    "published_at": "2027-01-21T09:35:00Z",
+    "title": "Trade note: Orvan to Midgard, maize, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 1,
+    "locator": "ORV-0030:P4"
+   },
+   {
+    "source_id": "ORV-0046",
+    "row_id": null,
+    "excerpt": "In September 2026, the value was USD 17.0M and the volume was 43,000\ntonnes.",
+    "published_at": "2027-01-20T10:05:00Z",
+    "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 2,
+    "locator": "ORV-0046:P4"
+   },
+   {
+    "source_id": "ORV-0044",
+    "row_id": null,
+    "excerpt": "In October 2026, the value was USD 20.6M and the volume was 52,000 tonnes.",
+    "published_at": "2027-01-22T10:50:00Z",
+    "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 2,
+    "locator": "ORV-0044:P5"
+   },
+   {
+    "source_id": "ORV-0046",
+    "row_id": null,
+    "excerpt": "Route: Orvan to Tolan, wheat.",
+    "published_at": "2027-01-20T10:05:00Z",
+    "title": "Trade note: Orvan to Tolan, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 2,
+    "locator": "ORV-0046:P1"
+   },
+   {
+    "source_id": "ORV-0044",
+    "row_id": null,
+    "excerpt": "Route: Vanir to Tolan, wheat.",
+    "published_at": "2027-01-22T10:50:00Z",
+    "title": "Trade note: Vanir to Tolan, wheat, July to December 2026",
+    "source_type": "trade_note",
+    "reliability": 2,
+    "locator": "ORV-0044:P1"
+   },
+   {
+    "source_id": "ORV-0042",
+    "row_id": null,
+    "excerpt": "Anchor Marine provides port services at Tolan Harbour and does not trade grain itself.",
+    "published_at": "2026-11-25T13:05:00Z",
+    "title": "Anchor Marine reports busier berths at Tolan Harbour",
+    "source_type": "company_statement",
+    "reliability": 2,
+    "locator": "ORV-0042:P4"
+   },
+   {
+    "source_id": "ORV-0037",
+    "row_id": null,
+    "excerpt": "Tolan's fishing cooperatives report a better season for inshore boats, with\nsteady catches and firm prices at the harbour market.",
+    "published_at": "2026-07-22T11:20:00Z",
+    "title": "Tolan's small boat fleet welcomes a stronger season",
+    "source_type": "news",
+    "reliability": 2,
+    "locator": "ORV-0037:P1"
+   },
+   {
+    "source_id": "ATL-0010",
+    "row_id": null,
+    "excerpt": "Tolan is an island importer with a narrow economic base. It produces few goods of its own and depends on imported rice, wheat and fuel for most of its needs.",
+    "published_at": "2024-01-15T11:15:00Z",
+    "title": "Country profile: Tolan",
+    "source_type": "atlas",
+    "reliability": 1,
+    "locator": "ATL-0010:P1"
+   }
+  ],
+  "complete": true,
+  "flagged_cells": [
+   "Tolan / Maize"
+  ],
+  "removed_by_validator": [],
+  "ruling_mode": "run 1: MODEL_ON_OPEN_CLAIMS; run 2: RULES_ONLY; narrative MODEL",
+  "run2_notice": null,
+  "briefing_hash": "6111f8de0ab5dfd55d60570ea3a0b489b1e4c5473b9649ff3cbc36c698845233"
+ },
+ "memory_audit": [
+  {
+   "agent": "thor",
+   "run_number": 1,
+   "timestamp": "2026-10-25T22:50:34Z",
+   "influenced_action": null,
+   "value": "mem-thor-34dc0ed0db · sources ATL-0010, ORV-0037, ORV-0042, ORV-0044",
+   "action": "write",
+   "key": "unproductive_query"
+  },
+  {
+   "agent": "loki",
+   "run_number": 1,
+   "timestamp": "2026-10-25T22:50:34Z",
+   "influenced_action": null,
+   "value": "mem-loki-5c32f25eb8 · sources ATL-0010, ORV-0037, ORV-0042, ORV-0044",
+   "action": "write",
+   "key": "unproductive_query"
+  }
+ ],
+ "issues": [],
+ "status": "completed",
+ "created_at": "2026-10-25T22:50:33Z",
+ "finished_at": "2026-10-25T22:50:34Z",
+ "provider": "mock",
+ "usage": {
+  "calls": 30,
+  "input_tokens": 189182,
+  "output_tokens": 10820,
+  "cost_usd": 0.0,
+  "shadow_cost_usd": 0.030425,
+  "latency_s": 0.0
+ },
+ "acceptance": {
+  "cross_examinations": 5,
+  "rejected_or_conceded": 1,
+  "sent_back": true,
+  "run2_new_evidence_families": [
+   "FAM-380e182fb8e2",
+   "FAM-f36f1e94cebd"
+  ],
+  "memory_decisions_changed": 0
+ },
+ "ruling_mode": "run 1: MODEL_ON_OPEN_CLAIMS; run 2: RULES_ONLY",
+ "traps": {
+  "case_id": "case-57362b3453db",
+  "as_of_date": "2027-01-25",
+  "summary": {
+   "PROMPT_INJECTION_MASKED": 1,
+   "FUTURE_DOCUMENT_EXCLUDED": 3,
+   "OUT_OF_SCOPE_EXCLUDED": 0,
+   "HASH_MISMATCH_QUARANTINED": 0,
+   "DUPLICATES_FOLDED": 4,
+   "DAMAGED_DOCUMENT": 2,
+   "TIER_4_REJECTED": 0,
+   "INTERESTED_PARTY_QUALIFIED": 1,
+   "CORRECTION_APPLIED": 5,
+   "REPEATED_ROWS_FLAGGED": 4,
+   "CLAIMS_REJECTED_BY_RULES": 1,
+   "OUTPUT_REJECTED_BY_GUARDS": 0
+  },
+  "traps": [
+   {
+    "type": "PROMPT_INJECTION_MASKED",
+    "description": "Instruction-like lines in documents were replaced by a placeholder before any agent saw them.",
+    "count": 1,
+    "items": [
+     {
+      "doc_id": "ORV-0020",
+      "locations": [
+       "P7"
+      ],
+      "lines_masked": 1
+     }
+    ]
+   },
+   {
+    "type": "FUTURE_DOCUMENT_EXCLUDED",
+    "description": "Documents dated after the as-of date never entered the case.",
+    "count": 3,
+    "items": [
+     {
+      "doc_id": "ORV-0014",
+      "pub_date": "2027-02-11",
+      "as_of_date": "2027-01-25"
+     },
+     {
+      "doc_id": "ORV-0036",
+      "pub_date": "2027-02-22",
+      "as_of_date": "2027-01-25"
+     },
+     {
+      "doc_id": "ORV-0041",
+      "pub_date": "2027-04-09",
+      "as_of_date": "2027-01-25"
+     }
+    ]
+   },
+   {
+    "type": "OUT_OF_SCOPE_EXCLUDED",
+    "description": "Documents of another event never entered the case.",
+    "count": 0,
+    "items": []
+   },
+   {
+    "type": "HASH_MISMATCH_QUARANTINED",
+    "description": "Documents whose file hash does not match the pack's hash list are quarantined.",
+    "count": 0,
+    "items": []
+   },
+   {
+    "type": "DUPLICATES_FOLDED",
+    "description": "Duplicate or near-duplicate documents count once, as one evidence family.",
+    "count": 4,
+    "items": [
+     {
+      "family": "FAM-198acefee013",
+      "members": [
+       "ORV-0024",
+       "ORV-0048"
+      ]
+     },
+     {
+      "family": "FAM-2f0ce3c60b40",
+      "members": [
+       "ORV-0007",
+       "ORV-0047"
+      ]
+     },
+     {
+      "family": "FAM-956f464dbf92",
+      "members": [
+       "ORV-0023",
+       "ORV-0031"
+      ]
+     },
+     {
+      "family": "FAM-a3fce33eaab1",
+      "members": [
+       "ORV-0006",
+       "ORV-0040"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "DAMAGED_DOCUMENT",
+    "description": "Damaged files were handled and flagged, not crashed on and not trusted blindly.",
+    "count": 2,
+    "items": [
+     {
+      "doc_id": "ORV-0023",
+      "status": "EMPTY",
+      "flags": [
+       "EMPTY_DOCUMENT",
+       "EVIDENCE_FAMILY_DUPLICATE"
+      ]
+     },
+     {
+      "doc_id": "ORV-0048",
+      "status": "TRUNCATED",
+      "flags": [
+       "EVIDENCE_FAMILY_DUPLICATE",
+       "TRUNCATED_DOCUMENT"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "TIER_4_REJECTED",
+    "description": "Claims resting only on tier-4 sources were rejected before Odin's judgement.",
+    "count": 0,
+    "items": []
+   },
+   {
+    "type": "INTERESTED_PARTY_QUALIFIED",
+    "description": "Claims resting on a company's own statement were qualified.",
+    "count": 1,
+    "items": [
+     {
+      "challenge_id": "challenge-thor-001",
+      "target": "claim-loki-006"
+     }
+    ]
+   },
+   {
+    "type": "CORRECTION_APPLIED",
+    "description": "Retractions, corrections and supersessions were applied to the event's document history.",
+    "count": 5,
+    "items": [
+     {
+      "type": "CORRECTS",
+      "from": "[ORV-0013, P2, 2026-09-10 09:10]",
+      "to": "[ORV-0043, P1, 2026-09-09 17:30]"
+     },
+     {
+      "type": "SUPERSEDED_BY",
+      "from": "[ORV-0003, P1, 2026-08-18 10:10]",
+      "to": "[ORV-0013, P2, 2026-09-10 09:10]"
+     },
+     {
+      "type": "SUPERSEDED_BY",
+      "from": "[ORV-0049, P1, 2026-08-25 09:25]",
+      "to": "[ORV-0013, P2, 2026-09-10 09:10]"
+     },
+     {
+      "type": "SUPERSEDED_BY",
+      "from": "[ORV-0043, P1, 2026-09-09 17:30]",
+      "to": "[ORV-0013, P2, 2026-09-10 09:10]"
+     },
+     {
+      "type": "SUPERSEDED_BY",
+      "from": "[ORV-0015, P1, 2026-09-09 19:05]",
+      "to": "[ORV-0013, P2, 2026-09-10 09:10]"
+     }
+    ]
+   },
+   {
+    "type": "REPEATED_ROWS_FLAGGED",
+    "description": "Trade rows with repeated values were flagged and bounded by a with/without range.",
+    "count": 4,
+    "items": [
+     {
+      "row_key": "ORV-0027|2025-07",
+      "calc_ids": [
+       "calc-r1-loki-01",
+       "calc-r1-thor-01",
+       "calc-r1-thor-05"
+      ]
+     },
+     {
+      "row_key": "ORV-0027|2026-09",
+      "calc_ids": [
+       "calc-r1-loki-01",
+       "calc-r1-thor-01",
+       "calc-r1-thor-05"
+      ]
+     },
+     {
+      "row_key": "ORV-0044|2025-07",
+      "calc_ids": [
+       "calc-r1-loki-02",
+       "calc-r1-thor-02",
+       "calc-r1-thor-06"
+      ]
+     },
+     {
+      "row_key": "ORV-0044|2026-09",
+      "calc_ids": [
+       "calc-r1-loki-02",
+       "calc-r1-thor-02",
+       "calc-r1-thor-06"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "CLAIMS_REJECTED_BY_RULES",
+    "description": "Claims removed by the pre-ruling checks or by a concession.",
+    "count": 1,
+    "items": [
+     {
+      "claim_id": "claim-loki-006",
+      "classification": "CONCEDED",
+      "reasons": [
+       "CONCEDED_BY_AUTHOR"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "OUTPUT_REJECTED_BY_GUARDS",
+    "description": "Agent outputs that failed a guard were sent back for another attempt.",
+    "count": 0,
+    "items": []
+   }
+  ]
+ },
+ "calc_explain": {
+  "calc-r1-thor-01": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P8, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P9, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P10, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P11, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P12, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P13, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P2, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P3, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P4, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P5, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P6, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P7, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P8, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P9, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P10, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P11, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P12, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P13, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P2, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P3, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P4, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P5, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P6, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P7, 2027-01-22 09:05]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.7,
+     "full_credit": 55.1
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.6,
+     "full_credit": 54.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r1-thor-02": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P8, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P9, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P10, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P11, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P12, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P13, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P2, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P3, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P5, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P6, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P7, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P8, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P9, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P10, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P11, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P12, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P13, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P2, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P3, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P4, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P5, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P6, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P7, 2027-01-22 10:50]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.8,
+     "full_credit": 51.3
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.6,
+     "full_credit": 50.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r1-thor-03": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P8, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P9, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P10, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P11, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P12, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P13, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P2, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P3, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P4, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P5, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P6, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P7, 2027-01-21 09:35]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r1-thor-04": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "No baseline could be formed.",
+   "baseline_basis": "NONE",
+   "status": "NO_DOCUMENTED_FLOW",
+   "paired_months": [],
+   "inputs": [],
+   "with_repeated_rows": null,
+   "without_repeated_rows": null,
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r1-thor-05": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P8, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P9, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P10, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P11, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P12, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P13, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P2, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P3, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P4, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P5, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P6, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P7, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P8, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P9, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P10, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P11, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P12, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P13, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P2, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P3, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P4, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P5, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P6, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P7, 2027-01-22 09:05]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.7,
+     "full_credit": 55.1
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.6,
+     "full_credit": 54.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r1-thor-06": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P8, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P9, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P10, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P11, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P12, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P13, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P2, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P3, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P5, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P6, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P7, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P8, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P9, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P10, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P11, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P12, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P13, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P2, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P3, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P4, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P5, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P6, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P7, 2027-01-22 10:50]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.8,
+     "full_credit": 51.3
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.6,
+     "full_credit": 50.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r2-thor-07": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P8, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P9, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P10, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P11, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P12, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P13, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P2, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P3, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P4, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P5, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P6, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P7, 2027-01-21 09:35]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r2-thor-08": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "No baseline could be formed.",
+   "baseline_basis": "NONE",
+   "status": "NO_DOCUMENTED_FLOW",
+   "paired_months": [],
+   "inputs": [],
+   "with_repeated_rows": null,
+   "without_repeated_rows": null,
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r1-loki-01": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P8, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P9, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P10, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P11, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P12, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2025-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P13, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-07",
+     "doc_id": "ORV-0009",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P2, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-08",
+     "doc_id": "ORV-0009",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P3, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-09",
+     "doc_id": "ORV-0009",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P4, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-10",
+     "doc_id": "ORV-0009",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P5, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-11",
+     "doc_id": "ORV-0009",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P6, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0009|2026-12",
+     "doc_id": "ORV-0009",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0009, P7, 2027-01-19 09:20]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P8, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P9, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P10, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P11, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P12, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2025-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P13, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-07",
+     "doc_id": "ORV-0027",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P2, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-08",
+     "doc_id": "ORV-0027",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P3, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-09",
+     "doc_id": "ORV-0027",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P4, 2027-01-22 09:05]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-10",
+     "doc_id": "ORV-0027",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P5, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-11",
+     "doc_id": "ORV-0027",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P6, 2027-01-22 09:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0027|2026-12",
+     "doc_id": "ORV-0027",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0027, P7, 2027-01-22 09:05]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.7,
+     "full_credit": 55.1
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 57.6,
+     "full_credit": 54.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r1-loki-02": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P8, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P9, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P10, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P11, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P12, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2025-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P13, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-07",
+     "doc_id": "ORV-0046",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P2, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-08",
+     "doc_id": "ORV-0046",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P3, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-09",
+     "doc_id": "ORV-0046",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-10",
+     "doc_id": "ORV-0046",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P5, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-11",
+     "doc_id": "ORV-0046",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P6, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0046|2026-12",
+     "doc_id": "ORV-0046",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0046, P7, 2027-01-20 10:05]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P8, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P9, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P10, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P11, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P12, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2025-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P13, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-07",
+     "doc_id": "ORV-0044",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P2, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-08",
+     "doc_id": "ORV-0044",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P3, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-09",
+     "doc_id": "ORV-0044",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P4, 2027-01-22 10:50]",
+     "repeated_row": true
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-10",
+     "doc_id": "ORV-0044",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P5, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-11",
+     "doc_id": "ORV-0044",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P6, 2027-01-22 10:50]",
+     "repeated_row": false
+    },
+    {
+     "role": "substitute",
+     "row_key": "ORV-0044|2026-12",
+     "doc_id": "ORV-0044",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0044, P7, 2027-01-22 10:50]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.8,
+     "full_credit": 51.3
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 60.3,
+     "half_credit": 55.6,
+     "full_credit": 50.8
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": true
+  },
+  "calc-r1-loki-03": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P8, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P9, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P10, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P11, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P12, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P13, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P2, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P3, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P4, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P5, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P6, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P7, 2027-01-21 09:35]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r1-loki-04": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "No baseline could be formed.",
+   "baseline_basis": "NONE",
+   "status": "NO_DOCUMENTED_FLOW",
+   "paired_months": [],
+   "inputs": [],
+   "with_repeated_rows": null,
+   "without_repeated_rows": null,
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r2-loki-05": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "Baseline = the same months one year earlier on the same route (F11 primary rule).",
+   "baseline_basis": "PRIMARY_YOY",
+   "status": "OK",
+   "paired_months": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "inputs": [
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P8",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P8, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P9",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P9, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P10",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P10, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P11",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P11, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P12",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P12, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2025-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P13",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P13, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-07",
+     "doc_id": "ORV-0030",
+     "paragraph": "P2",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P2, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-08",
+     "doc_id": "ORV-0030",
+     "paragraph": "P3",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P3, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-09",
+     "doc_id": "ORV-0030",
+     "paragraph": "P4",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P4, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-10",
+     "doc_id": "ORV-0030",
+     "paragraph": "P5",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P5, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-11",
+     "doc_id": "ORV-0030",
+     "paragraph": "P6",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P6, 2027-01-21 09:35]",
+     "repeated_row": false
+    },
+    {
+     "role": "direct",
+     "row_key": "ORV-0030|2026-12",
+     "doc_id": "ORV-0030",
+     "paragraph": "P7",
+     "table_id": null,
+     "native_row_number": null,
+     "citation": "[ORV-0030, P7, 2027-01-21 09:35]",
+     "repeated_row": false
+    }
+   ],
+   "with_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "without_repeated_rows": {
+    "scenarios": {
+     "no_credit": 38.5,
+     "half_credit": 38.5,
+     "full_credit": 38.5
+    }
+   },
+   "crosscheck": "NONE",
+   "widened": false
+  },
+  "calc-r2-loki-06": {
+   "formula": "net_value_shortfall_pct = (direct baseline value - direct post-event value - credit x (substitute post-event value - substitute baseline value)) / direct baseline value x 100; credit = 0, 0.5 or 1 (no, half or full credit for documented substitute growth)",
+   "baseline_rule": "No baseline could be formed.",
+   "baseline_basis": "NONE",
+   "status": "NO_DOCUMENTED_FLOW",
+   "paired_months": [],
+   "inputs": [],
+   "with_repeated_rows": null,
+   "without_repeated_rows": null,
+   "crosscheck": "NONE",
+   "widened": false
+  }
+ }
+}

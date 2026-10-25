@@ -8,6 +8,7 @@ class TraceLog:
         self.case_id = case_id
         self.run_id = run_id
         self.events = []
+        self.on_emit = None            # live feed: called with every event as it is emitted
 
     def emit(self, actor, event_type, payload=None, level="INFO"):
         event = {"sequence": len(self.events) + 1,
@@ -15,6 +16,8 @@ class TraceLog:
                  "case_id": self.case_id, "run_id": self.run_id, "actor": actor, "level": level,
                  "event_type": event_type, "payload": payload or {}}
         self.events.append(event)
+        if self.on_emit:
+            self.on_emit(event)
         return event
 
     def of_type(self, event_type):
