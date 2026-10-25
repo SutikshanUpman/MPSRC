@@ -122,6 +122,22 @@ EVENT_PAYLOAD_REQUIRED = {
     "CLAIM_SUPERSEDED": ["claim_id", "superseded_by", "challenge_id"],
     "CLAIM_CONCEDED": ["claim_id", "challenge_id", "reason"],
     "ROUND_2_COMPLETED": ["challenges", "responses", "revised_claims", "failures"],
+    # Final build: Odin, Run 2, briefing, fallbacks (agents/odin.py, runtime/run2.py, runtime/orchestrator.py)
+    "ODIN_RULED": ["run", "rulings", "mode", "decisions", "classes"],
+    "ODIN_SENT_BACK": ["gaps"],
+    "RUN_2_STARTED": ["cells"],
+    "RUN_2_NEW_EVIDENCE": ["families", "citations"],
+    "RUN_2_COMPLETED": ["new_evidence_families", "failures", "updated"],
+    "CELL_INSUFFICIENT_EVIDENCE": ["country", "sector", "reason", "after_run"],
+    "BRIEFING_BUILT": ["completion", "removed", "hash"],
+    "FALLBACK_ODIN_RULES": ["reason"],
+    "FALLBACK_BRIEFING_TEMPLATE": ["reason"],
+    "FALLBACK_BUDGET_STOP": ["detail"],
+    "FALLBACK_EVENT_UNVERIFIED": ["detail"],
+    "FALLBACK_TRADE_TABLE_UNPARSED": ["doc_id", "handling"],
+    "FALLBACK_PACK_LAYOUT": ["detail"],
+    "FALLBACK_LLM_RETRY": ["attempt", "error"],
+    "FALLBACK_JSON_REPAIR": ["role"],
 }
 EVENT_TYPES = sorted(EVENT_PAYLOAD_REQUIRED)
 
@@ -129,7 +145,7 @@ TRACE_EVENT_SCHEMA = {
     "type": "object", "additionalProperties": False,
     "required": ["sequence", "timestamp", "case_id", "run_id", "actor", "level", "event_type", "payload"],
     "properties": {"sequence": INT, "timestamp": {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$"},
-                   "case_id": STR, "run_id": STR, "actor": {"type": "string", "enum": ["heimdall", "thor", "loki", "runtime"]},
+                   "case_id": STR, "run_id": STR, "actor": {"type": "string", "enum": ["heimdall", "thor", "loki", "odin", "runtime"]},
                    "level": {"type": "string", "enum": ["INFO", "WARNING"]},
                    "event_type": {"type": "string", "enum": EVENT_TYPES}, "payload": {"type": "object"}},
 }
@@ -184,3 +200,54 @@ def trace_event_problems(event):
         if event["event_type"] in ("SEARCH_EXECUTED", "SEARCH_CACHE_HIT"):
             problems += validate_schema(event["payload"], AGENT_SEARCH_LOG_SCHEMA, "$.payload")
     return problems
+
+
+# ---------- final build: rulings, briefing, run_record.json, trap report ----------
+from .agents.odin import RULING_SCHEMA  # noqa: E402,F401
+
+PARAGRAPH_SCHEMA = {
+    "type": "object",
+    "required": ["paragraph_id", "text", "finding_classification", "claim_refs", "citation_refs", "row_refs", "calc_refs",
+                 "number_refs", "confidence"],
+    "properties": {"paragraph_id": STR, "text": STR, "finding_classification": STR, "claim_refs": STR_LIST,
+                   "citation_refs": {"type": "array", "items": {"type": "string", "pattern": CITATION_PATTERN}},
+                   "row_refs": {"type": "array", "items": {"type": "object", "required": ["doc_id", "table_id", "native_row_number"],
+                                                           "properties": {"doc_id": STR, "table_id": OPT_STR,
+                                                                          "native_row_number": OPT_INT}}},
+                   "calc_refs": STR_LIST, "number_refs": {"type": "array"}, "confidence": {"type": "number"}},
+}
+BRIEFING_SCHEMA = {
+    "type": "object",
+    "required": ["schema_version", "header", "executive_summary", "event_verification", "established", "contested", "conceded",
+                 "rejected", "exposure_table", "outlook", "assumptions_limitations", "sources", "removed_by_validator"],
+    "properties": {
+        "header": {"type": "object", "required": ["case_id", "event", "as_of_date", "completion_status", "flagged_cells",
+                                                  "cells_not_assessed", "removed_numbers", "run2_new_evidence_families"],
+                   "properties": {"completion_status": {"type": "string", "enum": ["COMPLETE", "INCOMPLETE"]}}},
+        "executive_summary": PARAGRAPH_SCHEMA,
+        "event_verification": {"type": "array", "items": PARAGRAPH_SCHEMA},
+        "established": {"type": "array", "items": PARAGRAPH_SCHEMA},
+        "contested": {"type": "array", "items": PARAGRAPH_SCHEMA},
+        "conceded": {"type": "array", "items": PARAGRAPH_SCHEMA},
+        "rejected": {"type": "array", "items": PARAGRAPH_SCHEMA},
+        "exposure_table": {"type": "array", "items": {
+            "type": "object", "required": ["country", "sector", "status", "thor", "loki", "odin", "calibration", "calc_refs",
+                                           "row_refs"],
+            "properties": {"status": {"type": "string", "enum": ["ASSESSED", "INSUFFICIENT_EVIDENCE", "INCOMPLETE_BUDGET_LIMIT"]}}}},
+        "outlook": {"type": "object", "required": ["drivers", "risks", "indicators", "assumptions"]},
+    },
+}
+FINAL_RUN_RECORD_SCHEMA = {
+    "type": "object",
+    "required": ["case_id", "status", "question", "pack_paths", "provider", "input_hashes", "ruling_mode", "rulings", "ac", "runs",
+                 "spend", "briefing_hash", "events", "outputs"],
+    "properties": {"input_hashes": {"type": "object", "required": ["packs", "config", "prompts"]},
+                   "spend": {"type": "object", "required": ["case_spent_usd", "shadow_spent_usd", "model_calls",
+                                                            "project_spent_before_usd", "billable"]},
+                   "ac": {"type": "object", "required": ["cross_examinations", "rejected_or_conceded", "sent_back",
+                                                         "run2_new_evidence_families", "memory_decisions_changed"]}},
+}
+TRAP_REPORT_SCHEMA = {
+    "type": "object", "required": ["case_id", "as_of_date", "summary", "traps"],
+    "properties": {"traps": {"type": "array", "items": {"type": "object", "required": ["type", "description", "count", "items"]}}},
+}

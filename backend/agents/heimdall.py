@@ -25,7 +25,7 @@ from ..casefile import model as casefile
 from ..ingestion.packs import load_packs
 from ..ingestion.pipeline import case_scope
 from ..ingestion.trade import parse_month
-from ..llm.provider import SchemaError, canonical
+from ..llm.provider import ProviderUnavailable, SchemaError, canonical, is_billable
 from ..provenance.citations import format_citation
 from ..runtime import cells as cellrules
 from ..runtime.budget import BudgetExceeded, BudgetGuard
@@ -560,7 +560,7 @@ def stance_fallback(unclassified, provider, guard, event_name, terms, limit, tra
             try:
                 out = guard.call(provider, "heimdall", messages, STANCE_SCHEMA)
                 break
-            except SchemaError as e:
+            except (SchemaError, ProviderUnavailable) as e:
                 errors.append(str(e))
             except BudgetExceeded as e:
                 errors.append(str(e))
@@ -593,7 +593,7 @@ def open_case(question, pack_paths, config, provider=None, case_id=None, created
     """Run Heimdall's Stage 1 steps. Returns (case_file, trace, guard). Never calls a model."""
     cf = casefile.new_case_file(question, pack_paths, case_id, created_at)
     trace = TraceLog(cf["case_id"])
-    guard = BudgetGuard(config, billable=provider is not None and provider.name != "mock")
+    guard = BudgetGuard(config, billable=provider is not None and is_billable(provider))
     trace.emit(ACTOR, "CASE_CREATED", {"question": question, "pack_paths": cf["pack_paths"]})
 
     corpus, pack_events, collided = load_packs(pack_paths)

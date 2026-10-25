@@ -26,7 +26,7 @@ from pathlib import Path
 
 from ..casefile import model as casefile
 from ..ingestion.packs import load_packs
-from ..llm.provider import SchemaError, canonical, message_tokens
+from ..llm.provider import ProviderUnavailable, SchemaError, canonical, is_billable, message_tokens
 from ..memory.store import MemoryStore
 from ..runtime import cells as cellrules
 from ..runtime.budget import BudgetExceeded, BudgetGuard
@@ -57,13 +57,16 @@ TURN_SCHEMA = {
 }
 
 
-def load_prompt(agent, round_number):
-    """The agent's prompt with only this round's section (marked <!-- round:N --> ... <!-- /round:N -->)."""
+def load_prompt(agent, round_number, run_number=1):
+    """The agent's prompt with only this round's section (marked <!-- round:N --> ... <!-- /round:N -->). The Run-2
+    section (<!-- run:2 --> ... <!-- /run:2 -->) is added only for the send-back run."""
     text = (PROMPTS / f"{agent}.md").read_text(encoding="utf-8")
     for n in (1, 2):
         if n != round_number:
             text = re.sub(rf"<!-- round:{n} -->.*?<!-- /round:{n} -->\n?", "", text, flags=re.S)
-    return re.sub(r"<!-- /?round:\d -->\n?", "", text)
+    if run_number != 2:
+        text = re.sub(r"<!-- run:2 -->.*?<!-- /run:2 -->\n?", "", text, flags=re.S)
+    return re.sub(r"<!-- /?(?:round|run):\d -->\n?", "", text)
 
 
 class Side:
@@ -192,6 +195,8 @@ def model_loop(side, messages, provider, guard, config, on_tools, on_submit):
                 out = guard.call(provider, side.agent, messages, TURN_SCHEMA)["output"]
             except SchemaError as e:
                 out, problems = None, [f"output does not match the turn schema: {e}"]
+            except ProviderUnavailable as e:
+                out, problems = None, [f"FALLBACK_LLM_RETRY: {e}"]
         if out is not None:
             messages.append({"role": "assistant", "content": canonical(out)})
             if out["action"] == "tools":
@@ -282,7 +287,7 @@ def run_round1(cf, provider, config, trace, memory_root=None, order=SIDES, guard
     allow = tuple(config.get("allow_hash_mismatch_doc_ids") or ())
     index = CaseIndex(corpus, cf["as_of_date"], cf["event_id"], allow_hash_mismatch=allow)
     masked = masked_raw_lines(corpus)
-    guard = guard or BudgetGuard(config, billable=provider.name != "mock")
+    guard = guard or BudgetGuard(config, billable=is_billable(provider))
     snapshot = copy.deepcopy(cf)
     trace.emit("runtime", "ROUND_1_STARTED", {"sides": list(SIDES), "cells": len(cf["exposure_cells"])})
     sides = {a: Side(a, snapshot, corpus, index, config, memory_root) for a in SIDES}

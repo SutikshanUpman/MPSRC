@@ -1,76 +1,123 @@
-"""Open a case with Heimdall, run Round 1 and Round 2 (cross-examination) for Thor and Loki, and write the results.
+"""Run a whole case: Heimdall, Round 1, Round 2 (cross-examination), Odin's rulings, the send-back and Run 2,
+Odin again, and the briefing. Everything is written to data/runs/<case_id>/ (see backend/runtime/orchestrator.py).
 
-Usage: python scripts/run_case.py --pack <dir> [--base <dir>] --question "..." [--provider mock]
-                                  [--out data/runs] [--memory-dir data/memory] [--heimdall-only | --round1-only]
-Writes data/runs/<case_id>/: case_file.json, claim_ledger.json, calc_ledger.json, cross_examination.json,
-search_log.jsonl, provider_calls.jsonl, events.jsonl. The mock provider is the default and the only one that runs today.
+    python scripts/run_case.py --pack dev_pack_E5 --question "..."            mock provider, $0
+    python scripts/run_case.py --demo                                         E5 sample question, mock, two cases
+    python scripts/run_case.py --provider replay --from <case_id>             re-run a recorded case at $0
+    python scripts/run_case.py --provider anthropic --pack ... --question ... live: the budget owner only, once
+                                                                              (needs LIVE=1, BUDGET_OWNER, ANTHROPIC_API_KEY)
+
 Private memory persists in --memory-dir across cases (one folder per agent).
 """
 import argparse
 import json
+import shutil
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from backend.agents.counsel import run_round1  # noqa: E402
-from backend.agents.cross_exam import run_round2  # noqa: E402
-from backend.agents.heimdall import open_case  # noqa: E402
-from backend.casefile import model as casefile  # noqa: E402
-from backend.llm.provider import make_provider  # noqa: E402
-from backend.runtime.config import load_config  # noqa: E402
+from backend.llm.provider import ProviderError, make_provider  # noqa: E402
+from backend.runtime.orchestrator import run_full_case  # noqa: E402
+from backend.runtime.config import ConfigError, load_config  # noqa: E402
+from backend.runtime import ledger  # noqa: E402
+
+DEMO_PACK = ROOT / "dev_pack_E5"
 
 
-def _write_json(path, obj):
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(json.dumps(obj, ensure_ascii=False, indent=1) + "\n")
+def sample_question(pack):
+    lines = (Path(pack) / "sample_question.txt").read_text(encoding="utf-8").splitlines()
+    return next(l for l in lines if l.strip() and not l.startswith("QUESTION"))
 
 
-def _write_jsonl(path, rows):
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        for r in rows:
-            f.write(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n")
+def summarise(res):
+    cf, rec, b = res["case_file"], res["record"], res["briefing"]
+    print(f"{cf['status']} event={cf['event_id']} as_of={cf['as_of_date']} provider={rec['provider']}")
+    for c in res["cells"]:
+        o = c["odin"]
+        rng = f"{o['low']}..{o['high']} %" if o else f"{c['status']} ({c['reason']})"
+        print(f"  Odin {c['country']}/{c['sector']}: {rng}")
+    if rec["rulings"]["total"]:
+        print(f"  rulings: {rec['rulings']['decisions']} {rec['rulings']['classes']}  mode={rec['ruling_mode']}")
+        print(f"  AC: {rec['ac']}")
+    if b:
+        print(f"  briefing: {rec['briefing_completion']} hash={str(rec['briefing_hash'])[:12]}")
+    print(f"  spend: case ${rec['spend']['case_spent_usd']:.4f} (shadow ${rec['spend']['shadow_spent_usd']:.4f}), "
+          f"{rec['spend']['model_calls']} model calls")
+    print(f"wrote {res['out_dir']}")
+
+
+def run_demo(config, out_root, args):
+    memory = ROOT / "data" / "memory_demo"
+    if memory.exists():
+        shutil.rmtree(memory)
+    question = sample_question(DEMO_PACK)
+    provider = make_provider("mock", config)
+    first = run_full_case(question, [DEMO_PACK], config, provider, out_root, memory, out_name="demo_E5")
+    summarise(first)
+    provider = make_provider("mock", config)
+    second = run_full_case(question, [DEMO_PACK], config, provider, out_root, memory, out_name="demo_E5_memory")
+    print("--- second case, same private memory")
+    summarise(second)
+    return 0
+
+
+def run_replay(config_path, out_root, case_id):
+    src = Path(out_root) / case_id
+    record = json.loads((src / "run_record.json").read_text(encoding="utf-8"))
+    config = load_config(src / "config.json")
+    provider = make_provider("replay", config, path=src / "llm_calls.jsonl")
+    memory = ROOT / "data" / "memory_replay"
+    if memory.exists():
+        shutil.rmtree(memory)
+    res = run_full_case(record["question"], record["pack_paths"], config, provider, out_root, memory, case_id=record["case_id"],
+                        created_at=record["created_at"], out_name=f"{case_id}__replay")
+    summarise(res)
+    same = res["record"]["briefing_hash"] == record["briefing_hash"]
+    print(f"replay briefing hash {'MATCHES' if same else 'DIFFERS FROM'} the original ({record['briefing_hash']})")
+    return 0 if same else 1
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--pack", required=True, help="live (or only) pack directory")
+    ap.add_argument("--pack", help="live (or only) pack directory")
     ap.add_argument("--base", help="base reference pack, listed first in pack_paths")
-    ap.add_argument("--question", required=True)
-    ap.add_argument("--provider", default="mock", choices=["mock", "anthropic"])
+    ap.add_argument("--question")
+    ap.add_argument("--provider", default="mock", choices=["mock", "replay", "anthropic"])
+    ap.add_argument("--from", dest="from_case", help="replay: the recorded case_id under --out")
     ap.add_argument("--config", help="runtime config JSON (default config/runtime_config.json)")
     ap.add_argument("--out", default=str(ROOT / "data" / "runs"))
     ap.add_argument("--memory-dir", default=str(ROOT / "data" / "memory"))
+    ap.add_argument("--demo", action="store_true", help="E5 sample question, mock provider, writes data/runs/demo_E5/")
+    ap.add_argument("--final-round", action="store_true", help="live only: raise the ledger ceiling to the project cap")
     ap.add_argument("--heimdall-only", action="store_true", help="stop after the Case File is opened")
     ap.add_argument("--round1-only", action="store_true", help="stop after Round 1")
     args = ap.parse_args(argv)
 
     config = load_config(args.config)
-    provider = make_provider(args.provider, config)   # AnthropicProvider raises unless live is enabled
+    if args.demo:
+        return run_demo(config, args.out, args)
+    if args.provider == "replay":
+        if not args.from_case:
+            ap.error("--provider replay needs --from <case_id>")
+        return run_replay(args.config, args.out, args.from_case)
+    if not args.pack or not args.question:
+        ap.error("--pack and --question are required")
+    try:
+        provider = make_provider(args.provider, config)       # AnthropicProvider refuses unless LIVE=1, BUDGET_OWNER, prices verified
+    except ProviderError as e:
+        print(f"REFUSED: {e}")
+        return 2
     pack_paths = [args.base, args.pack] if args.base else [args.pack]
-    cf, trace, guard = open_case(args.question, pack_paths, config, provider)
-    sides = {}
-    if cf["status"] == "OPEN" and not args.heimdall_only:
-        sides = run_round1(cf, provider, config, trace, memory_root=args.memory_dir, guard=guard)
-        if not args.round1_only:
-            run_round2(cf, sides, provider, config, trace, guard)
-    out = Path(args.out) / cf["case_id"]
-    casefile.write(cf, out / "case_file.json")
-    _write_json(out / "claim_ledger.json", cf["claim_ledger"])
-    _write_json(out / "calc_ledger.json", cf["calc_ledger"])
-    _write_json(out / "cross_examination.json", cf["cross_examination"])
-    _write_jsonl(out / "search_log.jsonl", [e for a in ("thor", "loki") if a in sides for e in sides[a].tools.search_log])
-    _write_jsonl(out / "provider_calls.jsonl", getattr(provider, "calls", []))
-    trace.write_jsonl(out / "events.jsonl")
-    cells = ", ".join(f"{c['country']}/{c['sector']}={c['status']}" for c in cf["coverage"]) or "-"
-    print(f"{cf['status']} event={cf['event_id']} as_of={cf['as_of_date']} cells: {cells}")
-    for c in cf["claim_ledger"]:
-        if c["claim_type"] == "CELL_ESTIMATE" and c["status"] != "superseded":
-            est = c["estimate"]
-            rng = f"{est['low']}..{est['high']} %" if est else c["estimate_status"]
-            print(f"  {c['agent']:<4} {c['country']}/{c['sector']}: {rng}")
-    print(f"wrote {out}")
+    stop = "heimdall" if args.heimdall_only else "round1" if args.round1_only else None
+    try:
+        res = run_full_case(args.question, pack_paths, config, provider, args.out, args.memory_dir,
+                            final_round=args.final_round, stop_after=stop)
+    except ledger.LedgerRefused as e:
+        print(f"REFUSED: {e}")
+        return 2
+    summarise(res)
     return 0
 
 

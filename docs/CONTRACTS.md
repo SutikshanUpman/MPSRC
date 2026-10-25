@@ -27,8 +27,11 @@ These are the JSON shapes the backend produces today, for anyone building on the
 | Budget guard entry | BUILT | `contracts.py:65` `BUDGET_CALL_SCHEMA` | `backend/runtime/budget.py:72` (live calls add `observed_chars_per_token`) |
 | Cross-examination: challenge, response (DEFEND / QUALIFY / CONCEDE), entry | BUILT (Stage 3) | `schema.py:85` `CHALLENGE_SCHEMA`, `:97` `RESPONSE_SCHEMA`, `:110` `CROSS_EXAMINATION_SCHEMA` | `backend/agents/cross_exam.py:275` `run_round2` |
 | Revised estimate (round 2, `supersedes` / `superseded_by`) | BUILT (Stage 3) | `schema.py:75` `LEDGER_CLAIM_SCHEMA` | `cross_exam.py:358` `_apply` |
-| Odin rulings | PENDING (Stage 4) | none | spec md 1037-1079 (12.7) |
-| Briefing with `row_refs`, `calc_refs`, `number_refs` | PENDING (Stage 4) | none | spec md 2247-2317 |
+| Odin rulings | BUILT (final build) | `backend/agents/odin.py` `RULING_SCHEMA` (also `contracts.RULING_SCHEMA`) | `odin.rule_claims` (rules), `odin.model_pass` (open claims only); `rulings.json`, Case File `ruling_ledger` |
+| Briefing with `row_refs`, `calc_refs`, `number_refs` | BUILT (final build) | `contracts.BRIEFING_SCHEMA`, `PARAGRAPH_SCHEMA` | `backend/briefing/__init__.py` `build` + `gate`; `briefing.json`, `briefing.md` |
+| Run record (`run_record.json`) | BUILT (final build) | `contracts.FINAL_RUN_RECORD_SCHEMA` | `backend/runtime/orchestrator.py` `run_full_case` |
+| Trap report | BUILT (final build) | `contracts.TRAP_REPORT_SCHEMA` | `backend/briefing/trap_report.py`; `trap_report.json` |
+| Run 2 record (`run_status[1]`) | BUILT (final build) | `schema.py` run_status item (extra keys allowed) | `backend/runtime/run2.py` |
 | Source-span API (`table_id`, `row`) | PENDING (Stage 4) | none | spec md 2376-2382 |
 
 ## Case File
@@ -187,11 +190,13 @@ AGENT_STEP_COMPLETED
 AGENT_STEP_STARTED
 AS_OF_DATE_RESOLVED
 BATCH_RESIZED
+BRIEFING_BUILT
 BUDGET_CAP_REACHED
 CALC_COMPUTED
 CASE_CREATED
 CASE_FILE_BUILT
 CELL_BUDGET_PROJECTED
+CELL_INSUFFICIENT_EVIDENCE
 CHALLENGES_SUBMITTED
 CLAIMS_SUBMITTED
 CLAIM_CONCEDED
@@ -206,12 +211,22 @@ DOCUMENT_RETRIEVED
 EVENT_MAPPING
 EVENT_REJECTED
 EVENT_VERIFICATION
+FALLBACK_BRIEFING_TEMPLATE
+FALLBACK_BUDGET_STOP
+FALLBACK_EVENT_UNVERIFIED
+FALLBACK_JSON_REPAIR
+FALLBACK_LLM_RETRY
+FALLBACK_ODIN_RULES
+FALLBACK_PACK_LAYOUT
+FALLBACK_TRADE_TABLE_UNPARSED
 INPUT_REBUILT
 INTEGRITY_WARNING
 MEMORY_HIDDEN
 MEMORY_READ
 MEMORY_SKIP_OVERRIDDEN
 MEMORY_WRITTEN
+ODIN_RULED
+ODIN_SENT_BACK
 PACK_DOC_ID_DUPLICATE
 PREMISE_CHECKED
 RESPONSES_SUBMITTED
@@ -219,6 +234,9 @@ ROUND_1_COMPLETED
 ROUND_1_STARTED
 ROUND_2_COMPLETED
 ROUND_2_STARTED
+RUN_2_COMPLETED
+RUN_2_NEW_EVIDENCE
+RUN_2_STARTED
 SCOPE_DEFAULTED
 SEARCH_CACHE_HIT
 SEARCH_COMPLETED
@@ -447,6 +465,26 @@ The memory-driven change logged in the next case:
 | Case File trade-row evidence | BUILT | `doc_id`, `citation`, `paragraph`, `table_id`, `native_row_number`, `row_key` | same |
 | `calc_id` inputs | BUILT (Stage 2) | every input is a row ref: `row_key`, `doc_id`, `paragraph`, `table_id`, `native_row_number`, `citation` | `tests/test_stage2.py` `test_calc_reports_value_and_volume_change_with_row_refs` |
 | Claim citation | BUILT (Stage 2) | bracket `[DOC_ID, P#, timestamp]` of one input row per document; `calc_ids` lead to every row ref. Flagged rows are named in words (origin, destination, month) in `assumptions`; table rows are not named yet (E5 rows are prose-note months) | `tests/test_stage2.py` `test_citations_are_valid_in_scope_and_retrieved_by_that_agent` |
-| Briefing `row_refs` | TODO (Stage 4) | `doc_id`, `table_id`, `native_row_number` per paragraph (md 2303) | none |
+| Briefing `row_refs` | BUILT | `doc_id`, `paragraph`, `table_id`, `native_row_number`, `row_key` per paragraph and per exposure-table row | `tests/test_final.py` |
 | Source-span API `table_id` / `row` | TODO (Stage 4) | `GET /api/sources/{doc_id}/spans/{span_id}?table_id=&row=` (md 2378) | none |
 | UI highlight of the named row | TODO (Stage 4) | source drawer highlight (md 2029) | none |
+
+## Final build: rulings, Run 2, briefing, run record
+
+Contracts: `RULING_SCHEMA` (`backend/agents/odin.py`), `BRIEFING_SCHEMA`, `FINAL_RUN_RECORD_SCHEMA`, `TRAP_REPORT_SCHEMA` (`backend/contracts.py`). All are checked by `tests/test_final.py` against a mock E5 run. Output files of one case, under `data/runs/<case_id>/`: `case_file.json`, `claim_ledger.json`, `calc_ledger.json` (each record carries `calc_explain`), `cross_examination.json`, `rulings.json`, `briefing.json`, `briefing.md`, `trap_report.json`, `run_record.json`, `events.jsonl`, `search_log.jsonl`, `provider_calls.jsonl`, `llm_calls.jsonl`, `config.json`.
+
+**Ruling** (one per claim, including superseded and withdrawn ones): `ruling_id`, `claim_id`, `run`, `agent`, `country`, `sector`, `classification` (`ESTABLISHED` / `CONTESTED` / `CONCEDED` / `REJECTED`), `claim_kind` (`SOURCED_FACT` / `INFERENCE`), `decision` (`ACCEPTED` / `QUALIFIED` / `REJECTED`), `rejected_by` (`PRE_RULING_CHECK` / `CONCESSION` / `ODIN`), `rejection_reasons`, `qualification_reasons`, `rationale`, `supporting_refs`, `conflicting_refs`, `confidence`, `decided_by` (`RULES` / `MODEL`). Pre-ruling reason codes: `INVALID_CITATION`, `POST_AS_OF_CITATION`, `OUT_OF_CASE_SCOPE`, `HASH_MISMATCH`, `NOT_RETRIEVED_BY_CLAIMANT`, `ONLY_TIER_4_SUPPORT`, `ONLY_BACKGROUND_SUPPORT`, `ONLY_DAMAGED_FAMILY`, `QUOTE_NOT_VERBATIM` (reject), `COMPANY_STATEMENT_OVERREACH` (qualify).
+
+```json
+{"ruling_id": "ruling-odin-003", "claim_id": "claim-loki-006", "run": 1, "agent": "loki", "country": "Tolan", "sector": "Wheat",
+ "classification": "CONCEDED", "claim_kind": "SOURCED_FACT", "decision": "REJECTED", "rejected_by": "CONCESSION",
+ "rejection_reasons": ["CONCEDED_BY_AUTHOR"], "rationale": "The author conceded this claim after a INTERESTED_PARTY challenge: …",
+ "supporting_refs": [{"doc_id": "ORV-0042", "span_id": "ORV-0042:P1"}], "conflicting_refs": [], "confidence": 0.9,
+ "created_at": "2027-01-25T00:00:00Z", "decided_by": "RULES", "claim_status": "withdrawn", "superseded_by": null}
+```
+
+**Cell result** (Odin's range, `odin.cell_results`): `{country, sector, status (ASSESSED | INSUFFICIENT_EVIDENCE | INCOMPLETE_BUDGET_LIMIT), reason, thor, loki, odin: {low, high, unit, value: {low, high, unit, low_ref, high_ref}, volume: {...}, widened} | null}`; value and volume come from the same scenario field of the same calc record as the percent range.
+
+**Run 2 record** (`run_status[1]`): `run_number: 2`, `gaps` (cell, reason, missing checks, Heimdall's queries), `queries_by_cell` (queries not used in Run 1), `run2_new_evidence_families`, `run2_new_evidence_citations`, `run2_no_evidence_reason` (set when the list is empty), `updated_claims`, `agent_failures`. Run 2 claims have `run: 2`, `round: 1`, and each `CELL_ESTIMATE` supersedes the side's Run-1 estimate for that cell.
+
+**Briefing paragraph** (`PARAGRAPH_SCHEMA`): `paragraph_id`, `text`, `finding_classification`, `claim_refs`, `citation_refs`, `row_refs` (`doc_id`, `paragraph`, `table_id`, `native_row_number`, `row_key`), `calc_refs`, `number_refs` (`{value, calc_id, field}` or `{value, citation}`), `confidence`. Sections: `executive_summary`, `event_verification`, `established`, `contested`, `conceded`, `rejected`, `exposure_table` (Thor / Loki / Odin per cell with `calibration`), `outlook`, `assumptions_limitations`, `sources`, `removed_by_validator`.

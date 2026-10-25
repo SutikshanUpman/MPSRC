@@ -27,6 +27,7 @@ max_model_retries_per_call it is FAILED (THOR_FAILED / LOKI_FAILED).
 """
 import re
 
+from .. import guards
 from ..casefile.schema import CLAIM_SCHEMA
 from ..ingestion.quality import MASK_PLACEHOLDER
 from ..llm.provider import validate_schema
@@ -156,6 +157,10 @@ def check_claim(where, agent, c, tools, cf, corpus, masked_lines):
         problems.append(f"{where}: claim text contains masked document text")
     # 6. a numeric cell needs a case-event citation
     problems += check_case_event_support([c], corpus, cf["event_id"])
+    # FINAL BUILD phase 2: quote, entity and injection guards; abstain rule
+    problems += guards.text_guards(where, [c["claim_text"], c["mechanism"] or ""] + c["assumptions"], c["citations"], cf,
+                                   corpus, masked_lines)
+    problems += guards.abstain_guard(where, c)
     return problems
 
 

@@ -402,6 +402,17 @@ Each turn is one JSON object matching `turn`; each element of `claims` matches `
 }
 ```
 <!-- /round:1 -->
+<!-- run:2 -->
+## Run 2: the case was sent back
+
+Odin sent the case back once. The case view now has `"task": "run_2_claims"`, `"run": 2`, a `gaps` list (the cells and what is missing for each) and `gap_queries`: queries Heimdall prepared that nobody ran in Run 1. Work **only** on the cells in `cells`.
+
+- Run the `gap_queries` for each cell (filtered to its country, boosting its sector), then `get_trade_rows` and `calc` again. Search for evidence you do not already hold; `run1_citations` lists what you cited before.
+- Submit exactly **one new `CELL_ESTIMATE` per gap cell** with `run: 2`, `round: 1` and `supersedes` = the id in the view's `supersedes` map for that cell. Keep your stance; update the range only if the new calc record says so.
+- A `SUPPORTING` claim in Run 2 is allowed only when it cites at least one span that is not in `run1_citations`.
+- If the new searches still show no flow, no baseline or mixed units, submit that status with `estimate: null`. Never fill a gap with another cell's rate, and never write zero.
+- All Round 1 claim rules still hold (citations you retrieved, numbers from calc fields or cited spans, no masked text, no quote that is not verbatim in the cited span).
+<!-- /run:2 -->
 <!-- round:2 -->
 ## Round 2: cross-examination
 

@@ -31,6 +31,8 @@ class AgentTools:
         self.origins = {o.lower() for o in (cf["manifest_scope"] or {}).get("event_origins", [])}
         self.cache, self.search_log, self.retrieved, self.rows_seen, self.calcs = {}, [], {}, {}, []
         self.searches = self.cache_hits = self.tool_calls = self.step_calls = 0
+        self.total_searches = 0
+        self.search_cap = config["max_searches_per_agent_per_run"]
         self.round = 1
         self.retrieved_rounds = {}      # citation -> rounds in which a tool (not a cache hit) returned it
 
@@ -82,10 +84,11 @@ class AgentTools:
             self.search_log.append(entry)
             self.trace.emit(self.agent, "SEARCH_CACHE_HIT", entry)
             return self.cache[key]
-        if self.searches >= self.config["max_searches_per_agent_per_run"]:
+        if self.searches >= self.search_cap:
             self.trace.emit(self.agent, "SEARCH_LIMIT_REACHED", {"query": query, "searches": self.searches}, "WARNING")
             return {"error": "SEARCH_LIMIT_REACHED"}
         self.searches += 1
+        self.total_searches += 1
         spans = []
         for h in self.index.search_docs(query, countries=countries, sectors=sectors, limit=limit):
             rec = self.corpus.records[h["doc_id"]]
@@ -185,6 +188,9 @@ class AgentTools:
                                                           "baseline_flags": record["baseline_flags"]})
             out.append(calc_mod.agent_view(record))
         return out
+
+    def search_total(self):
+        return self.total_searches
 
     def calc_by_id(self, calc_id):
         return next((c for c in self.calcs if c["calc_id"] == calc_id), None)

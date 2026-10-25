@@ -8,6 +8,7 @@ they are never set by hand.
 """
 import copy
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,7 +38,8 @@ class Config:
     def model_for(self, role):
         if role not in ROLE_MODEL_KEY:
             raise ConfigError(f"unknown role {role!r}")
-        return self.data["models"][ROLE_MODEL_KEY[role]]
+        key = ROLE_MODEL_KEY[role]
+        return os.environ.get("MODEL_" + key.upper()) or self.data["models"][key]
 
     def caps(self, role):
         return self.data["token_caps_by_role"][role]

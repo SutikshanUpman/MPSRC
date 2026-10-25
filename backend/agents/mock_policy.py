@@ -110,6 +110,26 @@ def _noted(view, cell, template_id):
 def _turn_retrieve(role, view):
     calls = [{"tool": "get_trade_rows", "args": {"cells": view["cells"]}}]
     decisions = []
+    if view.get("gap_queries"):               # Run 2: Heimdall's fresh queries for the gap cells
+        # The step allows few tool calls (rows + calc + searches): each cell gets one country-filtered search first
+        # (every cell needs one), then unfiltered and further searches are shared round-robin up to the allowance.
+        room = max(len(view["cells"]), view["limits"]["max_tool_calls_per_agent_step"] - 2)
+        per_cell = []
+        for cell in view["cells"]:
+            qs = view["gap_queries"].get(f"{cell['country']}|{cell['sector']}", [])
+            plan = []
+            for i, q in enumerate(qs[:2]):
+                plan.append((q, [cell["country"]], 5))
+                plan.append((q, [], 8))
+            per_cell.append((cell, plan))
+        for rank in range(4):
+            for cell, plan in per_cell:
+                if rank < len(plan) and room > 0:
+                    q, countries, limit = plan[rank]
+                    calls.append({"tool": "search", "args": {"query": q, "countries": countries,
+                                                             "sectors": [cell["sector"]], "limit": limit}})
+                    room -= 1
+        return {"action": "tools", "tool_calls": calls, "memory_decisions": []}
     (first_id, first_t), (alt_id, alt_t) = QUERIES[role]
     for cell in view["cells"]:
         planned = _query(role, first_t, view, cell)
@@ -179,6 +199,9 @@ def _turn_submit(role, view, results, calc_records):
             continue
         row_cites = rec["input_citations"]["direct"] + rec["input_citations"]["substitute"]
         cell_spans = _cell_spans(results, view, cell)
+        if view["run"] == 2:                  # a Run-2 fact must come from evidence not cited in Run 1
+            cell_spans += view.get("new_evidence", {}).get(f"{cell['country']}|{cell['sector']}", [])
+            cell_spans = [s for s in cell_spans if s["citation"] not in view["run1_citations"]]
         base = {"agent": role, "run": view["run"], "round": view["round"], "country": cell["country"], "sector": cell["sector"],
                 "calc_ids": [rec["calc_id"]], "status": "submitted", "secondary_metrics": None, "supersedes": None}
         if rec["status"] == "OK":
@@ -232,6 +255,11 @@ def _turn_submit(role, view, results, calc_records):
             text_facts.append(fact)
     # Supporting claims go in while the round allowance lasts and the output stays inside the role's
     # max_output_tokens (with a margin): a live model would be cut off at the cap.
+    if view["run"] == 2:
+        supporting = []
+        for c in claims:
+            if c["claim_type"] == "CELL_ESTIMATE":
+                c["supersedes"] = view["supersedes"].get(f"{c['country']}|{c['sector']}")
     notes = _memory_notes(role, view, results)
     budget = int(view["limits"]["max_output_tokens"] * OUTPUT_MARGIN)
     room = view["limits"]["max_supporting_claims_per_side_per_round"] - view["supporting_so_far"]
@@ -393,5 +421,19 @@ def _memory_notes(role, view, results):
     return notes
 
 
+def odin_policy(role, messages, schema):
+    """Mock Odin: keeps the runtime's default decision and rationale for every open claim. Deterministic."""
+    view = _user_payloads(messages)[-1]
+    return {"rulings": [{"claim_id": c["claim_id"], "decision": c["default_decision"], "rationale": c["default_rationale"],
+                         "confidence": 0.6} for c in view.get("open_claims", [])]}
+
+
+def briefing_policy(role, messages, schema):
+    """Mock briefing writer: returns the template narrative the runtime sent as `template`."""
+    view = _user_payloads(messages)[-1]
+    return view["template"]
+
+
 def default_responders():
-    return {"heimdall": heimdall_policy, "thor": counsel_policy, "loki": counsel_policy}
+    return {"heimdall": heimdall_policy, "thor": counsel_policy, "loki": counsel_policy, "odin_ruling": odin_policy,
+            "odin_briefing": briefing_policy}
