@@ -1,0 +1,53 @@
+flowchart TB
+    USER[User question] --> API[FastAPI Case API]
+    API --> RT[Deterministic Trial Runtime]
+    RT --> RUN[Run counter and state machine]
+    RT --> BUDGET[Global budget guard\nUSD + tokens + reservations]
+
+    RT --> ING[Ingestion and Validation]
+    ING --> MAN[Manifest + SHA-256]
+    ING --> EXT[TXT / PDF / DOCX extraction]
+    ING --> TRADE[Trade parser]
+    ING --> QUAR[Quarantine + quality flags]
+    ING --> CLOCK[As-of-date eligibility gate]
+
+    EXT --> INDEX[Hybrid search index]
+    TRADE --> INDEX
+    MAN --> INDEX
+    CLOCK --> INDEX
+
+    INDEX --> H[Heimdall\nCase builder + verifier]
+    INDEX --> THOR[Thor\nHigh exposure]
+    INDEX --> LOKI[Loki\nLimited exposure]
+    BUDGET --> H
+    BUDGET --> THOR
+    BUDGET --> LOKI
+    BUDGET --> ODIN[Odin\nJudge]
+
+    H --> CASE[Shared Case File]
+    CASE --> THOR
+    CASE --> LOKI
+    THOR --> CLAIMS[Claim ledger]
+    LOKI --> CLAIMS
+    CLAIMS --> CROSS[Cross-examination]
+    CROSS --> DEF[Defence or concession]
+    DEF --> ODIN
+    ODIN --> RULINGS[Odin ruling ledger]
+    RULINGS --> SUFF[Evidence sufficiency]
+    SUFF -->|insufficient and run budget available| H
+    SUFF -->|limit reached| INCOMPLETE[Incomplete case\nreason recorded]
+    ODIN --> BRIEF[Final briefing\nfrom rulings only]
+    ODIN --> EXP[Exposure table]
+
+    H --> HM[Heimdall private memory]
+    THOR --> TM[Thor private memory]
+    LOKI --> LM[Loki private memory]
+    ODIN --> OM[Odin private memory]
+
+    RT --> TRACE[Append-only JSONL trace]
+    TRACE --> UI[Dashboard + replay]
+    BRIEF --> UI
+    EXP --> UI
+    INCOMPLETE --> UI
+    INDEX --> SOURCE[Source and trade-row viewer]
+    UI --> SOURCE
