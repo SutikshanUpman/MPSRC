@@ -382,6 +382,22 @@ class OdinModelAndFallbacks(unittest.TestCase):
         guard.case_spent = guard.case_limit("thor") - 1e-9           # nothing fits any more
         self.assertFalse(guard.can_afford("thor"))
 
+    def test_event_verification_inconclusive_and_fallback_fails_gives_event_unverified_and_no_numbers(self):
+        from backend.agents.mock_policy import default_responders
+
+        def bad(role, messages, schema):
+            raise SchemaError("not json")
+        tmp = tempfile.mkdtemp(prefix="final_unv_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        pack = synthetic_pack.build_new_wording(Path(tmp) / "w")
+        provider = make_provider("mock", CONFIG, responders=dict(default_responders(), heimdall=bad))
+        res = run(synthetic_pack.WORDING_QUESTION, [pack], tmp, "unv", provider=provider)
+        self.assertEqual(res["briefing"]["event_status"], "EVENT_UNVERIFIED")
+        self.assertEqual(res["briefing"]["exposure_table"], [])
+        self.assertEqual(res["briefing"]["header"]["completion_status"], "INCOMPLETE")
+        self.assertTrue(res["trace"].of_type("FALLBACK_EVENT_UNVERIFIED"))
+        self.assertIn("EVENT_UNVERIFIED", (res["out_dir"] / "briefing.md").read_text(encoding="utf-8"))
+
     def test_stop_reason_makes_the_briefing_incomplete(self):
         from backend.briefing import build
         res = run(QUESTION, [PACK], tempfile.mkdtemp(prefix="final_inc_"), "inc")
@@ -473,6 +489,118 @@ class LiveProviderAndLedger(unittest.TestCase):
         with self.assertRaises(ledger.LedgerRefused):
             run_full_case(QUESTION, [PACK], CONFIG, provider, tmp / "runs", tmp / "mem", out_name="x", ledger_path=path)
         self.assertEqual(provider.calls, [])
+
+
+class LiveTransportFallbacks(unittest.TestCase):
+    """4.1 and 4.2 against a stubbed transport; no network is touched."""
+
+    def setUp(self):
+        self.verified = load_config(overrides={"prices_verified": True})
+        saved = {k: os.environ.get(k) for k in ("LIVE", "BUDGET_OWNER", "ANTHROPIC_API_KEY")}
+        os.environ.update(LIVE="1", BUDGET_OWNER="owner", ANTHROPIC_API_KEY="test-key-not-real")
+
+        def restore():
+            for k, v in saved.items():
+                os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
+        self.addCleanup(restore)
+        import urllib.request
+        self.urllib = urllib.request
+        self.real = urllib.request.urlopen
+        self.addCleanup(lambda: setattr(self.urllib, "urlopen", self.real))
+
+    def stub(self, responses):
+        import io
+        import urllib.error
+        calls = []
+
+        class Resp(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake(req, timeout=None):
+            calls.append(json.loads(req.data.decode("utf-8")))
+            r = responses[min(len(calls) - 1, len(responses) - 1)]
+            if isinstance(r, int):
+                raise urllib.error.HTTPError(req.full_url, r, "err", {}, None)
+            return Resp(json.dumps(r).encode("utf-8"))
+        self.urllib.urlopen = fake
+        return calls
+
+    def ok(self, text):
+        return {"content": [{"type": "text", "text": text}], "usage": {"input_tokens": 10, "output_tokens": 5}, "stop_reason": "end_turn"}
+
+    def provider(self):
+        p = AnthropicProvider(self.verified)
+        p.BACKOFF = (0.0, 0.0)
+        return p
+
+    def test_retry_with_backoff_then_success_and_request_shape(self):
+        calls = self.stub([503, 429, self.ok('{"a": "x"}')])
+        p = self.provider()
+        out = p.complete("thor", [{"role": "system", "content": "sys"}, {"role": "user", "content": "hi"}],
+                         {"type": "object", "properties": {"a": {"type": "string"}}})
+        self.assertEqual(out["output"], {"a": "x"})
+        self.assertEqual(len(calls), 3)
+        self.assertEqual([f["type"] for f in p.fallbacks], ["FALLBACK_LLM_RETRY", "FALLBACK_LLM_RETRY"])
+        body = calls[-1]
+        self.assertEqual(body["temperature"], 0)
+        self.assertEqual(body["max_tokens"], self.verified.caps("thor")["max_output_tokens"])
+        self.assertEqual(body["model"], self.verified.model_for("thor"))
+        self.assertEqual(body["messages"], [{"role": "user", "content": "hi"}])
+        self.assertNotIn("test-key-not-real", json.dumps(body))
+
+    def test_gives_up_after_two_retries(self):
+        from backend.llm.provider import ProviderUnavailable
+        calls = self.stub([503])
+        with self.assertRaises(ProviderUnavailable):
+            self.provider().complete("thor", [{"role": "user", "content": "hi"}], {"type": "object"})
+        self.assertEqual(len(calls), 3)
+
+    def test_invalid_json_gets_one_repair_attempt(self):
+        self.stub([self.ok('Sure! ```json\n{"a": "x"}\n```')])
+        p = self.provider()
+        out = p.complete("thor", [{"role": "user", "content": "hi"}], {"type": "object"})
+        self.assertEqual(out["output"], {"a": "x"})
+        self.assertEqual([f["type"] for f in p.fallbacks], ["FALLBACK_JSON_REPAIR"])
+        self.stub([self.ok("no json at all")])
+        broken = self.provider().complete("thor", [{"role": "user", "content": "hi"}], {"type": "object"})
+        self.assertIsNone(broken["output"])                     # RecordingProvider records it and raises SchemaError
+
+    def test_an_unavailable_api_fails_the_agent_not_the_case(self):
+        from backend.llm.provider import ProviderUnavailable
+        from backend.agents.mock_policy import default_responders
+
+        def down(role, messages, schema):
+            raise ProviderUnavailable("api down")
+        tmp = tempfile.mkdtemp(prefix="final_down_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        provider = make_provider("mock", CONFIG, responders=dict(default_responders(), thor=down))
+        res = run(QUESTION, [PACK], tmp, "down", provider=provider)
+        self.assertEqual(res["case_file"]["run_status"][0]["round_1"]["agents"]["thor"]["status"], "THOR_FAILED")
+        self.assertTrue(res["briefing"])                                   # Odin briefs from what exists
+        self.assertEqual(res["briefing"]["header"]["completion_status"], "INCOMPLETE")
+
+
+class ExportLogs(unittest.TestCase):
+    def test_export_shortens_spans_and_copies_the_case(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("export_logs", ROOT / "scripts" / "export_logs.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        tmp = tempfile.mkdtemp(prefix="final_exp_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        run(QUESTION, [PACK], tmp, "case1")
+        code = mod.main(["case1", "--from", str(Path(tmp) / "runs"), "--to", str(Path(tmp) / "logs")])
+        self.assertEqual(code, 0)
+        (dst,) = list((Path(tmp) / "logs").iterdir())
+        self.assertTrue((dst / "briefing.json").exists() and (dst / "llm_calls.jsonl").exists() and (dst / "README.md").exists())
+        cf = json.loads((dst / "case_file.json").read_text(encoding="utf-8"))
+        longest = max(len(h["text"]) for c in cf["evidence_packet"]["cells"] for h in c["hits"])
+        self.assertLessEqual(longest, mod.MAX_SPAN + 1)
+        self.assertNotRegex("".join(f.read_text(encoding="utf-8") for f in dst.iterdir()), r"sk-ant")
 
 
 if __name__ == "__main__":
