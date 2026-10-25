@@ -1,53 +1,78 @@
 flowchart TB
-    USER[User question] --> API[FastAPI Case API]
-    API --> RT[Deterministic Trial Runtime]
-    RT --> RUN[Run counter and state machine]
-    RT --> BUDGET[Global budget guard\nUSD + tokens + reservations]
+    USER[User] -->|types question| UI[Dashboard + replay<br/>question box, live feed, trial view]
+    UI -->|question| API[FastAPI Case API]
+    API --> RT[Deterministic Trial Runtime<br/>parses as-of date from question]
+    RT --> RUN[Run counter + hard limits<br/>max 2 runs, 1 cross-exam round]
+    RT --> BUDGET[Budget guard<br/>USD ledger, per-case cap<br/>Odin briefing reserve]
 
     RT --> ING[Ingestion and Validation]
     ING --> MAN[Manifest + SHA-256]
     ING --> EXT[TXT / PDF / DOCX extraction]
-    ING --> TRADE[Trade parser]
+    ING --> TRADE[Trade parser<br/>prose notes + fixed tables]
     ING --> QUAR[Quarantine + quality flags]
-    ING --> CLOCK[As-of-date eligibility gate]
 
-    EXT --> INDEX[Hybrid search index]
-    TRADE --> INDEX
-    MAN --> INDEX
-    CLOCK --> INDEX
+    MAN --> CLOCK[As-of-date gate<br/>drops docs dated after as-of]
+    EXT --> CLOCK
+    TRADE --> CLOCK
+    CLOCK --> INDEX[Local hybrid index<br/>BM25 + optional local embeddings<br/>scope: case event, or NONE as background only]
 
-    INDEX --> H[Heimdall\nCase builder + verifier]
-    INDEX --> THOR[Thor\nHigh exposure]
-    INDEX --> LOKI[Loki\nLimited exposure]
-    BUDGET --> H
-    BUDGET --> THOR
-    BUDGET --> LOKI
-    BUDGET --> ODIN[Odin\nJudge]
+    INDEX --> UNTRUSTED[Untrusted document text<br/>data, never instructions<br/>injection lines masked]
+    UNTRUSTED --> H[Heimdall<br/>event mapping + verifier]
+    UNTRUSTED --> THOR[Thor<br/>High exposure]
+    UNTRUSTED --> LOKI[Loki<br/>Limited exposure]
+    UNTRUSTED -->|read_source_spans| ODIN[Odin<br/>Judge]
 
-    H --> CASE[Shared Case File]
+    BUDGET -.->|wraps billable calls| H
+    BUDGET -.->|wraps billable calls| THOR
+    BUDGET -.->|wraps billable calls| LOKI
+    BUDGET -.->|wraps billable calls| ODIN
+
+    H -->|no match, ambiguous or not real| REJECT[Case rejected<br/>reason shown to user]
+
+    subgraph CF[Shared Case File - the only shared object]
+        CASE[Case facts<br/>question, as-of, event, verification]
+        CLAIMS[Claim ledger section]
+        CROSS[Cross-examination section]
+        RULINGS[Ruling ledger section]
+    end
+
+    H --> CASE
     CASE --> THOR
     CASE --> LOKI
-    THOR --> CLAIMS[Claim ledger]
-    LOKI --> CLAIMS
-    CLAIMS --> CROSS[Cross-examination]
-    CROSS --> DEF[Defence or concession]
-    DEF --> ODIN
-    ODIN --> RULINGS[Odin ruling ledger]
-    RULINGS --> SUFF[Evidence sufficiency]
-    SUFF -->|insufficient and run budget available| H
-    SUFF -->|limit reached| INCOMPLETE[Incomplete case\nreason recorded]
-    ODIN --> BRIEF[Final briefing\nfrom rulings only]
+    CASE --> ODIN
+    THOR -->|round 1 claims| CLAIMS
+    LOKI -->|round 1 claims| CLAIMS
+    CLAIMS --> CROSS
+    CROSS -->|challenge: defend, qualify or concede| THOR
+    CROSS -->|challenge: defend, qualify or concede| LOKI
+    THOR -->|defence or concession| CROSS
+    LOKI -->|defence or concession| CROSS
+    CROSS --> ODIN
+    ODIN --> RULINGS
+    RULINGS --> SUFF[Sufficiency check]
+    RUN -->|run count + limits| SUFF
+    BUDGET -->|case cap reached| SUFF
+    SUFF -->|insufficient, run 2 allowed| H
+    SUFF -->|sufficient| BRIEF[Final briefing<br/>from rulings only]
+    SUFF -->|run 2 still insufficient or limit reached| INCOMPLETE[Incomplete briefing<br/>per-cell INSUFFICIENT_EVIDENCE]
+    ODIN --> BRIEF
     ODIN --> EXP[Exposure table]
 
-    H --> HM[Heimdall private memory]
-    THOR --> TM[Thor private memory]
-    LOKI --> LM[Loki private memory]
-    ODIN --> OM[Odin private memory]
+    H -->|write| HM[Heimdall private memory]
+    HM -->|read at case start| H
+    THOR -->|write| TM[Thor private memory]
+    TM -->|read at case start| THOR
+    LOKI -->|write| LM[Loki private memory]
+    LM -->|read at case start| LOKI
+    ODIN -->|write| OM[Odin private memory]
+    OM -->|read at case start| ODIN
 
     RT --> TRACE[Append-only JSONL trace]
-    TRACE --> UI[Dashboard + replay]
+    QUAR --> TRACE
+    TRACE -->|live event stream| UI
+    REJECT --> UI
     BRIEF --> UI
     EXP --> UI
     INCOMPLETE --> UI
-    INDEX --> SOURCE[Source and trade-row viewer]
+    INDEX --> SOURCE[Source viewer<br/>DOC_ID + paragraph]
     UI --> SOURCE
