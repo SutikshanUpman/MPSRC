@@ -211,3 +211,101 @@ def build(root):
         {"pack": "synthetic_E9", "event_id": EVENT, "name": "Velka canal closure", "as_of": AS_OF,
          "count": len(manifest), "document_count": len(manifest) + 1, "documents": manifest}, indent=1))
     return root
+
+
+LIVE_EVENT = "E10"
+
+
+def build_live(root):
+    """A second ("live") pack for pack_paths [base, live]: its own event E10, plus two
+    re-shipped base documents: SYN-0014 byte-identical (merge) and SYN-0004 with a
+    different body (live copy wins, base copy quarantined)."""
+    root = Path(root)
+    docs = root / "docs"
+    docs.mkdir(parents=True, exist_ok=True)
+    files, manifest = {}, []
+
+    def add(doc_id, event, title, source, stype, rel, date, time, country, sector, body):
+        files[f"{doc_id}.txt"] = (header(doc_id, event, title, source, stype, rel, date, time, country, sector)
+                                  + title + "\n\n" + body).encode()
+        manifest.append({"DOC_ID": doc_id, "EVENT_ID": event, "TITLE": title, "SOURCE_NAME": source,
+                         "SOURCE_TYPE": stype, "RELIABILITY": str(rel), "PUB_DATE": date, "PUB_TIME": time,
+                         "COUNTRY": country, "SECTOR": sector, "FORMAT": "TXT", "LANGUAGE": "en",
+                         "file": f"{doc_id}.txt"})
+
+    add("LIV-0001", LIVE_EVENT, "Tarsk rail strike halts freight to Brenn", "Realm Rail Office", "gov_notice", 1,
+        "2031-04-01", "09:00", "Tarsk", "general",
+        "[P1] Rail workers at Tarsk began a strike that halts freight trains to Brenn.\n")
+    add("LIV-0002", LIVE_EVENT, "Tarsk rail strike enters second week", "Raven Wire", "news", 2,
+        "2031-04-08", "09:00", "Tarsk", "general",
+        "[P1] The Tarsk rail strike has entered its second week with no talks scheduled.\n")
+    add("SYN-0014", "NONE", "Country profile: Brenn", "Realm Trade Ministry", "atlas", 1, "2029-01-01", "10:00",
+        "Brenn", "general", "[P1] Country profile: Brenn. Brenn imports most of its LNG by sea.\n")
+    add("SYN-0004", EVENT, "Velka canal closed to tankers", "Realm Canal Authority", "gov_notice", 1,
+        "2031-01-03", "08:00", "Velka", "LNG",
+        "[P1] The Velka canal is closed to tankers and barges until further notice.\n")
+    # LIV-0003: the body of base SYN-0006 under a new doc_id (cross-pack duplicate: one evidence family).
+    add("LIV-0003", EVENT, "Osk port queues lengthen", "Harbour Review", "news", 2, "2031-03-02", "12:00", "Osk", "LNG",
+        "[P1] Tanker queues at Osk reached nine days in February.\n")
+    for name, data in files.items():
+        (docs / name).write_bytes(data)
+    (root / "hashes.sha256").write_text("".join(f"{hashlib.sha256(d).hexdigest()}  docs/{n}\n" for n, d in files.items()))
+    (root / "manifest.json").write_text(json.dumps(
+        {"pack": "synthetic_live_E10", "event_id": LIVE_EVENT, "name": "Tarsk rail strike", "as_of": AS_OF,
+         "count": len(manifest), "documents": manifest}, indent=1))
+    return root
+
+
+WORDING_EVENT, WORDING_AS_OF = "E11", "2032-06-30"
+WORDING_QUESTION = "As of 30 June 2032, how exposed is Dunmar to the Krell river barge stoppage? Give a range for salt imports."
+
+
+def build_new_wording(root):
+    """A pack whose event is announced in words the rule lexicon does not know (no expiry, closure,
+    renewal, lapse, halt or suspension wording), so the rule leaves it unverified and the LLM
+    fallback must classify the announcements. Two route notes give a prior-year baseline."""
+    root = Path(root)
+    docs = root / "docs"
+    docs.mkdir(parents=True, exist_ok=True)
+    files, manifest = {}, []
+
+    def add(doc_id, event, title, source, stype, rel, date, country, sector, body):
+        files[f"{doc_id}.txt"] = (header(doc_id, event, title, source, stype, rel, date, "09:00", country, sector)
+                                  + title + "\n\n" + body).encode()
+        manifest.append({"DOC_ID": doc_id, "EVENT_ID": event, "TITLE": title, "SOURCE_NAME": source, "SOURCE_TYPE": stype,
+                         "RELIABILITY": str(rel), "PUB_DATE": date, "PUB_TIME": "09:00", "COUNTRY": country,
+                         "SECTOR": sector, "FORMAT": "TXT", "LANGUAGE": "en", "file": f"{doc_id}.txt"})
+
+    def note(route, rows):
+        return f"[P1] Route: {route}, salt.\n\n" + "".join(
+            f"[P{i}] In {m}, the value was EUR {v}M and the volume was {t:,} tonnes.\n\n" for i, (m, v, t) in enumerate(rows, 2))
+
+    add("NEW-0001", WORDING_EVENT, "River authority orders cargo barges off the Krell river", "Krell River Authority",
+        "gov_notice", 1, "2032-02-01", "Krell", "Salt",
+        "[P1] The river authority has withdrawn every cargo barge permit on the Krell river from 1 February 2032.\n\n"
+        "[P2] No cargo barge may use the river until the authority issues new permits.\n")
+    add("NEW-0002", WORDING_EVENT, "Barges sit idle on the Krell river", "Raven Wire", "news", 2, "2032-02-03", "Krell", "Salt",
+        "[P1] Barge crews on the Krell river say traffic has stopped since the permits were withdrawn.\n")
+    add("NEW-0003", WORDING_EVENT, "Trade note: Krell to Dunmar, salt, February and March", "Realm Trade Ministry",
+        "trade_note", 1, "2032-04-10", "Dunmar", "Salt",
+        note("Krell to Dunmar", [("February 2031", "4.0", 20000), ("March 2031", "4.2", 21000),
+                                 ("February 2032", "1.5", 7000), ("March 2032", "1.1", 5000)]))
+    add("NEW-0004", WORDING_EVENT, "Trade note: Varn to Dunmar, salt, February and March", "Realm Trade Ministry",
+        "trade_note", 2, "2032-04-11", "Dunmar", "Salt",
+        note("Varn to Dunmar", [("February 2031", "1.0", 5000), ("March 2031", "1.1", 5200),
+                                ("February 2032", "1.8", 8500), ("March 2032", "2.0", 9500)]))
+    add("NEW-0005", "NONE", "Country profile: Dunmar", "Realm Trade Ministry", "atlas", 1, "2030-01-01", "Dunmar", "general",
+        "[P1] Country profile: Dunmar. Dunmar buys most of its salt by river barge.\n")
+    add("NEW-0006", WORDING_EVENT, "Dunmar buyers sign rail contracts for salt", "Dunmar Ledger", "news", 3, "2032-03-01",
+        "Dunmar", "Salt", "[P1] Dunmar salt buyers have signed rail contracts with suppliers in Varn after the barge permits "
+        "were withdrawn.\n")
+    # F11 cross-check: a route-level "% of normal" level for the post-event months (implied gross shortfall 70%).
+    add("NEW-0007", WORDING_EVENT, "Krell barge traffic report", "Raven Wire", "news", 2, "2032-04-05", "Dunmar", "Salt",
+        "[P1] In February and March 2032, salt barge traffic from Krell to Dunmar ran at about 30% of normal.\n")
+    for name, data in files.items():
+        (docs / name).write_bytes(data)
+    (root / "hashes.sha256").write_text("".join(f"{hashlib.sha256(d).hexdigest()}  docs/{n}\n" for n, d in files.items()))
+    (root / "manifest.json").write_text(json.dumps(
+        {"pack": "synthetic_wording_E11", "event_id": WORDING_EVENT, "name": "Krell river barge stoppage",
+         "as_of": WORDING_AS_OF, "count": len(manifest), "documents": manifest}, indent=1))
+    return root

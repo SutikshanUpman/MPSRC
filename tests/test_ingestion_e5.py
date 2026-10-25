@@ -1,4 +1,5 @@
 """Ingestion acceptance tests on dev_pack_E5. Plain unittest, no network, no LLM."""
+import os
 import re
 import sys
 import unittest
@@ -12,7 +13,7 @@ from backend.ingestion.quality import MASK_PLACEHOLDER  # noqa: E402
 from backend.provenance.citations import format_citation, parse_citations, validate_citation  # noqa: E402
 from backend.search.bm25 import CaseIndex, mentions, tokenize  # noqa: E402
 
-PACK = ROOT / "03_Ragnarok Trial of the Nine Realms" / "dev_pack_E5"
+PACK = Path(os.environ["RAGNAROK_PACK_DIR"]) if os.environ.get("RAGNAROK_PACK_DIR") else ROOT / "dev_pack_E5"
 AS_OF, EVENT = "2027-01-25", "E5"
 CITATION = re.compile(r"^\[[A-Z]+-\d{4}, P\d+, \d{4}-\d{2}-\d{2} \d{2}:\d{2}\]$")
 

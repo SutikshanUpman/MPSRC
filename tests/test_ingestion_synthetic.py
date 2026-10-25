@@ -212,8 +212,10 @@ class SyntheticPack(unittest.TestCase):
     def test_sector_boost_not_filter(self):
         ix = CaseIndex(self.c, AS_OF, EVENT)
         ids = [h["doc_id"] for h in ix.search_docs("LNG value volume", sectors=["Wheat"], limit=20)]
-        self.assertIn("SYN-0001", ids)
+        self.assertIn("SYN-0002", ids)     # declared LNG, still found for a Wheat-boosted query
         self.assertIn("SYN-0003", ids)
+        self.assertNotIn("SYN-0001", ids)  # HASH_MISMATCH: excluded by case_scope (Stage 2 A2), not by sector
+        self.assertEqual(ix.excluded["SYN-0001"], "HASH_MISMATCH")
         self.assertTrue(any(x["field"] == "SECTOR" for x in self.c["SYN-0003"]["metadata_conflicts"]))
 
     def test_word_boundary_names(self):

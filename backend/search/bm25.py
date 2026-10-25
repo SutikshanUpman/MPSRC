@@ -26,9 +26,10 @@ def mentions(text, name):
 
 
 class CaseIndex:
-    def __init__(self, corpus, as_of, event_id, k1=1.5, b=0.75):
+    def __init__(self, corpus, as_of, event_id, k1=1.5, b=0.75, allow_hash_mismatch=()):
         self.corpus, self.as_of, self.event_id, self.k1, self.b = corpus, as_of, event_id, k1, b
-        self.eligible, self.excluded = case_scope(corpus, as_of, event_id)
+        self.eligible, self.excluded = case_scope(corpus, as_of, event_id, allow_hash_mismatch)
+        self.eligible_ids = {rec["doc_id"] for rec in self.eligible}
         self.units = []
         for rec in self.eligible:
             for p in rec["paragraphs"]:

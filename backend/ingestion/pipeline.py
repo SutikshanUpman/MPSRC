@@ -303,13 +303,18 @@ def ingest_pack(pack_dir):
 
 # ---------- case scope ----------
 
-def case_scope(corpus, as_of, event_id):
-    """As-of gate and event scope, applied before indexing.
+def case_scope(corpus, as_of, event_id, allow_hash_mismatch=()):
+    """As-of gate, event scope and hash quarantine, applied before indexing.
 
-    Eligible = (EVENT_ID == event OR NONE) AND valid PUB_DATE <= as_of.
-    Returns (eligible records, {doc_id: reason}) for the excluded ones.
+    This is the one place a document is admitted to a case: search (CaseIndex),
+    Heimdall and the agents all go through it.
+    Eligible = (EVENT_ID == event OR NONE) AND valid PUB_DATE <= as_of AND no
+    HASH_MISMATCH flag (SYSTEM_ARCHITECTURE 25: quarantined until explicitly
+    allowed, via `allow_hash_mismatch`). Excluded documents stay in the corpus
+    for audit. Returns (eligible records, {doc_id: reason}) for the excluded ones.
     """
     eligible, excluded = [], {}
+    allowed = set(allow_hash_mismatch or ())
     for rec in corpus.records.values():
         d = rec["pub_date"] or ""
         if not DATE_RE.match(d):
@@ -318,6 +323,8 @@ def case_scope(corpus, as_of, event_id):
             excluded[rec["doc_id"]] = "FUTURE_DATED"
         elif rec["event_id"] not in (event_id, "NONE"):
             excluded[rec["doc_id"]] = "OUT_OF_EVENT_SCOPE"
+        elif "HASH_MISMATCH" in rec["flags"] and rec["doc_id"] not in allowed:
+            excluded[rec["doc_id"]] = "HASH_MISMATCH"
         else:
             eligible.append(rec)
     return eligible, excluded

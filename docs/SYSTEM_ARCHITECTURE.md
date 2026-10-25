@@ -104,6 +104,7 @@ secondary_metrics:
 event_scope:            # hard retrieval scope, see section 15
   - E5
   - NONE
+scope_assumptions: []   # filled when the question names no country or no sector (section 15, default scope)
 # Trial sections. Agents append to these; they never share anything else.
 claim_ledger: []        # Thor and Loki round-1 claims
 cross_examination: []   # challenges, defences, qualifications, concessions
@@ -182,7 +183,7 @@ Heimdall is responsible for opening the case, not arguing the exposure.
 
 The event, and the question's premise, is `VERIFIED` only if at least one Tier 1-2, non-retracted, in-scope document dated on or before `as_of` asserts it, and no later Tier 1-2 document corrects it. "In-scope" here means `EVENT_ID` equals the case event (section 15: `NONE` documents cannot verify an event). If only Tier 3-4 or retracted documents support it, the result is `EVENT_REJECTED` with the reason and the citations.
 
-Premise words in the question (destroyed, closed, banned, sunk, and similar) are checked separately from the event. An event can be verified while its premise is rejected: the case then proceeds on the verified event, and the Case File records `premise_check: REJECTED` with the citations, so no agent argues from the false premise.
+Premise words in the question (destroyed, closed, banned, sunk, and similar) are checked separately from the event. An event can be verified while its premise is rejected: the case then proceeds on the verified event, and the Case File records `premise_check.status: REJECTED_PREMISE` with the citations, so no agent argues from the false premise.
 
 #### Forbidden behavior
 
@@ -417,7 +418,8 @@ Use hard limits for:
 - Number of cross-examination rounds.
 - Search calls per agent.
 - Model retries.
-- USD spend (the single binding budget limit) plus a per-call output-token sanity cap.
+- USD spend (the single binding budget limit) plus per-role input and output token caps (section 17).
+- Tool calls and model turns inside one agent step (section 17).
 - Wall-clock duration.
 
 The system must not repeat an identical search or tool call.
@@ -547,13 +549,16 @@ flowchart TB
     CROSS --> ODIN
     ODIN --> RULINGS
     RULINGS --> SUFF[Sufficiency check]
-    RUN -->|run count + limits| SUFF
+    RUN -->|run count, limits, wall clock| SUFF
     BUDGET -->|case cap reached| SUFF
     SUFF -->|insufficient, run 2 allowed| H
     SUFF -->|sufficient| BRIEF[Final briefing<br/>from rulings only]
     SUFF -->|gaps searched, none found: cell flagged| BRIEF
     SUFF -->|stopped early on budget or limits| INCOMPLETE[Incomplete briefing<br/>labelled INCOMPLETE]
     ODIN --> BRIEF
+    THOR -.->|failed: Loki unchallenged| ODIN
+    LOKI -.->|failed: Thor unchallenged| ODIN
+    ODIN -.->|failed: template briefing, no model call| INCOMPLETE
     ODIN --> EXP[Exposure table]
 
     H -->|write| HM[Heimdall private memory]
@@ -650,7 +655,7 @@ Every provider call goes through the runtime budget guard (section 17). Retrieva
 
 **Per-case estimate (unverified assumption, confirm with user).** With the plan above, a full two-run case is about $0.26 (Odin's three calls about $0.23, everything else about $0.03). With Sonnet 5.5 for every agent it would be about $0.74, which is over the $0.50 per-case cap. Five final-round cases on this plan come to about $1.30, inside the $2.50 reserve.
 
-**Odin briefing reserve.** At case start the guard sets aside `odin_briefing_reserve_usd` (section 17) inside the per-case cap. Only Odin's final ruling and briefing may spend it. A cap hit therefore stops Heimdall, Thor and Loki first and never leaves the briefing unfunded. If even the reserve cannot cover the worst-case Odin call, the runtime renders a deterministic template briefing from the ruling ledger with no model call, labelled `INCOMPLETE`.
+**Odin briefing reserve.** At case start the guard commits `odin_briefing_reserve_usd` (section 17) inside the per-case cap and against the project headroom. It is derived, not set by hand: the worst-case cost of Odin's final ruling plus the worst-case cost of the briefing call, from the per-role token caps and the configured prices (about $0.200 at the unverified prices above). Only Odin's final ruling and the briefing may spend it, each up to its own slice, and no other role can spend any of it. A cap hit therefore stops Heimdall, Thor and Loki first and never leaves the briefing unfunded. If even the reserve cannot cover the briefing call (or that call fails), the runtime renders a deterministic template briefing from the Case File with no model call, labelled `INCOMPLETE`. The exact rules are in section 17, "Budget stop rules".
 
 ### 24-hour minimal build profile
 
@@ -995,7 +1000,7 @@ Each document should be normalized into one JSON record:
     "unit": "percent"
   },
   "assumptions": [
-    "The July-August 2026 route is the pre-disruption baseline",
+    "Baseline = the same months one year earlier on the same route (section 21)",
     "Vanir replacement remains near the November-December level",
     "Rail does not fully replace lost sea capacity"
   ],
@@ -1009,7 +1014,7 @@ Each document should be normalized into one JSON record:
 }
 ```
 
-`claim_type` is `CELL_ESTIMATE` or `SUPPORTING`. Thor and Loki must each submit exactly one `CELL_ESTIMATE` per Case File cell, with `metric: net_value_shortfall_pct` and a low/high `estimate`. That claim is the side's range for the cell (section 21). `SUPPORTING` claims carry no `estimate` and no range.
+`claim_type` is `CELL_ESTIMATE` or `SUPPORTING`. Thor and Loki must each submit exactly one `CELL_ESTIMATE` per assessed Case File cell, with `metric: net_value_shortfall_pct` and a low/high `estimate`. `CELL_ESTIMATE` claims do not count toward `max_supporting_claims_per_side_per_round`, which caps `SUPPORTING` claims only. A cell marked `INCOMPLETE_BUDGET_LIMIT` (section 17, Cell budget rule) gets no `CELL_ESTIMATE`. That claim is the side's range for the cell (section 21). `SUPPORTING` claims carry no `estimate` and no range.
 
 ### 12.6 Challenge JSON
 
@@ -1114,6 +1119,8 @@ One ledger file (`data/budget-ledger.json`) persists across all cases and sessio
     "case-001": {
       "case_cap_usd": 0.50,
       "spent_usd": 0.31,
+      "briefing_reserve_usd": 0.10,
+      "briefing_reserve_spent_usd": 0.00,
       "status": "OPEN"
     }
   },
@@ -1122,6 +1129,7 @@ One ledger file (`data/budget-ledger.json`) persists across all cases and sessio
       "case_id": "case-001",
       "run_id": "run-001",
       "actor": "thor",
+      "role_cap_key": "thor",
       "model": "configured-model-id",
       "input_tokens": 3900,
       "output_tokens": 610,
@@ -1132,7 +1140,7 @@ One ledger file (`data/budget-ledger.json`) persists across all cases and sessio
 }
 ```
 
-Every billable call appends to `calls` and is mirrored as a `BUDGET_CALL_RECORDED` trace event. A refused call emits `BUDGET_CAP_REACHED`.
+Every billable call appends to `calls` and is mirrored as a `BUDGET_CALL_RECORDED` trace event. A refused call emits `BUDGET_CAP_REACHED` with its `scope` (`case`, `project_dev` or `project`). The briefing reserve is released when the case closes.
 
 ---
 
@@ -1420,7 +1428,7 @@ The event scope keeps background and reference documents (`EVENT_ID: NONE`) visi
 Optional additional filters:
 
 ```text
-country in case.target_countries plus known route countries
+country in case.target_countries plus route countries (manifest scope, defined below)
 reliability_tier <= requested_max_tier
 source_type in requested_source_types
 ```
@@ -1432,12 +1440,44 @@ source_type in requested_source_types
 Heimdall maps the question to one event before any trial search. The mapping is data-driven, so a new final-round pack works with zero code edits:
 
 1. Extract entities and keywords from the question (countries, ports, routes, agreement or event nouns) using the word-boundary name matching rule.
-2. Match them against each loaded pack manifest's top-level `event_id` and event `name`.
-3. If that is inconclusive, match against the titles of documents grouped by `EVENT_ID` and score each candidate event by matched terms.
-4. Exactly one clear best match: write `event_id` and `event_scope: [event_id, "NONE"]` into the Case File.
-5. No match, or more than one plausible match: reject the case (`EVENT_REJECTED`) and tell the user why, listing the candidates considered (FR1.3).
+2. Candidate events = every non-`NONE` event ID in the loaded packs: each manifest's top-level `event_id` plus every document `EVENT_ID`.
+3. Score every candidate. Each distinct question term counts at most once per field:
 
-The mapping inputs, scores and decision are logged as a trace event.
+   ```text
+   score = 3 x (question terms matched in the candidate's event_id or manifest event name)
+         + 1 x (question terms matched in the titles of the candidate's documents that passed the as-of gate)
+   ```
+
+   A term found in several titles of the same event still counts once.
+4. Accept the top candidate only if `top_score >= event_match_min_score` (3) **and** `top_score >= event_match_min_ratio x runner_up_score` (2x; the runner-up score is 0 when there is one candidate). Write `event_id` and `event_scope: [event_id, "NONE"]` into the Case File.
+5. Otherwise reject the case (`EVENT_REJECTED`; reason `NO_MATCH` when the top score is below 3, `AMBIGUOUS` when the 2x test fails) and return the top 3 candidates to the user with their scores and matched terms (FR1.3).
+
+Example (E5): "Orvan" and "corridor" both match the manifest name "Orvan grain corridor collapse", so E5 scores at least 6 before title matches; with no other event loaded the runner-up is 0 and E5 is accepted.
+
+The mapping inputs, every candidate's score and matched terms, and the decision are logged as a trace event.
+
+### Default scope when the question names no country or no sector (Heimdall)
+
+**Manifest scope.** The runtime, not an agent, computes the manifest scope of the mapped event at the case as-of date:
+
+1. Scope documents = every document, across all loaded packs, whose manifest `EVENT_ID` equals the mapped `event_id` (never `NONE`), that passed the as-of gate and is not quarantined.
+2. Scope trade rows = the trade rows parsed from the scope documents with `parse_status: valid`.
+3. Route countries = every `origin` and `destination` in the scope trade rows. Event origins = the scope-row origins named in the manifest event name (word-boundary match); if several are named, all of them are event origins. Fallback when none is named: the origin with the most scope trade rows (ties alphabetical). Other origins in the scope rows are substitute routes, not event origins.
+4. Scope countries = every `destination` in the scope trade rows.
+5. Scope sectors = every `sector` of the scope trade rows (taken from row, route and title text; never from the `SECTOR` header alone, see the sector trap policy below).
+6. Fallback when there is no scope trade row: scope countries = the manifest `COUNTRY` values and scope sectors = the manifest `SECTOR` values of the scope documents, recorded with `source: manifest_headers` because headers can be wrong.
+
+**Defaulting.**
+
+- No country named: `target_countries` = scope countries. If sectors were named, only destinations with a scope trade row in a named sector.
+- No sector named: `target_sectors` = scope sectors. If countries were named, only sectors with a scope trade row into a named country.
+- Neither named: every scope country x scope sector.
+- Defaulted cells are not capped. Which cells are processed first, and which are marked `INCOMPLETE_BUDGET_LIMIT` when the budget cannot cover them all, follows the cell budget rule (section 17), the same rule as for named cells.
+- If a defaulted dimension is still empty, the case is rejected (`EVENT_REJECTED`, reason `NO_SCOPE`) and the user is asked to name a country and a sector.
+
+**Recording.** Each default writes one `scope_assumptions` entry to the Case File (`dimension`, `source`: `manifest_scope` or `manifest_headers`, `values`, `reason`, e.g. "question named no sector") and a `SCOPE_DEFAULTED` trace event. The briefing shows every entry in its header and in "Assumptions and limitations" (section 22).
+
+Example (E5): the sample question names both countries and both sectors, so no default applies.
 
 ### Sector trap policy
 
@@ -1513,16 +1553,14 @@ dedupe_key = SHA256(
 )
 ```
 
-Do not include the agent name. Thor and Loki may submit the same retrieval request, and the result should be computed once and reused.
-
-Keep the agent identity in the audit record:
+**The cache is per agent (manager decision, Stage 3).** The key above is scoped to one agent in one case: an exact repeat by the same agent is served from its cache and logged as `SEARCH_CACHE_HIT`, and it never runs a second search. Thor and Loki do not share results: a shared cache would make which side logs the hit depend on execution order, and round 1 must not depend on order. When both agents run an identical query, each runs it once; this is expected and is logged at INFO, never as an error.
 
 ```text
-retrieval_cache_key → shared result
-agent_name          → per-agent SEARCH_CACHE_HIT event
+retrieval_cache_key (per agent, per case) → that agent's stored result
+agent_name                                → SEARCH_EXECUTED once, then SEARCH_CACHE_HIT
 ```
 
-If a query is repeated, return the stored result and emit a `SEARCH_DEDUPLICATED` or `SEARCH_CACHE_HIT` trace event rather than performing the search again. Different as-of dates, corpus snapshots, filters, ranking hints, or retrieval versions must produce different keys.
+If a query is repeated by the same agent, return the stored result and emit a `SEARCH_CACHE_HIT` trace event rather than performing the search again. Different as-of dates, corpus snapshots, filters, ranking hints, or retrieval versions must produce different keys.
 
 ---
 
@@ -1642,6 +1680,34 @@ Odin sends the case back once. A gap is **searched properly** when every targete
 
 Independently of status, the run record stores `run2_new_evidence_families: [ids]`. AC8/FR5.4 are demonstrated only when that list is non-empty: Run 2 must bring at least one evidence family, counted across all cells, that Run 1 did not retrieve. If it is empty, the case may still be COMPLETE, but the UI and trace show "Run 2 found no new evidence" and the case must not be submitted as the two-run demonstration.
 
+### Agent failure and wall-clock states
+
+An **agent step** is one agent's work in one state: Heimdall mapping, verifying or researching; Thor or Loki submitting (round 1) or challenging and answering (round 2); Odin ruling (with sufficiency) or writing the briefing. Inside a step the model may call tools several times. The per-step limits (hard limits below) bound that loop:
+
+- `max_tool_calls_per_agent_step`: once reached, every further tool call in the step is refused with the tool error `TOOL_LIMIT_REACHED: submit now`. Refused and repeated calls count.
+- `max_model_turns_per_agent_step`: the last allowed turn must return the step's output.
+- `token_caps_by_role`: an assembled prompt over the role's input cap is rebuilt once without the oldest tool results; if it is still over, it is not sent and counts as a failed attempt. The role's output cap is the call's `max_tokens`.
+- An output that fails schema validation or the output checks in section 26 counts as one model retry, as does a provider error (section 25). Retries pass the budget guard like any call.
+
+A step **fails** when `max_model_retries_per_call` is exhausted, or when it reaches `max_model_turns_per_agent_step` without a valid output.
+
+```text
+THOR_FAILED       → trial continues with Loki only; Loki's claims are marked unchallenged
+LOKI_FAILED       → trial continues with Thor only; Thor's claims are marked unchallenged
+both failed       → no claims to rule on → INCOMPLETE_AGENT_FAILURE → template briefing
+ODIN_FAILED       → INCOMPLETE_AGENT_FAILURE → template briefing (no model call)
+WALL_CLOCK_LIMIT  → stop trial work → Odin briefing in the time reserve, else template briefing
+```
+
+| State | Trigger | What happens next | Run status | Briefing | Logged |
+|---|---|---|---|---|---|
+| `THOR_FAILED` | A Thor step failed | No Thor claims (or no Thor challenge or answer) in this run. Loki's claims reach Odin marked `unchallenged`; Odin rules on them and may still send the case back. The exposure table shows "Thor failed" in the Thor range column. | `INCOMPLETE_AGENT_FAILURE` if the failure is in the final run (Run 2 if it ran, else Run 1). A Run 1 failure followed by a clean Run 2 does not block `COMPLETE`, and the briefing's limitations mention it. | Odin's briefing, labelled `INCOMPLETE` when the status is; it states "Thor did not submit a case. Loki's position was not fully challenged." | `AGENT_FAILED` (agent, step, run, attempts, last error, tokens and USD spent) |
+| `LOKI_FAILED` | A Loki step failed | As `THOR_FAILED` with the sides swapped. | As `THOR_FAILED`. | As `THOR_FAILED`: "Loki did not submit a case. Thor's position was not fully challenged." | `AGENT_FAILED` |
+| `ODIN_FAILED` | An Odin ruling or briefing step failed | No further model calls in the case. | `INCOMPLETE_AGENT_FAILURE`; never `COMPLETE`. | Deterministic template briefing rendered from the Case File (event verification, ruling ledger so far, Thor and Loki ranges, flagged cells), labelled `INCOMPLETE`. | `AGENT_FAILED`, `TEMPLATE_BRIEFING_RENDERED` |
+| `WALL_CLOCK_LIMIT` | Elapsed time reaches `max_wall_clock_seconds - briefing_time_reserve_seconds` | The runtime cancels in-flight trial calls (their spend is still recorded) and starts no new trial step. Odin gets one briefing call in the remaining time, paid from the briefing reserve; if it has no valid output by `max_wall_clock_seconds`, the template briefing is used. | `INCOMPLETE_AGENT_FAILURE` with `stop_reason: WALL_CLOCK_LIMIT`. | Labelled `INCOMPLETE`. | `WALL_CLOCK_LIMIT` (elapsed seconds, cancelled steps) |
+
+Run 2 precedence: when any of these happens in Run 2 before every targeted query has run, the run status is `INCOMPLETE_NO_NEW_EVIDENCE` (D1, above) with the failure as `stop_reason`; after they have run, it is `INCOMPLETE_AGENT_FAILURE`. Either way the briefing is labelled `INCOMPLETE` and the case is never `COMPLETE`. A Heimdall step failure (not named in F07, covered for completeness) before `EVENT_VERIFIED` ends the case as `INCOMPLETE_AGENT_FAILURE` with a template briefing that holds only the failure; in Run 2 it is an early Run 2 stop.
+
 ### State machine invariants
 
 - Nothing dated after the as-of date reaches the index, any agent, or event verification.
@@ -1656,20 +1722,34 @@ Independently of status, the run record stores `run2_new_evidence_families: [ids
 
 ### Hard limits
 
+The runtime reads this block from `config/runtime_config.json`. It is JSON, not YAML, because the build uses the Python standard library only; the keys and values are the same as below. `odin_briefing_reserve_usd` and `htl_minimum_usd` are derived in code and must not appear in that file.
+
 ```yaml
 max_runs: 2
 max_cross_examination_rounds: 1
 max_searches_per_agent_per_run: 8
 max_total_searches_per_case: 32
-max_model_retries_per_call: 2
+max_model_retries_per_call: 2       # a schema-validation failure counts as one retry
 max_tool_retries_per_call: 2
+max_tool_calls_per_agent_step: 6     # TUNABLE, UNVERIFIED
+max_model_turns_per_agent_step: 4    # TUNABLE, UNVERIFIED
 max_wall_clock_seconds: 900
-max_claims_per_side_per_round: 6     # exactly one CELL_ESTIMATE per cell, the rest SUPPORTING
-max_output_tokens_per_call: 1500     # per-call sanity limit only, not a budget
+briefing_time_reserve_seconds: 120   # TUNABLE, UNVERIFIED; last part of the wall clock, kept for Odin's briefing
+max_supporting_claims_per_side_per_round: 6   # SUPPORTING claims only; CELL_ESTIMATE claims are outside this cap
+max_cells_per_agent_step: 4          # TUNABLE, UNVERIFIED; cells per Thor/Loki step (cell budget rule)
+event_match_min_score: 3             # TUNABLE, UNVERIFIED
+event_match_min_ratio: 2.0           # TUNABLE, UNVERIFIED
+baseline_crosscheck_tolerance_pct_points: 5   # TUNABLE, UNVERIFIED (section 21)
+token_caps_by_role:                  # TUNABLE, UNVERIFIED; per call; the guard's worst case uses these
+  heimdall:      {max_input_tokens: 12000, max_output_tokens: 2000}
+  thor:          {max_input_tokens: 12000, max_output_tokens: 2000}
+  loki:          {max_input_tokens: 12000, max_output_tokens: 2000}
+  odin_ruling:   {max_input_tokens: 24000, max_output_tokens: 6000}   # rulings + sufficiency
+  odin_briefing: {max_input_tokens: 16000, max_output_tokens: 6000}
 project_cap_usd: 4.00                # the single API key: development + runtime, persisted across cases
 final_round_reserve_usd: 2.50        # untouchable during development
 per_case_cap_usd: 0.50               # 5 final-round events x 0.50 = the reserve
-odin_briefing_reserve_usd: 0.10      # slice of per_case_cap_usd; only Odin's final ruling + briefing may spend it
+odin_briefing_reserve_usd: derived  # = worst_case(odin_ruling) + worst_case(odin_briefing); only Odin's final ruling + briefing may spend it
 models:                              # prices: unverified assumption, confirm with user
   heimdall: claude-haiku-5-5
   thor: claude-haiku-5-5
@@ -1677,15 +1757,38 @@ models:                              # prices: unverified assumption, confirm wi
   odin: claude-sonnet-5-5
 ```
 
+### Tunable starting values
+
+Every value below is a starting point, not a measured or verified figure. Each is read from configuration, so changing it needs no code edit. Retune them from mock and replay traces before the final round.
+
+| Key | Starting value | Status | Introduced |
+|---|---|---|---|
+| `max_tool_calls_per_agent_step` | 6 | TUNABLE, UNVERIFIED | Pass 8 (F07) |
+| `max_model_turns_per_agent_step` | 4 | TUNABLE, UNVERIFIED | Pass 8 (F07) |
+| `briefing_time_reserve_seconds` | 120 | TUNABLE, UNVERIFIED | Pass 8 (F07) |
+| `token_caps_by_role.heimdall` / `.thor` / `.loki` | 12,000 input / 2,000 output each | TUNABLE, UNVERIFIED | Pass 8 (F07, F31) |
+| `token_caps_by_role.odin_ruling` | 24,000 input / 6,000 output | TUNABLE, UNVERIFIED | Pass 8 (F31) |
+| `token_caps_by_role.odin_briefing` | 16,000 input / 6,000 output | TUNABLE, UNVERIFIED | Pass 8 (F31) |
+| `baseline_crosscheck_tolerance_pct_points` | 5 | TUNABLE, UNVERIFIED | Pass 8 (F11) |
+| `event_match_min_score` / `event_match_min_ratio` | 3 / 2.0 | TUNABLE, UNVERIFIED | Pass 8 (F22) |
+| `max_cells_per_agent_step` | 4 | TUNABLE, UNVERIFIED | Pass 8b (cell budget rule) |
+| Model prices (section 10) | config | UNVERIFIED | earlier pass |
+
+Derived, not set by hand: `odin_briefing_reserve_usd` and `htl_minimum_usd` (Budget stop rules below). They change whenever a token cap or a price changes.
+
 The USD ledger is the single binding limit. It covers every billable model call: all runs, all four agents, and retries. The ledger tracks the one $4.00 key for the whole project, so development spend and runtime spend come out of the same total; development may use at most $1.50, leaving the $2.50 final-round reserve intact. Retrieval and embeddings are local and never billable.
 
 The guard is an in-process counter behind a lock, backed by the JSON ledger (section 12.9). Before each billable call the runtime, never an agent:
 
 ```text
-worst_case = input_tokens x input_price(model) + max_output_tokens_per_call x output_price(model)
+worst_case(call)  = input_tokens x input_price(model) + max_output_tokens(role) x output_price(model)
+worst_case(role)  = max_input_tokens(role) x input_price(model) + max_output_tokens(role) x output_price(model)
 
-case_limit = per_case_cap_usd                              if the call is Odin's final ruling or briefing
-           = per_case_cap_usd - odin_briefing_reserve_usd  for every other call
+odin_briefing_reserve_usd = worst_case(odin_ruling) + worst_case(odin_briefing)      # derived, never set by hand
+
+case_limit = per_case_cap_usd                                                   for the briefing call
+           = per_case_cap_usd - worst_case(odin_briefing)                       for Odin's final ruling
+           = per_case_cap_usd - odin_briefing_reserve_usd                       for every other call
 
 allowed if  case_spent + worst_case             <= case_limit
        and  project_spent + worst_case          <= project_cap_usd
@@ -1694,6 +1797,45 @@ allowed if  case_spent + worst_case             <= case_limit
 ```
 
 After the call it records actual usage from the provider response into the ledger. Thor and Loki run in parallel; only the check-and-record step is serialized by the lock. When a check fails for a non-Odin call, the runtime stops new billable work for Heimdall, Thor and Loki, persists the state, sets `INCOMPLETE_BUDGET_LIMIT`, and still lets Odin issue the final ruling and briefing from the reserve. If the Odin call itself fails the check, the runtime renders the deterministic template briefing (section 10, Model plan) with no model call. The case is never claimed complete.
+
+### Budget stop rules
+
+- **Role key.** The runtime tags every call with its `role_cap_key` from the trial state (`odin_briefing` only in `BRIEFING_GENERATION`) and marks the final ruling. Agents cannot set either. The reserve is spendable only by Odin's final ruling and the briefing, each up to its own slice: the briefing call may use the whole reserve; the final ruling may use it only down to `worst_case(odin_briefing)`, so the briefing's slice is never touched. Every other call stops at `per_case_cap_usd - odin_briefing_reserve_usd`.
+- **Which ruling is final.** In Run 2 it is `ODIN_FINAL_RULING`. In Run 1, `ODIN_RULING` is paid from the general pool; if the general pool cannot cover it, it is paid from the reserve's ruling slice and becomes the final ruling (no Run 2 follows; the case is `INCOMPLETE_BUDGET_LIMIT`).
+- **Startup check (live cases).** A live case is any case that will call a billable provider, in development or final mode; cases on `DeterministicMockProvider` skip this check. Before such a case starts, the runtime computes from the configured caps and prices:
+
+  ```text
+  odin_briefing_reserve_usd = worst_case(odin_ruling) + worst_case(odin_briefing)
+  htl_minimum_usd           = (Heimdall mapping + verifying, Thor rounds 1-2, Loki rounds 1-2: 6 agent steps)
+                              x max_model_turns_per_agent_step x max(worst_case(heimdall), worst_case(thor), worst_case(loki))
+  ```
+
+  `htl_minimum_usd` is the worst-case cost of one Run 1 for Heimdall, Thor and Loki with no retries. If `odin_briefing_reserve_usd > per_case_cap_usd - htl_minimum_usd`, the case refuses to start and logs `BUDGET_CONFIG_INVALID` with both figures. At the current unverified prices (section 10) the reserve is $0.108 + $0.092 = $0.200 and `htl_minimum_usd` is 24 x $0.0022 = $0.0528, so the check passes ($0.200 <= $0.447).
+- **Case start.** A case starts billable work only if the applicable project headroom (development: `project_cap_usd - final_round_reserve_usd - project_spent - reserves of other open cases`; final round: `project_cap_usd - project_spent - reserves of other open cases`) is at least `odin_briefing_reserve_usd`. The reserve is then committed in the ledger. Otherwise the case does not start billable work, emits `BUDGET_CAP_REACHED`, and can still run on `DeterministicMockProvider`.
+- **Case cap hit.** A non-briefing call that fails the check is refused (`BUDGET_CAP_REACHED`, scope `case`). The runtime cancels pending Heimdall, Thor and Loki work, makes no further calls for them in the case, records `stop_reason: INCOMPLETE_BUDGET_LIMIT`, lets Odin's final ruling run only if it fits its limit, and then runs the briefing call from the reserve. The status follows the Run 2 precedence above; the briefing is labelled `INCOMPLETE`.
+- **Project development cap hit** (`mode: development`). Same handling, scope `project_dev`. Because the case's reserve was committed at case start, the briefing is still funded. Every later development case refuses to start billable work. The $2.50 final-round reserve is never touched.
+- **Project cap hit** (`mode: final`). Same handling, scope `project`.
+- **Briefing call refused or failed.** Template briefing with no model call (`ODIN_FAILED` path above).
+
+### Cell budget rule
+
+The same rule covers cells from a named question and cells from the default scope (section 15). No cell is dropped silently.
+
+1. **Rank.** Cells are ranked by descending count of in-scope trade rows (scope trade rows whose destination and sector match the cell). Ties are broken by the count of case-event documents, after the as-of gate, that mention both the cell's country and its sector (word-boundary match), then by question order, then alphabetically.
+2. **Batch.** Thor and Loki take cells in rank order, `max_cells_per_agent_step` cells per agent step. Each batch is one step per side per round.
+3. **Project (next batch only).** Before each batch, never for the whole run up front, the guard projects actual spend so far plus the worst case of that batch alone, and re-projects after every batch (manager decision, Stage 1):
+
+   ```text
+   batch_cost = 2 rounds x max_model_turns_per_agent_step x (worst_case(thor) + worst_case(loki))
+   affordable = case_spent + batch_cost <= per_case_cap_usd - odin_briefing_reserve_usd
+                and project_spent + batch_cost <= project limit
+   ```
+
+4. **Assign.** If the next batch is affordable, its cells are processed. Otherwise that batch and every later PENDING cell are marked `INCOMPLETE_BUDGET_LIMIT`: Thor and Loki submit no `CELL_ESTIMATE` for them and Odin gives no range. A cell marked in Run 1 is not reopened in Run 2.
+5. **Mid-run refusal.** If the guard later refuses a Thor or Loki call anyway (the projection is worst-case, so this should be rare), every cell in that batch that does not yet have a `CELL_ESTIMATE` from both sides is marked `INCOMPLETE_BUDGET_LIMIT` the same way.
+6. **Record and show.** The Case File stores `cell_status` per cell (`ASSESSED` or `INCOMPLETE_BUDGET_LIMIT`), the rank inputs and the projection, and logs `CELL_BUDGET_PROJECTED`. The exposure table shows a marked cell as "Not assessed: budget limit", never as zero, and the briefing header lists every marked cell. A case with any marked cell has `stop_reason: INCOMPLETE_BUDGET_LIMIT` and its briefing is labelled `INCOMPLETE`.
+
+At the current unverified prices, `batch_cost` is 2 x 4 x ($0.0022 + $0.0022) = $0.0352, so the $0.30 general pool covers about eight batches at worst case.
 
 Optional, not part of the 24h build: transactional reservations in database tables and reconciliation of ambiguous timeouts.
 
@@ -1760,6 +1902,8 @@ Private memory is required to demonstrate that the agents change behavior over t
 
 Memory is keyed by agent, not by case, and persists across cases and process restarts (one file per agent, e.g. `data/memory/heimdall.jsonl`). `case_id` is only an attribute recording where a lesson came from.
 
+Example (E5):
+
 ```json
 {
   "memory_id": "mem-heimdall-007",
@@ -1771,18 +1915,29 @@ Memory is keyed by agent, not by case, and persists across cases and process res
     "evidence": ["ORV-0030", "ORV-0029"]
   },
   "source_case_id": "case-001",
+  "source_doc_ids": ["ORV-0030", "ORV-0029"],
+  "max_source_pub_date": "2027-01-21",
+  "written_as_of": "2027-01-25",
   "version": 2,
   "created_from_trace_id": "trace-000031",
   "created_at": "2026-10-25T12:02:00Z"
 }
 ```
 
+Every memory record carries three as-of fields, set by the runtime, never by the agent:
+
+- `source_doc_ids`: every document ID in the record's `value`, plus the documents cited by the trace event it was created from.
+- `max_source_pub_date`: the latest manifest `PUB_DATE` among `source_doc_ids`; `null` when the list is empty.
+- `written_as_of`: the as-of date of the case that wrote the record.
+
+**As-of hide rule.** At read time the runtime hides every record whose `max_source_pub_date` is later than the current case's as-of date. The record stays stored; it is only withheld from that case. Each hidden record is logged in a `MEMORY_HIDDEN` trace event (`memory_id`, `max_source_pub_date`, case as-of). A record with `max_source_pub_date: null` is never hidden by this rule. Lessons must not contain document facts.
+
 Two kinds of records:
 
 - `lesson`: general, event-independent behaviour rules (e.g. "sector header can be wrong", "company statements are interested parties"). Loaded at the start of every case.
 - `case_note`: facts about specific documents (e.g. "ORV-0043 is an unconfirmed renewal report"). Loaded only when the same event or document IDs are in scope, so E5 facts never leak into a different final-round event.
 
-At the start of every case the runtime loads each agent's lessons into that agent's context and logs a `MEMORY_READ` trace event listing the memory IDs.
+At the start of every case the runtime applies the as-of hide rule, loads each agent's remaining lessons (and in-scope case notes) into that agent's context, and logs a `MEMORY_READ` trace event listing the memory IDs, next to the `MEMORY_HIDDEN` event.
 
 ### Memory isolation rules
 
@@ -1883,7 +2038,7 @@ Before briefing publication:
 2. Confirm the document exists in the manifest.
 3. Confirm the paragraph `P<n>` exists in that document (including `SYNTHETIC_PARAGRAPH` blocks, decision OD-1). If the paragraph has `row_refs`, confirm each named row exists in that paragraph's table.
 4. Confirm publication date is on or before the as-of date.
-5. Confirm the cited text supports the paragraph's statement.
+5. Run the deterministic number validator (section 22, Number provenance). No LLM check.
 6. Reject or mark the paragraph if any citation fails.
 
 ---
@@ -1894,13 +2049,25 @@ The system should calculate exposure from observed flows and explicit assumption
 
 ### Baseline
 
-For each origin, destination, and sector:
+For each Case File cell, the baseline is computed per route (event origin → cell country, cell sector) by one rule:
 
-```text
-baseline = comparable pre-disruption route value or volume
-```
+- **Event month** = the month of the earliest Tier 1-2 document that verified the event. **Post-event months** = the event month through the last month, on or before the as-of date, that has an eligible route trade row.
+- **Primary: same months one year earlier.** For each post-event month, the baseline month is the same calendar month one year earlier, taken from the route trade rows in the Case File. Months are paired: a post-event month with no prior-year row (or the reverse) is dropped from both sides and listed in `baseline_months_dropped`.
+- **Cross-check: pre-event index or "% of normal" statement.** If an eligible case-event document gives a pre-event index (e.g. 100 = normal) or a "% of normal" level for the route or the cell's country and sector over the post-event months, the calculator records it. Its implied gross shortfall is `100 - level`. If several qualify, it uses the lowest tier number, then the latest `pub_date`, and records the rest. A `BACKGROUND_ONLY` document is never a cross-check.
 
-For E5, July and August 2026 are strong route-level baseline candidates because the corridor was still operating before the September expiry. The calculator must record which months it used rather than silently selecting them.
+| Available | Baseline used | Result |
+|---|---|---|
+| Primary and cross-check agree (implied gross shortfalls within `baseline_crosscheck_tolerance_pct_points`, default 5) | Primary | Range from the primary; both recorded. |
+| Primary and cross-check disagree (beyond the tolerance) | Primary wins as the canonical basis | The calculator runs a second pass with the baseline scaled so the gross shortfall equals the cross-check's. Reported low = min of both passes' lows, high = max of both passes' highs. The cell is flagged `BASELINE_CONFLICT` and the briefing states both figures. |
+| Primary only | Primary | Range from the primary; `crosscheck_refs: []`. |
+| Cross-check only | `baseline = observed post-event flow / (level / 100)` | Flagged `BASELINE_PROXY`; Odin's range for the cell is an Inference, never an Established fact. |
+| Neither | None | The cell is `INSUFFICIENT_EVIDENCE` (D1, low/high null, queries attached). No baseline is invented, assumed from another destination, or taken from a reference price sheet. |
+
+The calculation record stores `baseline_basis` (`PRIMARY_YOY`, `CROSS_CHECK_ONLY` or `NONE`), the months used and dropped, `baseline_refs` (rows with citations), `crosscheck_refs` and the conflict flag. The repeated-row rule (section 21, Repeated-row sensitivity) applies to baseline rows as to any other input.
+
+**Cross-check scope (manager decision, Stage 3).** A level counts as a cross-check only if the paragraph that states it names the route (an event origin and the cell country) or the cell's country and sector. An origin-wide or port-wide index that names no route or cell is **not** a calc cross-check: it never enters the calculation record, never scales a baseline and never sets `BASELINE_CONFLICT` or `BASELINE_PROXY`. Thor or Loki may still cite it as a `SUPPORTING` claim or a round-2 challenge tagged `INFERENCE`, and Odin rules on it.
+
+Example (E5): the route trade notes carry both years, so the primary is the same months of 2025. The port loading index (ORV-0012, which says it "covers all grain loaded at the port, not only the routes") names no cell, so no E5 cell has a calc cross-check; in round 2 Thor cites it against Loki as an inference, and Loki answers with that scope paragraph.
 
 ### Gross disruption
 
@@ -1975,17 +2142,23 @@ Before calculating a final cell, Odin evaluates whether the requested country/se
 
 Each gap lists the cell, the criterion it failed, and at least two targeted queries. These criteria are computed deterministically from the ledger and the coverage data; Odin's sufficiency output must agree with them, and the trace records both.
 
-For the current E5 pack, Heimdall should explicitly test:
+**Per-cell coverage test.** After each run's research, Heimdall runs one coverage test over every cell in the Case File's `target_countries x target_sectors`. Each check uses eligible evidence only (event scope, as-of gate, not quarantined) and is computed deterministically from trade rows and paragraph matches:
 
-```text
-Tolan / Maize
-Vanir → Midgard / Maize substitution
-Destination-specific rail offsets
-```
+| Check | Passes when |
+|---|---|
+| `direct_flow` | At least one usable trade row from an event origin (section 15, manifest scope) into the cell country for the cell sector, in a case-event document. |
+| `substitute_flow` | At least one usable trade row or case-event paragraph showing flows of the cell sector into the cell country from another origin or by another mode (rail, road, alternative supplier). |
+| `contract_delay` | At least one case-event paragraph that names the cell country and cell sector (word-boundary match) together with contract, protected-volume or delayed-delivery terms. |
 
-These searches run inside the normal event scope, so `EVENT_ID: NONE` reference docs are included. For Tolan / Maize, `ATL-0010` (Tolan's main imports are rice, wheat and fuel) is relevant context for the insufficient-evidence ruling. It is `BACKGROUND_ONLY`, so it can explain the gap but cannot fill the cell (section 15).
+Cell coverage status: `COVERED` (all three pass), `PARTIAL` (`direct_flow` passes, another check fails) or `NO_DIRECT_FLOW`. The table of cells, checks, statuses and supporting doc IDs is written to the Case File and logged as `COVERAGE_TESTED`.
 
-If targeted re-search does not find eligible evidence, the system must not turn the missing value into zero exposure or assume a substitute rate from another destination. Store an explicit insufficient-evidence result:
+**Feeds Odin's send-back.** `NO_DIRECT_FLOW` is criterion (a) above. Every failed check becomes a candidate `evidence_gap` (cell, failed check, at least two targeted queries naming the cell's country and sector). When Odin sends the case back, its `evidence_gaps` must include every failed check from the coverage table or give a reason for dropping it; the trace records both. When Odin rules SUFFICIENT, failed checks are listed in the briefing's limitations.
+
+Coverage searches run inside the normal event scope, so `EVENT_ID: NONE` reference documents are included. A `BACKGROUND_ONLY` document can explain a gap but never makes a check pass (section 15).
+
+Example (E5): Tolan x Maize fails `direct_flow` (no route row into Tolan for maize); Midgard x Maize looks for Vanir→Midgard maize under `substitute_flow`; ATL-0010 can explain the Tolan gap but cannot fill it.
+
+If targeted re-search does not find eligible evidence, the system must not turn the missing value into zero exposure or assume a substitute rate from another destination. Store an explicit insufficient-evidence result. Example (E5):
 
 ```json
 {
@@ -2007,10 +2180,11 @@ This cell is a resolved finding: the briefing is `COMPLETE` with the cell flagge
 
 The UI should display this as `Insufficient evidence`, not as a misleading numeric zero. Odin may provide a clearly labeled scenario bound only when the assumptions and supporting evidence justify one.
 
-The Odin calculation record should include:
+The Odin calculation record should include the fields below. Each record has a `calc_id`; every input row in it carries its citation, so a briefing number can point at the `calc_id` (section 22, Number provenance). Example (E5):
 
 ```json
 {
+  "calc_id": "calc-run2-midgard-wheat",
   "country": "Midgard",
   "sector": "Wheat",
   "sector_basis": "content_route_text",
@@ -2021,7 +2195,9 @@ The Odin calculation record should include:
     "value_shortfall": {"low": 10000000, "high": 35000000, "currency": "USD"},
     "volume_shortfall": null
   },
+  "baseline_basis": "PRIMARY_YOY",
   "baseline_refs": ["ORV-0009"],
+  "crosscheck_refs": [],
   "substitute_refs": ["ORV-0027", "ORV-0050"],
   "contract_refs": [],
   "excluded_refs": ["ORV-0028", "ORV-0026"],
@@ -2076,8 +2252,12 @@ Odin's output should be generated from the ruling ledger, not from raw Thor or L
    - Case ID
    - Event
    - As-of date
-   - Completion status: COMPLETE, or INCOMPLETE (only when Run 2 stopped early, section 17)
+   - Completion status: COMPLETE, or INCOMPLETE (Run 2 stopped early, an agent failed, or the wall clock ran out; section 17)
    - Flagged cells: every cell resolved INSUFFICIENT_EVIDENCE after a proper targeted search
+   - Scope assumptions: every Case File `scope_assumptions` entry (section 15)
+   - Removed numbers: count of numbers removed by the number validator, if any
+   - Cells not assessed: every cell marked INCOMPLETE_BUDGET_LIMIT (section 17, Cell budget rule)
+   - Integrity warnings: every pack `doc_id` collision resolved with a different body (section 23)
    - "Run 2 found no new evidence" notice when run2_new_evidence_families is empty
 
 2. Executive judgement
@@ -2107,6 +2287,7 @@ Odin's output should be generated from the ruling ledger, not from raw Thor or L
    - Leading indicators
 
 9. Assumptions and limitations
+   - Scope assumptions (section 15), failed coverage checks, baseline flags
 
 10. Source list and trace link
 ```
@@ -2121,7 +2302,20 @@ Every paragraph must include:
 - `claim_refs`
 - `citation_refs`
 - `row_refs` (table rows named in the text: `doc_id`, `table_id`, `native_row_number`; decision OD-1)
+- `calc_refs` (the `calc_id`s whose inputs or outputs the paragraph states)
+- `number_refs` (one entry per number in `text`: the number as written, and either a `citation_ref` or a `calc_id`)
 - `confidence`
+
+### Number provenance
+
+Every number in the briefing traces to a cited span or to a `calc_id`, whose calculation record lists its inputs with citations (section 21). A deterministic validator, with no LLM call, checks each paragraph:
+
+1. Extract every number from `text`: integers, decimals, percentages, and amounts with scale words (K, M, B, bn, thousand, million, billion), normalised the same way as trade rows.
+2. Skip only the text inside citation brackets, the table IDs and row numbers named under decision OD-1, and calendar dates (checked by the as-of gate instead).
+3. A number matches when its normalised value appears in the text of a span listed in the paragraph's `citation_refs`, or equals an input or output of a `calc_id` in `calc_refs` at the displayed precision.
+4. Any unmatched number fails the paragraph.
+
+**On failure.** Odin regenerates the failing paragraphs once, with the unmatched numbers listed, as a call tagged `odin_briefing` that must pass the guard within the remaining briefing reserve (it counts as one of the briefing call's retries). If the regeneration is refused or still fails, the runtime removes each unmatched number, replacing it with "[number removed: no source]", flags the paragraph `UNSOURCED_NUMBER_REMOVED`, and logs `NUMBER_VALIDATION_FAILED` with the numbers removed. The briefing header shows the count.
 
 The UI must visibly distinguish:
 
@@ -2141,12 +2335,25 @@ POST /api/cases
 Content-Type: application/json
 ```
 
+Example (E5):
+
 ```json
 {
   "question": "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.",
-  "pack_path": "data/packs/dev_pack_E5"
+  "pack_paths": ["data/packs/dev_pack_E5"]
 }
 ```
+
+`pack_paths` is an ordered list: `[base_reference_pack, live_pack, ...]`. The first entry is the base reference pack, which carries the `EVENT_ID: NONE` reference sheets (outlet tiers, routes, country profiles), so a live pack that ships without them still has them in scope. A case on the base pack alone passes one path. All listed packs are ingested and indexed together; the event scope filter (section 15) keeps other events' documents out of the trial. The manifest `as_of` fallback (section 17) comes from the last pack in the list.
+
+**Doc ID collisions never stop a case.** A final-round pack may re-ship reference documents, so a `doc_id` that appears in more than one listed pack is resolved at ingestion with no code edit. The runtime compares the copies' `normalized_body_sha256` (section 14.5):
+
+- **Same body hash:** one document. The copy from the later pack in `pack_paths` is kept and the other is dropped as a duplicate. The runtime logs `PACK_DOC_ID_DUPLICATE` at INFO (doc ID, both pack paths, both hashes, and any manifest fields that differ).
+- **Different body hash:** the copy from the later pack (the live pack) wins and is indexed. The earlier (base) copy is quarantined: kept for audit, never indexed or shown to an agent. The runtime logs `INTEGRITY_WARNING` (doc ID, both pack paths, both `raw_file_sha256` and both `normalized_body_sha256`) and appends it to the run record's `integrity_warnings`, which the trace viewer and the briefing's limitations show.
+
+Nothing is overwritten silently, and the case always starts.
+
+Example (E5) with a live pack: `"pack_paths": ["data/packs/dev_pack_E5", "data/raw/<live_pack>"]`.
 
 ### Start a run
 
@@ -2248,7 +2455,9 @@ Each claim card shows:
 
 ### Page 4 — Exposure table
 
-Rows = every `target_countries × target_sectors` cell in the Case File (`exposure_cells`, section 3), in question order. Never hard-code rows. For E5 this yields Midgard/Wheat, Midgard/Maize, Tolan/Wheat and Tolan/Maize; another pack yields its own grid with no code change.
+Rows = every `target_countries × target_sectors` cell in the Case File (`exposure_cells`, section 3), in question order. Never hard-code rows; another pack yields its own grid with no code change. A cell marked `INCOMPLETE_BUDGET_LIMIT` (section 17, Cell budget rule) keeps its row and shows "Not assessed: budget limit".
+
+Example (E5): the rows are Midgard/Wheat, Midgard/Maize, Tolan/Wheat and Tolan/Maize.
 
 Columns:
 
@@ -2324,10 +2533,10 @@ Loki did not submit a case. Thor's position was not fully challenged.
 If Odin fails:
 
 ```text
-The trial is incomplete. No final briefing is published.
+The trial is incomplete. This briefing is a template built from the Case File without a model call.
 ```
 
-This is an Odin failure. It is different from `INCOMPLETE_BRIEFING` (section 17), which Odin does publish when Run 2 stopped early on budget or limits. Evidence that stays insufficient after a proper targeted search is not INCOMPLETE: those cells are flagged `INSUFFICIENT_EVIDENCE` in a COMPLETE briefing.
+These map to the states `THOR_FAILED`, `LOKI_FAILED`, `ODIN_FAILED` and `WALL_CLOCK_LIMIT` (section 17, Agent failure and wall-clock states), which define the run status, the briefing and the trace event for each. An Odin failure yields a template briefing, which is different from `INCOMPLETE_BRIEFING` (section 17), which Odin does publish when Run 2 stopped early on budget or limits. Evidence that stays insufficient after a proper targeted search is not INCOMPLETE: those cells are flagged `INSUFFICIENT_EVIDENCE` in a COMPLETE briefing.
 
 ### Provider failures
 

@@ -50,13 +50,16 @@ flowchart TB
     CROSS --> ODIN
     ODIN --> RULINGS
     RULINGS --> SUFF[Sufficiency check]
-    RUN -->|run count + limits| SUFF
+    RUN -->|run count, limits, wall clock| SUFF
     BUDGET -->|case cap reached| SUFF
     SUFF -->|insufficient, run 2 allowed| H
     SUFF -->|sufficient| BRIEF[Final briefing<br/>from rulings only]
     SUFF -->|gaps searched, none found: cell flagged| BRIEF
     SUFF -->|stopped early on budget or limits| INCOMPLETE[Incomplete briefing<br/>labelled INCOMPLETE]
     ODIN --> BRIEF
+    THOR -.->|failed: Loki unchallenged| ODIN
+    LOKI -.->|failed: Thor unchallenged| ODIN
+    ODIN -.->|failed: template briefing, no model call| INCOMPLETE
     ODIN --> EXP[Exposure table]
 
     H -->|write| HM[Heimdall private memory]

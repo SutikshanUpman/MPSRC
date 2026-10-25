@@ -1,4 +1,7 @@
-"""Run every ingestion test and print pass/fail counts.  Usage: python tests/run_tests.py"""
+"""Run every test (tests/test_*.py: ingestion, Heimdall, provider and budget) and print pass/fail counts.
+
+Usage: python tests/run_tests.py
+"""
 import sys
 import unittest
 from pathlib import Path

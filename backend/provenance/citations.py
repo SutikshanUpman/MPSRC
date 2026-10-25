@@ -1,7 +1,10 @@
 """Citation spans: `[DOC_ID, P#, timestamp]` is the only format (SYSTEM_ARCHITECTURE 20).
 
-Table IDs and native row numbers stay internal (open decision OD-1); a locator
-that is not `P<n>` is invalid.
+Closed decision OD-1: a table ID or row number never goes inside the bracket, so
+a locator that is not `P<n>` is invalid. A table row is cited by the paragraph
+that holds it; the sentence names the row in words (table ID and row number),
+and the row stays traceable through `row_refs` (doc_id, table_id,
+native_row_number) for the click-through.
 """
 import re
 

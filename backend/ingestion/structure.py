@@ -2,8 +2,8 @@
 
 Paragraph locators follow the citation contract `[DOC_ID, P#, timestamp]`.
 A body without any `[Pn]` label (e.g. a PS fixed-layout trade table) gets
-positional paragraphs flagged SYNTHETIC_PARAGRAPH: the interim rule of open
-decision OD-1 in SYSTEM_ARCHITECTURE section 20.
+positional paragraphs flagged SYNTHETIC_PARAGRAPH, as set by closed decision
+OD-1 in SYSTEM_ARCHITECTURE section 20.
 """
 import re
 
