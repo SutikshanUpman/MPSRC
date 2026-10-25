@@ -1,6 +1,6 @@
 # Final build report (session A)
 
-Scope: Phases 1, 2, 3, 4, 6, 7 and the final docs (session A). Phase 5 (dashboard: `server.py`, `web/`, `docs/DASHBOARD.md`) belongs to session B and is not reported here. Phase 8 is design only. **Zero live LLM or API calls were made**; `.env` was never read or created; no key is in any file. Everything below ran on the mock, replay or stubbed-transport providers.
+Scope: all phases. Phase 5 (dashboard) was originally session B's; it was not delivered, so it was built in this final pass (`server.py`, `web/`, `docs/DASHBOARD.md`). Phase 8 is design only. **Zero live LLM or API calls were made**; `.env` was never read or created; no key is in any file. Everything below ran on the mock, replay or stubbed-transport providers.
 
 Test line: see the end of this file (`python tests/run_tests.py`).
 
@@ -23,7 +23,7 @@ Test line: see the end of this file (`python tests/run_tests.py`).
 | 3.5 `.env.example`, `prices_verified: false` | DONE | `.env.example`, `config/runtime_config.json` |
 | 3.6 `live_check.py` | DONE | `scripts/live_check.py` (no call, no key read) |
 | 4.1-4.7 Fallbacks | DONE (4.5 and 4.6 see notes) | table below |
-| 5 Dashboard | OTHER SESSION | `server.py`, `web/`, `docs/DASHBOARD.md` |
+| 5 Dashboard (5.1-5.5) | DONE | `server.py` (127.0.0.1, `web/` only, traversal refused, mock/replay only), `web/`, `docs/DASHBOARD.md`, `docs/screenshots/` (Edge headless on `demo_E5`), `tests/test_server.py` |
 | 6.1 Demo data + memory demo | DONE | `--demo`; `MemoryAcrossCases` shows a verified `DECISION_CHANGED` in a second case |
 | 6.2 `export_logs.py` on the two-run case; synthetic end to end | DONE | `logs/`, `SyntheticEndToEnd` |
 | 7.1 Trap Report | DONE | `backend/briefing/trap_report.py:13`; `trap_report.json` (12 trap types, from the corpus, Case File and trace; no pack-specific code) |
@@ -42,7 +42,7 @@ Test line: see the end of this file (`python tests/run_tests.py`).
 | AC4 at least one cross-examination | DONE (mock) | `cross_exam.py`; E5: 5 challenges (1 CONCEDE, 2 QUALIFY, 2 DEFEND) |
 | AC5 Odin rules on every claim; >= 1 rejected or conceded | DONE | `rulings.json`: one ruling per claim; E5 has a CONCEDED/REJECTED ruling from a real concession (`test_ac5...`) and pre-ruling rejections are covered by `OdinPreRulingChecks` |
 | AC6 briefing: Established/Contested/Conceded, exposure, timestamped citations, outlook | DONE | `briefing.md`; `test_ac6...` |
-| AC7 dashboard | OTHER SESSION | |
+| AC7 dashboard: question box, live feed, trial view, exposure table, click-through | DONE | `docs/DASHBOARD.md`; screenshots in `docs/screenshots/`; `tests/test_server.py` |
 | AC8 Odin sends the case back once; Run 2 brings new evidence | DONE | `E5EndToEnd.test_ac8...` (run_status[1], `run2_new_evidence_families` non-empty on E5) |
 | AC9 private lasting memory + a logged action it changed | DONE | `backend/memory/store.py`; `MemoryAcrossCases` (second case, `DECISION_CHANGED`, `verified: true`) |
 | AC10 damaged document handled + hard limits | DONE | `trap_report.json` `DAMAGED_DOCUMENT`; `max_runs 2`, one cross-exam round, search/tool/turn/retry caps, wall-clock config, per-case and project caps (`config/runtime_config.json`, `budget.py`, `ledger.py`) |
@@ -82,10 +82,10 @@ Trap Report, "Why this number" (`calc_explain`), per-cell calibration, reproduci
 - Prices are unverified; `prices_verified` is `false`, so the provider refuses to start.
 - Run 2's Heimdall re-search is lexical and text-based; on a different pack it may legitimately find nothing (the record then says why).
 - 4.5 deviation and 4.6 coverage above.
-- The dashboard (Phase 5) is session B's.
+- The dashboard's live feed replays a finished case's event log; a run started from the page finishes in about a second, so there is no mid-run streaming.
 
 ## Exact test line
 
-`python tests/run_tests.py` -> `PASSED 213  FAILED 0  SKIPPED 0` (baseline before this build: `PASSED 164  FAILED 0  SKIPPED 0`).
+`python tests/run_tests.py` -> `PASSED 220  FAILED 0  SKIPPED 0` (baseline before this build: `PASSED 164  FAILED 0  SKIPPED 0`).
 
 Note: the Trap Report lists tier-4 claims only when an agent cites one; the mock agents never do, so `TIER_4_REJECTED` is 0 on E5 (the rule itself is tested in `OdinPreRulingChecks.test_tier_4_only`).

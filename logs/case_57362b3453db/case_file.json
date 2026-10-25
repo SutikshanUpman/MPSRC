@@ -1,7 +1,7 @@
 {
  "schema_version": "stage1-1",
- "case_id": "case-4acd15aabf2f",
- "created_at": "2026-10-25T22:43:05Z",
+ "case_id": "case-57362b3453db",
+ "created_at": "2026-10-25T22:50:33Z",
  "question": "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.",
  "pack_paths": [
   "<repo>/dev_pack_E5"
@@ -863,7 +863,7 @@
       "Wheat"
      ]
     ],
-    "projected_input_tokens": 8508,
+    "projected_input_tokens": 8455,
     "target_tokens": 9600
    },
    {
@@ -878,7 +878,7 @@
       "Maize"
      ]
     ],
-    "projected_input_tokens": 6268,
+    "projected_input_tokens": 6215,
     "target_tokens": 9600
    }
   ]
@@ -8949,11 +8949,11 @@
     "calc-r1-thor-04"
    ],
    "citations": [
-    "[ATL-0010, P2, 2024-01-15 11:15]",
+    "[ORV-0046, P1, 2027-01-20 10:05]",
     "[ORV-0042, P1, 2026-11-25 13:05]",
     "[ORV-0044, P1, 2027-01-22 10:50]",
-    "[ORV-0046, P1, 2027-01-20 10:05]",
-    "[ORV-0037, P1, 2026-07-22 11:20]"
+    "[ORV-0037, P1, 2026-07-22 11:20]",
+    "[ATL-0010, P1, 2024-01-15 11:15]"
    ],
    "claim_id": "claim-thor-007",
    "claim_kind": "INFERENCE",
@@ -10129,8 +10129,8 @@
    "superseded_by": "claim-thor-013",
    "supporting_refs": [
     {
-     "doc_id": "ATL-0010",
-     "span_id": "ATL-0010:P2"
+     "doc_id": "ORV-0046",
+     "span_id": "ORV-0046:P1"
     },
     {
      "doc_id": "ORV-0042",
@@ -10141,12 +10141,12 @@
      "span_id": "ORV-0044:P1"
     },
     {
-     "doc_id": "ORV-0046",
-     "span_id": "ORV-0046:P1"
-    },
-    {
      "doc_id": "ORV-0037",
      "span_id": "ORV-0037:P1"
+    },
+    {
+     "doc_id": "ATL-0010",
+     "span_id": "ATL-0010:P1"
     }
    ],
    "conflicting_refs": [],
@@ -10706,31 +10706,16 @@
       "cache_hits": 0,
       "claims": 9,
       "calcs": 4,
-      "memory_read": [
-       "mem-thor-34dc0ed0db"
-      ],
+      "memory_read": [],
       "memory_hidden": [],
       "memory_written": [
-       "mem-thor-720c4c9e95"
+       "mem-thor-34dc0ed0db"
       ],
-      "decisions_changed": [
-       {
-        "after": "Tolan Maize imports disruption",
-        "before": "Orvan Tolan Maize disruption delays shortfall",
-        "cell": [
-         "Tolan",
-         "Maize"
-        ],
-        "kind": "QUERY_REWRITTEN",
-        "memory_id": "mem-thor-34dc0ed0db",
-        "turn": 1,
-        "verified": true
-       }
-      ],
+      "decisions_changed": [],
       "model_calls": 6,
-      "input_tokens_est": 34427,
-      "output_tokens_est": 3054,
-      "shadow_cost_usd": 0.00497,
+      "input_tokens_est": 33981,
+      "output_tokens_est": 3016,
+      "shadow_cost_usd": 0.004906,
       "failure": null
      },
      "loki": {
@@ -10743,31 +10728,16 @@
       "cache_hits": 0,
       "claims": 8,
       "calcs": 4,
-      "memory_read": [
-       "mem-loki-5c32f25eb8"
-      ],
+      "memory_read": [],
       "memory_hidden": [],
       "memory_written": [
-       "mem-loki-661677b946"
+       "mem-loki-5c32f25eb8"
       ],
-      "decisions_changed": [
-       {
-        "after": "Tolan Maize suppliers contracts",
-        "before": "Tolan Maize alternative supply rail substitute",
-        "cell": [
-         "Tolan",
-         "Maize"
-        ],
-        "kind": "QUERY_REWRITTEN",
-        "memory_id": "mem-loki-5c32f25eb8",
-        "turn": 1,
-        "verified": true
-       }
-      ],
+      "decisions_changed": [],
       "model_calls": 6,
-      "input_tokens_est": 35420,
-      "output_tokens_est": 2912,
-      "shadow_cost_usd": 0.004998,
+      "input_tokens_est": 35023,
+      "output_tokens_est": 2874,
+      "shadow_cost_usd": 0.004939,
       "failure": null
      }
     },

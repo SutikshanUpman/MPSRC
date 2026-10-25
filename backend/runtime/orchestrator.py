@@ -11,6 +11,7 @@ only the budget owner, once). Every provider is wrapped by RecordingProvider so 
 """
 import hashlib
 import json
+import shutil
 import uuid
 from pathlib import Path
 
@@ -125,6 +126,11 @@ def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, 
             log.unlink()
         provider = RecordingProvider(provider, log)
     _write_json(out / "config.json", config.data)
+    before = out / "memory_before"                  # the private memory this case started from, so a replay can start there too
+    if before.exists():
+        shutil.rmtree(before)
+    if provider.name != "replay" and Path(memory_dir).exists():
+        shutil.copytree(memory_dir, before)
 
     cf, trace, guard = open_case(question, pack_paths, config, provider, case_id=case_id, created_at=created_at)
     guard.project_spent = ledger["total_spent_usd"]

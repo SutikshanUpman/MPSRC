@@ -1,6 +1,6 @@
 # Briefing: Orvan grain corridor collapse
 
-- Case: case-855c3c03af81  |  As of: 2027-01-25  |  Completion: **COMPLETE**
+- Case: case-fa15938ebeb5  |  As of: 2027-01-25  |  Completion: **COMPLETE**
 - Question: As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.
 - Rulings by: run 1: MODEL_ON_OPEN_CLAIMS; run 2: RULES_ONLY; narrative MODEL
 - Flagged cells (insufficient evidence): Tolan / Maize

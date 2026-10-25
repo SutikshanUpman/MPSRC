@@ -71,6 +71,8 @@ def run_replay(config_path, out_root, case_id):
     memory = ROOT / "data" / "memory_replay"
     if memory.exists():
         shutil.rmtree(memory)
+    if (src / "memory_before").exists():                      # start from the memory the original case started from
+        shutil.copytree(src / "memory_before", memory)
     res = run_full_case(record["question"], record["pack_paths"], config, provider, out_root, memory, case_id=record["case_id"],
                         created_at=record["created_at"], out_name=f"{case_id}__replay")
     summarise(res)

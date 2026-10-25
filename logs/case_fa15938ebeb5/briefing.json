@@ -1,7 +1,7 @@
 {
  "schema_version": "briefing-1",
  "header": {
-  "case_id": "case-855c3c03af81",
+  "case_id": "case-fa15938ebeb5",
   "event_id": "E5",
   "event": "Orvan grain corridor collapse",
   "as_of_date": "2027-01-25",
@@ -3275,8 +3275,8 @@
    "calibration": {
     "width_points": null,
     "tier_mix": {
-     "2": 4,
-     "1": 1
+     "1": 1,
+     "2": 4
     },
     "independent_families": 5,
     "sides_overlap": null,
@@ -3351,7 +3351,8 @@
    "source_type": "atlas",
    "pub_date": "2024-01-15",
    "spans": [
-    "ATL-0010:P1"
+    "ATL-0010:P1",
+    "ATL-0010:P2"
    ]
   },
   {

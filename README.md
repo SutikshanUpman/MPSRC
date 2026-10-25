@@ -49,7 +49,7 @@ The provider refuses unless `LIVE=1`, `BUDGET_OWNER` and verified prices are all
 
 ## Dashboard
 
-`python server.py` serves the dashboard on `127.0.0.1:8000` (override with `HOST`/`PORT`). It reads saved cases and runs the mock or replay provider only; it never makes a live call. See `docs/DASHBOARD.md`.
+`python scripts/run_case.py --demo` once, then `python server.py` serves the dashboard on `http://127.0.0.1:8000` (override with `HOST`/`PORT`): question box, live feed, trial view, exposure table, click-through to sources, briefing, trap report. It runs the mock or replay provider only and never makes a live call. See `docs/DASHBOARD.md`.
 
 ## Folder layout
 
