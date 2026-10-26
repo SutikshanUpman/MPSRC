@@ -722,6 +722,18 @@ class SmallModelPaperwork(unittest.TestCase):
             out = tools.execute(call)
             self.assertIn("error", out, call)
 
+    def test_calc_ids_given_as_objects_and_a_missing_cell_are_repaired_from_the_calc(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            calcs = [{"calc_id": "calc-r1-loki-01", "country": "Midgard", "sector": "Wheat", "status": "OK", "passes": {}}]
+
+            def calc_by_id(self, cid):
+                return self.calcs[0] if cid == "calc-r1-loki-01" else None
+        c = normalize_claim({"claim_type": "SUPPORTING", "claim_kind": "INFERENCE", "claim_text": "x", "calc_ids": [{"calc_id": "calc-r1-loki-01"}, 7]},
+                            "loki", 1, 1, Tools())
+        self.assertEqual((c["calc_ids"], c["country"], c["sector"]), (["calc-r1-loki-01"], "Midgard", "Wheat"))
+
     def test_a_malformed_number_reference_is_dropped_not_repaired(self):
         from backend.agents.normalize import normalize_claim
 

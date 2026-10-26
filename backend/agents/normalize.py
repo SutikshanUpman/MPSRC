@@ -85,6 +85,8 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
     for key in ("assumptions", "number_refs", "citations", "calc_ids"):
         if not isinstance(c.get(key), list):
             c[key] = []
+    c["calc_ids"] = [x["calc_id"] if isinstance(x, dict) and isinstance(x.get("calc_id"), str) else x for x in c["calc_ids"]]
+    c["calc_ids"] = [x for x in c["calc_ids"] if isinstance(x, str)]
     c["citations"] = [x for x in c["citations"] if isinstance(x, str) and CITATION.match(x)]
     c["number_refs"] = [dict(r, value=str(r["value"])) for r in c["number_refs"] if _usable_ref(r)]   # a malformed reference is dropped
     # calc ids named by the estimate's references
@@ -97,6 +99,8 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
         if own:
             c["calc_ids"].append(own[-1]["calc_id"])
     records = [rec for rec in (tools.calc_by_id(i) for i in c["calc_ids"]) if rec]
+    if records and not (isinstance(c.get("country"), str) and c["country"] and isinstance(c.get("sector"), str) and c["sector"]):
+        c["country"], c["sector"] = records[0]["country"], records[0]["sector"]       # a claim built on one calc is about that calc's cell
     if estimate and records and records[0]["status"] == "OK" and c.get("estimate_status") in (None, "ESTIMATED"):
         # The side's standing scenarios (the prompt's rule): a bound the model left out or set to null is taken from them.
         est = dict(est or {})
