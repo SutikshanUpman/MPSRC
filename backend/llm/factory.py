@@ -79,8 +79,10 @@ def build_provider(spec, config_path=None):
                                                    max_input_tokens=max(c["max_input_tokens"], 30000))
                                            for r, c in base["token_caps_by_role"].items()}
         # Claude reads results, corrects itself and rewrites: four turns leave no room for a second look at a validator message.
+        # Six turns (more would break the per-case cap's worst case for a whole trial) and five retries inside them: a
+        # cross-examination answer often needs two corrections (a fresh calc, then the wording), so retries ran out first.
         overrides["max_model_turns_per_agent_step"] = max(6, base["max_model_turns_per_agent_step"])
-        overrides["max_model_retries_per_call"] = max(3, base["max_model_retries_per_call"])
+        overrides["max_model_retries_per_call"] = max(5, base["max_model_retries_per_call"])
     config = load_config(config_path, overrides=overrides) if overrides else base
     if name == "anthropic":
         for role in ("heimdall", "thor", "loki", "odin_ruling", "odin_briefing"):

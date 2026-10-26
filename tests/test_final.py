@@ -837,7 +837,8 @@ class SmallModelPaperwork(unittest.TestCase):
         from backend.agents.claims import number_tokens
         self.assertEqual(number_tokens("Flows in 2025 and 2026 were steady."), [])
         self.assertEqual(number_tokens("Volume was 2025 tonnes."), ["2025"])
-        self.assertEqual(number_tokens("Exports reached 2025 for the month."), ["2025"])      # no date word: a quantity
+        self.assertEqual(number_tokens("The 2025 and 2026 months differ."), [])                 # bare years, no unit
+        self.assertEqual(number_tokens("Exports reached 2,025 tonnes."), ["2,025"])             # a quantity is written with a comma
         self.assertEqual(number_tokens("It fell 2026%."), ["2026"])
 
 

@@ -42,7 +42,9 @@ NUMBER_SKIP = [re.compile(p, re.I) for p in (
     r"\b[A-Z]{2,}-\d+(?:\|\d{4}-\d{2}(?:#\d+)?)?",          # document IDs and row keys
     r"\b(?:calc|claim|mem)-[\w-]+",                         # calc, claim and memory IDs
     r"\b(?:table|row)\s+[A-Z]?\d+\b",                        # OD-1 table and row names
-    r"\b(?:in|since|from|during|until|through|before|after|early|late|mid|between|of|and|to)\s+(?:19|20)\d{2}\b(?!-\d)(?!\s*(?:%|percent|tonnes?|tons?|usd|million|billion|k\b))",   # "in 2025": a year after a date word is a date
+    # A bare year: Runemark writes every quantity of 1,000 or more with commas ("263,000 tonnes"), so a bare 19xx/20xx with no
+    # unit is a year ("2025 vs 2026"), not a figure. Part of an ISO date or of a comma number it is left to the rules above/below.
+    r"(?<![\d,.\-])(?:19|20)\d{2}(?![\d,.]|-\d)(?!\s*(?:%|percent|tonnes?|tons?|usd|million|billion|k\b))",
     r"\btier\s+[1-5]\b",                                    # a reliability tier is a label from the Case File, not a figure
     r"\b\d{4}-\d{2}(?:-\d{2})?\b",                          # ISO dates and months
     r"\b\d{1,2}\s+" + _MONTH + r"(?:\s+\d{4})?\b",          # 4 June (2031)
