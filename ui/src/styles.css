@@ -6139,3 +6139,6 @@ blockquote {
 /* console: keep both rail buttons readable in the narrow rail */
 .rail-actions { flex-wrap: wrap; }
 .rail-actions .btn { flex: 1 1 auto; white-space: nowrap; }
+
+.provider-state { display: block; font-style: normal; font-size: .7rem; opacity: .75; }
+.provider-hint { color: var(--primary-text); }

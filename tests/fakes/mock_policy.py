@@ -1,4 +1,4 @@
-"""Deterministic mock policies used by DeterministicMockProvider (tests, CI, demos; never a live model).
+"""Deterministic stand-ins for the agents, used ONLY by the test suite (tests/fakes); the product never ships or offers them.
 
 - heimdall: stance classification for the verification fallback. A broader
   generic keyword policy standing in for Haiku; it proves the plumbing, not
@@ -17,12 +17,12 @@ Same messages in -> same output; no randomness, no clock.
 import json
 import re
 
-from ..ingestion.quality import MASK_PLACEHOLDER
-from ..llm.provider import canonical, estimate_tokens, skeleton
-from ..search.bm25 import mentions
-from .claims import number_tokens
-from .calc import SECONDARY_FIELDS
-from .heimdall import CONTRACT_CUES, SUBSTITUTE_CUES
+from backend.ingestion.quality import MASK_PLACEHOLDER
+from backend.llm.provider import canonical, estimate_tokens, skeleton
+from backend.search.bm25 import mentions
+from backend.agents.claims import number_tokens
+from backend.agents.calc import SECONDARY_FIELDS
+from backend.agents.heimdall import CONTRACT_CUES, SUBSTITUTE_CUES
 
 STOPPAGE = re.compile(r"\b(?:stop(?:s|ped|page)?|withdr[ae]w\w*|barr(?:ed|ing)|bans?|banned|prohibit\w*|no longer|idle|"
                       r"cease[sd]?|clos(?:ed|ure)|halt\w*|suspend\w*|blockad\w*|ended|expir\w*|cut off)\b", re.I)

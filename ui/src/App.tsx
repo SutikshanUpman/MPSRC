@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { MarketingChrome } from "./components/SiteNav";
-import { DemoPage } from "./pages/Demo";
 import { HomePage } from "./pages/Home";
 import { HowItWorksPage } from "./pages/HowItWorks";
 import { WorkspacePage } from "./pages/Workspace";
@@ -22,14 +21,6 @@ export default function App() {
           element={
             <MarketingChrome>
               <HowItWorksPage />
-            </MarketingChrome>
-          }
-        />
-        <Route
-          path="/demo"
-          element={
-            <MarketingChrome>
-              <DemoPage />
             </MarketingChrome>
           }
         />

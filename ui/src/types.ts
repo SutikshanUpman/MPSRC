@@ -266,11 +266,26 @@ export interface RunemarkFeedItem {
 
 export type ResultPayload = TrialResult;
 
+export interface ProviderInfo {
+  name: "ollama" | "openai" | "anthropic" | "replay";
+  label: string;
+  /** Can start a run from this server right now. */
+  configured: boolean;
+  /** No cost: a local model. */
+  free: boolean;
+  description: string;
+  /** What to set when it is not configured. */
+  hint: string | null;
+  models: string[];
+  needs_model: boolean;
+  default_model: string | null;
+}
+
 export interface Meta {
   version: string;
   modes: string[];
   profiles: string[];
   tools: string[];
-  providers: { name: string; configured: boolean; description: string }[];
+  providers: ProviderInfo[];
   models: { value: string; label: string; spec: string; default: boolean }[];
 }

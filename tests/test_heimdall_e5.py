@@ -12,11 +12,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tests"))
 
 from backend.agents.heimdall import open_case  # noqa: E402
 from backend.casefile import model as casefile  # noqa: E402
 from backend.ingestion.pipeline import ingest_pack  # noqa: E402
-from backend.llm.provider import DeterministicMockProvider  # noqa: E402
+from fakes import DeterministicMockProvider  # noqa: E402
 from backend.provenance.citations import parse_citations, validate_citation  # noqa: E402
 from backend.runtime.config import load_config  # noqa: E402
 
@@ -127,6 +128,8 @@ class HeimdallE5(unittest.TestCase):
     def test_runner_writes_case_file_and_trace(self):
         sys.path.insert(0, str(ROOT / "scripts"))
         import run_case
+        from fakes import cli_factory
+        run_case.PROVIDER_FACTORY = cli_factory
         out = tempfile.mkdtemp(prefix="runs_")
         self.addCleanup(shutil.rmtree, out, True)
         with contextlib.redirect_stdout(io.StringIO()):

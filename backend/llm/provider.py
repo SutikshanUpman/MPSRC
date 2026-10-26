@@ -3,14 +3,14 @@
 `complete(role, messages, schema, max_output_tokens)` returns
 `{"output": <parsed JSON>, "usage": {"input_tokens", "output_tokens"}, "model", "input_hash"}`.
 
-- DeterministicMockProvider: same input -> same output; every call is logged
-  (role, model, input hash, token estimates). Used by tests, CI and replay.
-- AnthropicProvider: live Messages API over urllib; refuses to construct unless LIVE=1,
-  BUDGET_OWNER and verified prices. RecordingProvider records every call; ReplayProvider
-  re-runs a case from the records at $0.
+Real providers, all over stdlib urllib (no SDK):
+- OllamaProvider: a local model through Ollama. Free, no key.
+- OpenAICompatProvider: any OpenAI-compatible API (OpenAI, OpenRouter, vLLM, LM Studio, ...). A loopback URL is free.
+- AnthropicProvider: Claude through the Messages API.
+Billable providers refuse to exist unless LIVE=1, BUDGET_OWNER and verified prices are set. RecordingProvider records every
+call before its output is used; ReplayProvider re-runs a case from the records at $0.
 
-Callers never call a provider directly for billable work; they go through
-`BudgetGuard.call` (backend/runtime/budget.py).
+Callers never call a provider directly for billable work; they go through `BudgetGuard.call` (backend/runtime/budget.py).
 """
 import hashlib
 import json
@@ -19,6 +19,7 @@ import re
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import urlparse
 
 TYPES = {"object": dict, "array": list, "string": str, "boolean": bool, "null": type(None)}
 
@@ -125,46 +126,9 @@ class Provider:
         raise NotImplementedError
 
 
-class DeterministicMockProvider(Provider):
-    """`responders` maps role -> fn(role, messages, schema) returning the output object.
-    Without a responder the output is the schema's skeleton. Outputs are schema-checked."""
-    name = "mock"
-
-    def __init__(self, config, responders=None, call_log_path=None):
-        super().__init__(config)
-        self.responders = dict(responders or {})
-        self.call_log_path = call_log_path
-        self.calls = []
-
-    def complete(self, role, messages, schema, max_output_tokens=None):
-        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
-        model = self.model_for(role)
-        payload = canonical({"role": role, "model": model, "messages": messages, "schema": schema, "max_output_tokens": cap})
-        input_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
-        responder = self.responders.get(role)
-        output = responder(role, messages, schema) if responder else skeleton(schema)
-        problems = validate_schema(output, schema)
-        if problems:
-            raise SchemaError("; ".join(problems))
-        out_tokens = estimate_tokens(canonical(output))
-        if out_tokens > cap:   # a live call would stop at max_tokens and return truncated JSON
-            raise SchemaError(f"output of about {out_tokens} tokens exceeds max_output_tokens {cap} (truncated)")
-        usage = {"input_tokens": message_tokens(messages), "output_tokens": out_tokens}
-        record = {"seq": len(self.calls) + 1, "provider": self.name, "role": role, "model": model,
-                  "input_hash": input_hash, "input_tokens_est": usage["input_tokens"],
-                  "output_tokens_est": usage["output_tokens"], "max_output_tokens": cap}
-        self.calls.append(record)
-        if self.call_log_path:
-            with open(self.call_log_path, "a", encoding="utf-8", newline="\n") as f:
-                f.write(canonical(record) + "\n")
-        return {"output": output, "usage": usage, "model": model, "input_hash": input_hash}
-
-
-
-
 def is_billable(provider):
-    """A provider spends money unless it says otherwise (mock and replay do not)."""
-    return getattr(provider, "billable", provider.name != "mock")
+    """A provider spends money unless it says otherwise (replay, Ollama and the test fakes do not)."""
+    return getattr(provider, "billable", True)
 
 
 def request_hash(role, model, messages, schema, max_output_tokens):
@@ -190,81 +154,210 @@ def parse_json_text(text):
         raise SchemaError(f"model output is not valid JSON after one repair attempt: {e}")
 
 
-class AnthropicProvider(Provider):
-    """Live Messages API over stdlib urllib (no new dependency). It refuses to exist unless LIVE=1, BUDGET_OWNER is
-    set and the prices in the config are marked verified. The key is read from the environment at call time and is
-    never stored, logged or written to a record. Calls go through BudgetGuard.call and are recorded by
-    RecordingProvider before their output is used. Temperature 0."""
-    name = "anthropic"
-    billable = True
-    URL = "https://api.anthropic.com/v1/messages"
-    VERSION = "2023-06-01"
-    TIMEOUT = 90
+class HTTPProvider(Provider):
+    """Shared transport for the three real providers: stdlib urllib, backoff with at most 2 retries (FINAL BUILD 4.1),
+    one JSON-repair attempt (4.2). Keys are read from the environment at call time and never stored or logged."""
+    TIMEOUT = 120
     BACKOFF = (1.0, 3.0)
+    label = "API"
 
     def __init__(self, config):
-        if not config.live_enabled() and not (os.environ.get("LIVE") == "1" and (os.environ.get("BUDGET_OWNER") or "").strip()):
-            raise LiveCallsDisabled("live calls need LIVE=1 and BUDGET_OWNER in the environment (or live.enabled and "
-                                    "live.budget_owner in the runtime config)")
-        if os.environ.get("LIVE") != "1" or not (os.environ.get("BUDGET_OWNER") or "").strip():
-            raise LiveCallsDisabled("live calls need LIVE=1 and a non-empty BUDGET_OWNER in the environment")
-        if config.get("prices_verified") is not True:
-            raise LiveCallsDisabled("config prices_verified is not true: the budget owner must verify and fill the prices first")
-        config.check_live_case()
         super().__init__(config)
         self.calls, self.fallbacks = [], []
 
-    def _split(self, messages):
-        system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
-        return system, [{"role": m["role"], "content": m["content"]} for m in messages if m["role"] != "system"]
-
-    def _post(self, body):
-        key = os.environ.get("ANTHROPIC_API_KEY")
-        if not key:
-            raise LiveCallsDisabled("ANTHROPIC_API_KEY is not set in the environment")
-        req = urllib.request.Request(self.URL, data=json.dumps(body).encode("utf-8"), method="POST",
-                                     headers={"content-type": "application/json", "x-api-key": key,
-                                              "anthropic-version": self.VERSION})
+    def _post(self, url, body, headers):
+        req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), method="POST",
+                                     headers=dict({"content-type": "application/json"}, **headers))
         last = None
-        for attempt in range(len(self.BACKOFF) + 1):        # FINAL BUILD 4.1: backoff, at most 2 retries
+        for attempt in range(len(self.BACKOFF) + 1):
             try:
                 with urllib.request.urlopen(req, timeout=self.TIMEOUT) as resp:
                     return json.loads(resp.read().decode("utf-8"))
             except urllib.error.HTTPError as e:
+                detail = ""
+                try:
+                    detail = e.read().decode("utf-8", "replace")[:300]
+                except Exception:
+                    pass
                 last = f"HTTP {e.code}"
                 if e.code not in (408, 409, 429, 500, 502, 503, 504, 529):
-                    raise ProviderUnavailable(f"Messages API refused the call: {last}")
+                    err = ProviderUnavailable(f"{self.label} refused the call: {last} {detail}".strip())
+                    err.status, err.detail = e.code, detail
+                    raise err
             except (urllib.error.URLError, TimeoutError, OSError) as e:
-                last = type(e).__name__
+                last = type(e).__name__ + (f": {e.reason}" if isinstance(e, urllib.error.URLError) else "")
             self.fallbacks.append({"type": "FALLBACK_LLM_RETRY", "attempt": attempt + 1, "error": last})
             if attempt < len(self.BACKOFF):
                 time.sleep(self.BACKOFF[attempt])
-        raise ProviderUnavailable(f"Messages API unavailable after retries: {last}")
+        raise ProviderUnavailable(f"{self.label} unavailable after retries: {last}")
 
-    def complete(self, role, messages, schema, max_output_tokens=None):
-        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
-        model = self.model_for(role)
-        system, msgs = self._split(messages)
-        system += ("\n\nReply with one JSON object only, no prose and no code fence, that satisfies this JSON schema:\n"
-                   + canonical(schema))
-        body = {"model": model, "max_tokens": cap, "temperature": 0, "system": system, "messages": msgs}
-        raw = self._post(body)
-        text = "".join(b.get("text", "") for b in raw.get("content", []) if b.get("type") == "text")
-        if raw.get("stop_reason") == "max_tokens":
-            raise SchemaError(f"output reached max_output_tokens {cap} (truncated)")
-        usage = raw.get("usage") or {}
+    def _result(self, role, messages, schema, cap, model, text, in_tokens, out_tokens):
         result = {"output": None, "raw": text, "model": model,
-                  "usage": {"input_tokens": int(usage.get("input_tokens", 0)), "output_tokens": int(usage.get("output_tokens", 0))},
+                  "usage": {"input_tokens": int(in_tokens or 0), "output_tokens": int(out_tokens or 0)},
                   "input_hash": request_hash(role, model, messages, schema, cap)}
         try:
             result["output"], repaired = parse_json_text(text)
         except SchemaError:
-            result["output"] = None
             result["parse_error"] = True
             return result
         if repaired:
             self.fallbacks.append({"type": "FALLBACK_JSON_REPAIR", "role": role})
         return result
+
+    @staticmethod
+    def _json_instruction(schema):
+        return ("\n\nReply with one JSON object only, no prose and no code fence, that satisfies this JSON schema:\n"
+                + canonical(schema))
+
+
+def _require_live_gates(config, what):
+    """A billable provider needs the budget owner's explicit switches (FINAL BUILD 3.1)."""
+    if not config.live_enabled() and not (os.environ.get("LIVE") == "1" and (os.environ.get("BUDGET_OWNER") or "").strip()):
+        raise LiveCallsDisabled(f"{what} spends money: it needs LIVE=1 and BUDGET_OWNER in the server's environment "
+                                "(or live.enabled and live.budget_owner in the runtime config)")
+    if os.environ.get("LIVE") != "1" or not (os.environ.get("BUDGET_OWNER") or "").strip():
+        raise LiveCallsDisabled(f"{what} spends money: it needs LIVE=1 and a non-empty BUDGET_OWNER in the environment")
+    if config.get("prices_verified") is not True:
+        raise LiveCallsDisabled("config prices_verified is not true: the budget owner must verify and fill the prices first")
+    config.check_live_case()
+
+
+class AnthropicProvider(HTTPProvider):
+    """Claude via the Messages API. Temperature 0. Billable: refuses to exist unless LIVE=1, BUDGET_OWNER and verified prices."""
+    name = "anthropic"
+    billable = True
+    label = "Messages API"
+    URL = "https://api.anthropic.com/v1/messages"
+    VERSION = "2023-06-01"
+    TIMEOUT = 90
+
+    def __init__(self, config):
+        _require_live_gates(config, "the Anthropic API")
+        super().__init__(config)
+
+    def _split(self, messages):
+        system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
+        return system, [{"role": m["role"], "content": m["content"]} for m in messages if m["role"] != "system"]
+
+    def complete(self, role, messages, schema, max_output_tokens=None):
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise LiveCallsDisabled("ANTHROPIC_API_KEY is not set in the environment")
+        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
+        model = self.model_for(role)
+        system, msgs = self._split(messages)
+        body = {"model": model, "max_tokens": cap, "temperature": 0, "system": system + self._json_instruction(schema), "messages": msgs}
+        raw = self._post(self.URL, body, {"x-api-key": key, "anthropic-version": self.VERSION})
+        text = "".join(b.get("text", "") for b in raw.get("content", []) if b.get("type") == "text")
+        if raw.get("stop_reason") == "max_tokens":
+            raise SchemaError(f"output reached max_output_tokens {cap} (truncated)")
+        u = raw.get("usage") or {}
+        return self._result(role, messages, schema, cap, model, text, u.get("input_tokens"), u.get("output_tokens"))
+
+
+def is_loopback(url):
+    host = (urlparse(url).hostname or "").lower()
+    return host in ("127.0.0.1", "localhost", "::1")
+
+
+class OpenAICompatProvider(HTTPProvider):
+    """Any OpenAI-compatible chat-completions API: OpenAI, OpenRouter, vLLM, LM Studio, llama.cpp server, Ollama's /v1.
+    A loopback base URL is a local server: free, no gates. A remote one is billable and needs the same switches as
+    Anthropic. The key is OPENAI_API_KEY (or `key_env`), sent only to the base URL the server's own environment names."""
+    name = "openai"
+    label = "Chat Completions API"
+    TIMEOUT = 300
+
+    def __init__(self, config, base_url=None, key_env="OPENAI_API_KEY"):
+        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+        self.key_env = key_env
+        self.billable = not is_loopback(self.base_url)
+        if self.billable:
+            _require_live_gates(config, "this OpenAI-compatible API")
+        super().__init__(config)
+
+    def complete(self, role, messages, schema, max_output_tokens=None):
+        key = os.environ.get(self.key_env)
+        if self.billable and not key:
+            raise LiveCallsDisabled(f"{self.key_env} is not set in the environment")
+        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
+        model = self.model_for(role)
+        msgs = [dict(m) for m in messages]
+        first = next((m for m in msgs if m["role"] == "system"), None)
+        if first:
+            first["content"] += self._json_instruction(schema)
+        else:
+            msgs.insert(0, {"role": "system", "content": self._json_instruction(schema).strip()})
+        body = {"model": model, "messages": msgs, "temperature": 0, "response_format": {"type": "json_object"},
+                ("max_completion_tokens" if "api.openai.com" in self.base_url else "max_tokens"): cap}
+        headers = {"authorization": f"Bearer {key}"} if key else {}
+        try:
+            raw = self._post(f"{self.base_url}/chat/completions", body, headers)
+        except ProviderUnavailable as e:
+            if getattr(e, "status", None) == 400 and "response_format" in (getattr(e, "detail", "") or ""):
+                body.pop("response_format")                  # a server without JSON mode: the prompt still asks for JSON
+                raw = self._post(f"{self.base_url}/chat/completions", body, headers)
+            else:
+                raise
+        choice = (raw.get("choices") or [{}])[0]
+        if choice.get("finish_reason") == "length":
+            raise SchemaError(f"output reached max_output_tokens {cap} (truncated)")
+        u = raw.get("usage") or {}
+        return self._result(role, messages, schema, cap, model, (choice.get("message") or {}).get("content") or "",
+                            u.get("prompt_tokens"), u.get("completion_tokens"))
+
+
+def ollama_url(base_url=None):
+    url = base_url or os.environ.get("OLLAMA_HOST") or "http://127.0.0.1:11434"
+    if "://" not in url:
+        url = "http://" + url
+    return url.rstrip("/")
+
+
+def ollama_models(base_url=None, timeout=1.5):
+    """Installed Ollama models, or None when no Ollama answers at the address."""
+    try:
+        with urllib.request.urlopen(ollama_url(base_url) + "/api/tags", timeout=timeout) as resp:
+            return sorted(m["name"] for m in json.loads(resp.read().decode("utf-8")).get("models", []))
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError, KeyError):
+        return None
+
+
+class OllamaProvider(HTTPProvider):
+    """A model served by Ollama (https://ollama.com) on this machine. Free, no key, no gates. Uses the native /api/chat
+    with the JSON schema as `format` (structured output), temperature 0 and a context window of `ollama_num_ctx`
+    tokens (Ollama's default of 2048 would silently cut the prompts). Falls back to plain JSON mode if the server
+    rejects the schema."""
+    name = "ollama"
+    billable = False
+    label = "Ollama"
+    TIMEOUT = 900
+
+    def __init__(self, config, base_url=None):
+        super().__init__(config)
+        self.base_url = ollama_url(base_url)
+
+    def complete(self, role, messages, schema, max_output_tokens=None):
+        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
+        model = self.model_for(role)
+        body = {"model": model, "messages": messages, "stream": False, "format": schema,
+                "options": {"temperature": 0, "num_predict": cap, "num_ctx": int(self.config.get("ollama_num_ctx", 16384))}}
+        try:
+            raw = self._post(f"{self.base_url}/api/chat", body, {})
+        except ProviderUnavailable as e:
+            status = getattr(e, "status", None)
+            if status == 404:
+                raise ProviderUnavailable(f"Ollama has no model {model!r}: run `ollama pull {model}`") from e
+            if status == 400:
+                body["format"] = "json"                      # an older server, or a schema its grammar cannot express
+                raw = self._post(f"{self.base_url}/api/chat", body, {})
+                self.fallbacks.append({"type": "FALLBACK_JSON_REPAIR", "role": role})
+            else:
+                raise
+        if raw.get("done_reason") == "length":
+            raise SchemaError(f"output reached max_output_tokens {cap} (truncated)")
+        return self._result(role, messages, schema, cap, model, (raw.get("message") or {}).get("content") or "",
+                            raw.get("prompt_eval_count"), raw.get("eval_count"))
 
 
 class RecordingProvider(Provider):
@@ -345,16 +438,3 @@ class ReplayProvider(Provider):
         self.used[h] = i + 1
         self.calls.append({"seq": len(self.calls) + 1, "provider": "replay", "role": role, "model": model, "input_hash": h})
         return {"output": rec["output"], "usage": rec["usage"], "model": rec["model"], "input_hash": h}
-
-
-def make_provider(name, config, **kw):
-    if name == "mock":
-        if "responders" not in kw:
-            from ..agents.mock_policy import default_responders   # rule-based stand-ins for Heimdall, Thor, Loki, Odin
-            kw["responders"] = default_responders()
-        return DeterministicMockProvider(config, **kw)
-    if name == "anthropic":
-        return AnthropicProvider(config)
-    if name == "replay":
-        return ReplayProvider(config, kw["path"])
-    raise ValueError(f"unknown provider {name!r}")

@@ -17,8 +17,11 @@ async function json<T>(res: Response): Promise<T> {
 export interface RunInput {
   question?: string;
   mode?: string;
-  /** "mock" runs the rule-based agents; "replay" re-runs a saved trial (needs `from`). Never a live model. */
-  profile: "mock" | "replay";
+  /** Who runs the agents. "replay" re-runs a saved trial from its recorded calls (needs `from`). */
+  provider: "ollama" | "openai" | "anthropic" | "replay";
+  model?: string;
+  odin_model?: string;
+  base_url?: string;
   from?: string;
   as_of_date?: string;
   runemark_path?: string;

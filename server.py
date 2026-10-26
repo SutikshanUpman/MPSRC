@@ -6,14 +6,17 @@ Serves the console (web/, built from ui/) and the API it was designed around, on
 
     GET  /api/health  /api/meta
     GET  /api/runs                       saved and running trials, newest first
-    POST /api/runs                       {question, as_of_date?, runemark_path?, profile: "mock" | "replay", from?}   never live
+    POST /api/runs                       {question, as_of_date?, runemark_path?, provider: "ollama" | "openai" | "anthropic",
+                                          model?, odin_model?, base_url?}   or   {provider: "replay", from}
     GET  /api/runs/<id>                  summary + the trial record (null while it runs)
     GET  /api/runs/<id>/events?after=N   the event log, as it is written
     GET  /api/runs/<id>/feed             the sealed archive as of the case's date
     GET  /api/runs/<id>/sources/<sid>    a document, one paragraph (DOC:P#) or a trade row (DOC|YYYY-MM)
 
-Binds 127.0.0.1 by default. A live model call cannot be started from here: only the mock and replay providers exist
-in this process; the budget owner runs the live case from the command line.
+Binds 127.0.0.1 by default. The console runs the trial on a model you choose: a local one through Ollama (free), an
+OpenAI-compatible API, or Claude. Keys come from the server's environment only, never from a page. A metered provider
+(OpenAI-compatible remote, Anthropic) also needs LIVE=1, BUDGET_OWNER and verified prices in the server's environment;
+the per-case cap, the Odin reserve and the project ledger apply to it as on the command line.
 """
 import argparse
 import json
@@ -33,9 +36,10 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from backend.ingestion.pipeline import ingest_pack  # noqa: E402
-from backend.llm.provider import make_provider  # noqa: E402
+from backend.llm.factory import SpecError, build_provider, provider_status  # noqa: E402
+from backend.llm.provider import ProviderError, ReplayProvider, ollama_models  # noqa: E402
 from backend.runtime import trial_view  # noqa: E402
-from backend.runtime.config import load_config  # noqa: E402
+from backend.runtime.config import ConfigError, load_config  # noqa: E402
 from backend.runtime.orchestrator import run_full_case  # noqa: E402
 
 WEB = ROOT / "web"
@@ -131,27 +135,24 @@ def _push(job, e):
                               "agent": e["actor"], "data": e["payload"], "level": e["level"]})
 
 
-def _run_job(run_id, question, pack, provider_name, src, as_of):
+def _run_job(run_id, question, pack, provider, config, src, as_of):
     job = JOBS[run_id]
     try:
-        config = load_config()
-        if provider_name == "replay":
+        if job["provider"] == "replay":
             rec = trial_view._read(src / "run_record.json")
-            cfg = load_config(src / "config.json") if (src / "config.json").exists() else config
-            provider = make_provider("replay", cfg, path=src / "llm_calls.jsonl")
             with RUN_LOCK, tempfile.TemporaryDirectory(prefix="replay_mem_") as tmp:
                 mem = Path(tmp) / "memory"
                 if (src / "memory_before").exists():
                     shutil.copytree(src / "memory_before", mem)
                 job["status"] = "running"
-                run_full_case(rec["question"], rec["pack_paths"], cfg, provider, RUNS, mem, case_id=rec["case_id"],
+                run_full_case(rec["question"], rec["pack_paths"], config, provider, RUNS, mem, case_id=rec["case_id"],
                               created_at=rec["created_at"], out_name=run_id, on_event=lambda e: _push(job, e))
         else:
             if as_of and as_of not in question:
                 question = f"As of {as_of}: {question}"
             with RUN_LOCK:
                 job["status"] = "running"
-                run_full_case(question, [pack], config, make_provider("mock", config), RUNS, ROOT / "data" / "memory",
+                run_full_case(question, [pack], config, provider, RUNS, ROOT / "data" / "memory",
                               out_name=run_id, on_event=lambda e: _push(job, e))
         job["status"] = "done"
     except Exception as e:                       # a failed run must not take the server down
@@ -162,37 +163,47 @@ def _run_job(run_id, question, pack, provider_name, src, as_of):
 
 
 def start_run(body):
-    profile = body.get("profile") or "mock"
-    if profile not in ("mock", "replay"):
-        return 400, {"detail": "the console runs the mock or replay provider only; a live run is started by the budget owner from the command line"}
+    name = (body.get("provider") or body.get("profile") or "").lower()
     run_id = f"run-{uuid.uuid4().hex[:10]}"
-    if profile == "replay":
-        src = safe_run_dir(body.get("from"))
-        if src is None or not (src / "llm_calls.jsonl").exists():
-            return 400, {"detail": "replay needs `from`: a saved run with its recorded model calls"}
-        rec = trial_view._read(src / "run_record.json")
-        question, pack = rec["question"], pack_of(src.name)
-    else:
-        question = (body.get("question") or "").strip()
-        if not question or len(question) > 4000:
-            return 400, {"detail": "a question of 1 to 4,000 characters is required"}
-        raw = body.get("runemark_path")
-        pack = DEFAULT_PACK if not raw else (ROOT / raw).resolve()
-        inside = pack == DEFAULT_PACK.resolve() or ROOT.resolve() in pack.parents
-        if not inside or not (pack / "manifest.json").exists():
-            return 400, {"detail": "the evidence folder must be a Runemark pack inside the repository (it holds manifest.json)"}
-        src = None
+    try:
+        if name == "replay":
+            src = safe_run_dir(body.get("from"))
+            if src is None or not (src / "llm_calls.jsonl").exists():
+                return 400, {"detail": "replay needs `from`: a saved run with its recorded model calls"}
+            rec = trial_view._read(src / "run_record.json")
+            config = load_config(src / "config.json") if (src / "config.json").exists() else load_config()
+            provider = ReplayProvider(config, src / "llm_calls.jsonl")
+            question, pack = rec["question"], pack_of(src.name)
+        else:
+            question = (body.get("question") or "").strip()
+            if not question or len(question) > 4000:
+                return 400, {"detail": "a question of 1 to 4,000 characters is required"}
+            raw = body.get("runemark_path")
+            pack = DEFAULT_PACK if not raw else (ROOT / raw).resolve()
+            inside = pack == DEFAULT_PACK.resolve() or ROOT.resolve() in pack.parents
+            if not inside or not (pack / "manifest.json").exists():
+                return 400, {"detail": "the evidence folder must be a Runemark pack inside the repository (it holds manifest.json)"}
+            src = None
+            provider, config = PROVIDER_FACTORY({k: body.get(k) for k in ("provider", "model", "odin_model", "base_url")})
+    except (SpecError, ProviderError, ConfigError) as e:
+        return 400, {"detail": str(e)}
     JOBS[run_id] = {"status": "queued", "events": [], "question": question, "created_at": now(), "error": None,
-                    "provider": profile, "pack": str(pack)}
-    threading.Thread(target=_run_job, args=(run_id, question, pack, profile, src, body.get("as_of_date")), daemon=True).start()
+                    "provider": name, "pack": str(pack)}
+    threading.Thread(target=_run_job, args=(run_id, question, pack, provider, config, src, body.get("as_of_date")), daemon=True).start()
     return 202, summary(run_id)
 
 
-META = {"version": VERSION, "modes": ["trial"], "profiles": ["mock", "replay"], "tools": [],
-        "providers": [{"name": "mock", "configured": True, "description": "Rule-based stand-ins for every agent. Deterministic, $0."},
-                      {"name": "replay", "configured": True, "description": "Re-runs a saved trial from its recorded model calls. $0, byte-identical."},
-                      {"name": "live", "configured": False, "description": "Claude models. Started only by the budget owner, from the command line."}],
-        "models": [{"value": "mock", "label": "Deterministic mock · $0", "spec": "mock", "default": True}]}
+PROVIDER_FACTORY = build_provider      # tests swap this for an offline stand-in
+
+
+def meta():
+    providers = provider_status()
+    return {"version": VERSION, "modes": ["trial"], "profiles": [p["name"] for p in providers], "tools": [],
+            "providers": providers + [{"name": "replay", "label": "Replay", "configured": True, "free": True,
+                                       "description": "Re-runs a saved trial from its recorded model calls. $0, byte-identical.",
+                                       "hint": None, "models": [], "needs_model": False, "default_model": None}],
+            "models": [{"value": m, "label": f"{p['label']} · {m}", "spec": f"{p['name']}:{m}", "default": False}
+                       for p in providers for m in p["models"]]}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -218,9 +229,9 @@ class Handler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         path, q = unquote(url.path), parse_qs(url.query)
         if path == "/api/health":
-            return self._send(200, {"status": "ok", "version": VERSION, "runs": len(list_runs()), "providers": ["mock", "replay"]})
+            return self._send(200, {"status": "ok", "version": VERSION, "runs": len(list_runs()), "ollama": ollama_models() is not None})
         if path == "/api/meta":
-            return self._send(200, META)
+            return self._send(200, meta())
         if path == "/api/runs":
             return self._send(200, list_runs())
         if path.startswith("/api/runs/"):
@@ -296,7 +307,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def run_server(host, port):
     server = ThreadingHTTPServer((host, port), Handler)
-    print(f"Trial of the Nine Realms on http://{host}:{port}  (runs in {RUNS}; mock and replay only)", flush=True)
+    print(f"Trial of the Nine Realms on http://{host}:{port}  (runs in {RUNS})", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

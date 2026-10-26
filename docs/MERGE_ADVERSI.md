@@ -7,7 +7,7 @@
 | Part | From | Notes |
 |---|---|---|
 | Visual design: typography, Norse palette, light and dark theme, ornaments, agent portraits, Runemark map plate, range plot, ruling ledger, source drawer | AdverSI (`ui/`) | Kept as designed |
-| Screens: welcome, "how it works", demo, case console (Briefing, Case File, Runemark map, Document feed, Trial, Exposure, Audit), live feed, source drawer | AdverSI | Re-wired to the engine's data |
+| Screens: welcome, "how it works", case console (Briefing, Case File, Runemark map, Document feed, Trial, Exposure, Audit), live feed, source drawer | AdverSI | Re-wired to the engine's data |
 | Trial engine: Heimdall, Thor, Loki, Odin, cross-examination, Run 2, calc tool, guardrails, memory, budget, record/replay | This repository (`backend/`) | Unchanged by the merge |
 | The API contract the console reads: `/api/meta`, `/api/runs`, `/api/runs/<id>`, `/events`, `/feed`, `/sources/<id>` | AdverSI's contract, implemented in `server.py` (stdlib) + `backend/runtime/trial_view.py` | The FastAPI server is not used |
 | Trial record (`trial-2`): Case File, one entry per run, briefing, exposure rows, memory audit | AdverSI's shape, extended | `trial_view.trial_result` maps the engine's files onto it |
@@ -21,12 +21,13 @@
 - **Run II** shows the new evidence families Heimdall found, or the reason it found none.
 - **Audit** shows the acceptance evidence of the run (send-back, new evidence, concessions, memory decisions, briefing hash), the trap report, the private-memory audit, and a **Replay at $0** button.
 - **The live feed** reads this engine's own event names (`ODIN_SENT_BACK`, `RUN_2_NEW_EVIDENCE`, `DECISION_CHANGED`, `FALLBACK_*`, ...).
-- **The console can never start a live model.** `POST /api/runs` accepts the mock and replay providers only.
+- **A run starts from the console on a model you choose** (Ollama, an OpenAI-compatible API, Claude), as in AdverSI's provider and model picker. Keys stay in the server's environment; metered providers keep the budget owner's switches, per-case cap and ledger.
 
 ## What was changed in this repository for the merge
 
 - `server.py` now serves the AdverSI API contract (stdlib only) and the built console from `web/`. A run started from the console runs in a thread and its events appear in the live feed as the engine writes them (`TraceLog.on_emit`).
 - `backend/runtime/trial_view.py` (new): the case's files -> the console's record; the as-of document feed; click-through to a document, a paragraph (`DOC:P#`) or a trade row (`DOC|YYYY-MM`).
+- `backend/llm/` gained the OpenAI-compatible and Ollama providers and `factory.py` (provider + model -> configured run); the rule-based stand-ins used by the test suite moved to `tests/fakes/` and the product no longer offers them.
 - `ui/` (new): the console's source. `web/` is its production build, committed, so running the project needs no node.
 - `orchestrator.run_full_case(on_event=...)`, `TraceLog.on_emit`: live events. `memory_before/` in each case: a replay starts from the same private memory.
 

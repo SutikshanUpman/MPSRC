@@ -21,7 +21,9 @@ from backend.agents.heimdall import open_case  # noqa: E402
 from backend.casefile.schema import CASE_FILE_SCHEMA  # noqa: E402
 from backend.ingestion.packs import load_packs  # noqa: E402
 from backend.ingestion.pipeline import ingest_pack  # noqa: E402
-from backend.llm.provider import DeterministicMockProvider, validate_schema  # noqa: E402
+from backend.llm.provider import validate_schema  # noqa: E402
+from fakes import DeterministicMockProvider  # noqa: E402
+from fakes import cli_factory as fakes_cli_factory  # noqa: E402
 from backend.provenance.citations import parse_citations, validate_citation  # noqa: E402
 from backend.runtime.budget import BudgetGuard  # noqa: E402
 from backend.runtime.config import load_config  # noqa: E402
@@ -61,6 +63,7 @@ class ContractsOnMockE5Run(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.out = tempfile.mkdtemp(prefix="contracts_")
+        run_case.PROVIDER_FACTORY = fakes_cli_factory
         with contextlib.redirect_stdout(io.StringIO()):
             run_case.main(["--pack", str(PACK), "--question", QUESTION, "--out", cls.out,
                           "--memory-dir", str(Path(cls.out) / "_memory")])
@@ -143,7 +146,7 @@ class OD1RowChain(unittest.TestCase):
     def test_chain_through_a_revised_claim(self):
         from backend.agents.counsel import run_round1
         from backend.agents.cross_exam import run_round2
-        from backend.llm.provider import make_provider
+        from fakes import make_provider
         config = load_config()
         provider = make_provider("mock", config)
         tmp = tempfile.mkdtemp(prefix="rowchain_")

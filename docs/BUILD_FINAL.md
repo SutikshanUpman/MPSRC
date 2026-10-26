@@ -1,6 +1,6 @@
 # Final build report (session A)
 
-Scope: all phases. Phase 5 (dashboard) was originally session B's; it was not delivered, so it was built in this final pass (`server.py`, `web/`, `docs/DASHBOARD.md`). Phase 8 is design only. **Zero live LLM or API calls were made**; `.env` was never read or created; no key is in any file. Everything below ran on the mock, replay or stubbed-transport providers.
+Scope: all phases. Phase 5 (dashboard) was originally session B's; it was not delivered, so it was built in this final pass (`server.py`, `web/`, `docs/DASHBOARD.md`). Phase 8 is design only. **No model call has been made by the build itself**; `.env` was never read or created; no key is in any file. Everything below ran on the mock, replay or stubbed-transport providers.
 
 Test line: see the end of this file (`python tests/run_tests.py`).
 
@@ -89,3 +89,10 @@ Trap Report, "Why this number" (`calc_explain`), per-cell calibration, reproduci
 `python tests/run_tests.py` -> `PASSED 224  FAILED 0  SKIPPED 0` (baseline before this build: `PASSED 164  FAILED 0  SKIPPED 0`).
 
 Note: the Trap Report lists tier-4 claims only when an agent cites one; the mock agents never do, so `TIER_4_REJECTED` is 0 on E5 (the rule itself is tested in `OdinPreRulingChecks.test_tier_4_only`).
+
+## Update: real providers, mock removed from the product
+
+- The rule-based stand-ins for the agents (and the deterministic provider) moved from `backend/` to `tests/fakes/`; the CLI, the console and the README no longer offer a mock. The test suite still uses them, because it must run without a model.
+- New providers (stdlib `urllib`): `OllamaProvider` (native `/api/chat`, JSON schema as `format`, `num_ctx`, free), `OpenAICompatProvider` (any chat-completions API; a localhost URL is free, a remote one is metered and gated), `AnthropicProvider` (as before). `backend/llm/factory.py` turns `{provider, model, odin_model, base_url}` into a configured run; `tests/test_providers_real.py` exercises all three against a local stub HTTP server.
+- The console and `scripts/run_case.py --provider ollama|openai|anthropic|replay --model ...` start runs on the chosen model. The committed example logs, the `/demo` page and the example screenshots were produced by the fake and were removed: replace them with a real run (`scripts/export_logs.py`).
+- **Not yet exercised against a real model.** The three providers and the agents' prompts have only met a stub server. A small local model may fail the output guards; the agent is then marked failed (F07) and the briefing is INCOMPLETE rather than wrong.

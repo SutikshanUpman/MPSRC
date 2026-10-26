@@ -19,7 +19,8 @@ from backend.agents.claims import masked_raw_lines  # noqa: E402
 from backend.briefing import briefing_hash  # noqa: E402,F401
 from backend.ingestion.packs import load_packs  # noqa: E402
 from backend.llm.provider import (AnthropicProvider, LiveCallsDisabled, ProviderError, ReplayDiverged,  # noqa: E402
-                                  ReplayProvider, SchemaError, make_provider, parse_json_text, validate_schema)
+                                  ReplayProvider, SchemaError, parse_json_text, validate_schema)
+from fakes import make_provider  # noqa: E402
 from backend.runtime import ledger  # noqa: E402
 from backend.runtime.budget import BudgetExceeded  # noqa: E402
 from backend.runtime.config import load_config  # noqa: E402
@@ -327,7 +328,7 @@ class GuardsRejectBadOutput(unittest.TestCase):
 
 class OdinModelAndFallbacks(unittest.TestCase):
     def run_with(self, responders_patch):
-        from backend.agents.mock_policy import default_responders
+        from fakes.mock_policy import default_responders
         tmp = tempfile.mkdtemp(prefix="final_fb_")
         self.addCleanup(shutil.rmtree, tmp, True)
         responders = dict(default_responders(), **responders_patch)
@@ -565,7 +566,7 @@ class LiveTransportFallbacks(unittest.TestCase):
 
     def test_an_unavailable_api_fails_the_agent_not_the_case(self):
         from backend.llm.provider import ProviderUnavailable
-        from backend.agents.mock_policy import default_responders
+        from fakes.mock_policy import default_responders
 
         def down(role, messages, schema):
             raise ProviderUnavailable("api down")

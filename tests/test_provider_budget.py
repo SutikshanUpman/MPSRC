@@ -7,9 +7,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tests"))
 
-from backend.llm.provider import (AnthropicProvider, DeterministicMockProvider, LiveCallsDisabled,  # noqa: E402
-                                  SchemaError, make_provider)
+from backend.llm.factory import build_provider  # noqa: E402
+from backend.llm.provider import AnthropicProvider, LiveCallsDisabled, SchemaError  # noqa: E402
+from fakes import DeterministicMockProvider, make_provider  # noqa: E402
 from backend.runtime import cells  # noqa: E402
 from backend.runtime.budget import BudgetExceeded, BudgetGuard  # noqa: E402
 from backend.runtime.config import ConfigError, DEFAULT_PATH, load_config  # noqa: E402
@@ -77,7 +79,7 @@ class Providers(unittest.TestCase):
         with self.assertRaises(LiveCallsDisabled):
             AnthropicProvider(self.config)
         with self.assertRaises(LiveCallsDisabled):
-            make_provider("anthropic", self.config)
+            build_provider({"provider": "anthropic"})
         no_owner = load_config(overrides={"live": {"enabled": True, "budget_owner": ""}})
         with self.assertRaises(LiveCallsDisabled):
             AnthropicProvider(no_owner)

@@ -1,4 +1,6 @@
-"""Dry run for the budget owner, BEFORE the live case. It makes NO call and reads no key: it prints what a live run would do.
+"""Dry run for the budget owner, BEFORE a metered case (Anthropic, or a remote OpenAI-compatible API). It makes NO model call
+and reads no key: it prints what such a run would do, and which providers this machine can use. (Ollama and a localhost
+OpenAI-compatible server are free and need no check.)
 
     python scripts/live_check.py [--final-round] [--config config/runtime_config.json]
 
@@ -12,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from backend.llm.factory import provider_status  # noqa: E402
 from backend.runtime import ledger  # noqa: E402
 from backend.runtime.config import ConfigError, load_config  # noqa: E402
 from backend.runtime.orchestrator import input_hashes  # noqa: E402
@@ -74,6 +77,12 @@ def main(argv=None):
             blockers.append(f"missing: {name}")
     print("    (prices in config/runtime_config.json are UNVERIFIED until the budget owner checks them against the provider's price page,\n"
           "     fills them in and sets prices_verified to true)")
+
+    print("\n== providers this server can use now ==")
+    for p in provider_status():
+        state = "ready" if p["configured"] else "not set up"
+        print(f"[{'x' if p['configured'] else ' '}] {p['label']:<26} {state:<11} {'free' if p['free'] else 'metered'}"
+              + (f"  models: {', '.join(p['models'][:6])}" if p["models"] else "") + (f"  ({p['hint']})" if p["hint"] else ""))
 
     print("\n== inputs a replay must find unchanged ==")
     hashes = input_hashes([ROOT / "dev_pack_E5"], config)

@@ -102,7 +102,7 @@ export function WorkspacePage() {
     if (!activeId) return;
     setError(null);
     try {
-      const run = await api.create({ profile: "replay", from: activeId.replace(/__replay$/, "") });
+      const run = await api.create({ provider: "replay", from: activeId.replace(/__replay$/, "") });
       await refreshRuns();
       open(run.run_id);
     } catch (e) {
@@ -176,7 +176,7 @@ export function WorkspacePage() {
             <section className="rail-section">
               <h2 className="rail-title">Cases</h2>
               {runs.length === 0 ? (
-                <p className="rail-empty">No case on this server yet. Open one, or run python scripts/run_case.py --demo.</p>
+                <p className="rail-empty">No case on this server yet. Open one: choose a model and start the trial.</p>
               ) : (
                 <ul className="ledger">
                   {runs.map((run) => (
@@ -201,8 +201,8 @@ export function WorkspacePage() {
                 <ul className="instruments">
                   {meta.providers.map((provider) => (
                     <li key={provider.name}>
-                      <span>{provider.name.replace(/_/g, " ")}</span>
-                      <span className="mono instrument-state" title={provider.description}>{provider.configured ? "ready" : "CLI only"}</span>
+                      <span>{provider.label}</span>
+                      <span className="mono instrument-state" title={provider.hint ?? provider.description}>{provider.configured ? "ready" : "not set up"}</span>
                     </li>
                   ))}
                 </ul>
@@ -258,7 +258,7 @@ export function WorkspacePage() {
             </div>
             <footer className="colophon">
               <span className="mono">Trial of the Nine Realms {meta?.version ?? "1.0"}</span>
-              <span>Runemark pack · mock and replay only</span>
+              <span>Runemark pack · your model, your keys</span>
             </footer>
           </main>
         </div>

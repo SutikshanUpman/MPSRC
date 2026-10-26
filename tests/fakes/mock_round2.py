@@ -29,10 +29,10 @@ Same messages in -> same output.
 import json
 import re
 
-from ..search.bm25 import mentions
-from . import calc as calc_mod
-from .claims import number_tokens
-from .heimdall import CONTRACT_CUES, SUBSTITUTE_CUES
+from backend.search.bm25 import mentions
+from backend.agents import calc as calc_mod
+from backend.agents.claims import number_tokens
+from backend.agents.heimdall import CONTRACT_CUES, SUBSTITUTE_CUES
 
 LIMIT_CUES = re.compile(r"\b(?:limited|cannot|small compared|smaller than|not a full|partial|only part|not enough)\b", re.I)
 GROWTH_CUES = re.compile(r"\b(?:more|increas\w*|grew|growing|rose|larger|higher|additional)\b", re.I)

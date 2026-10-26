@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from backend import contracts  # noqa: E402
-from backend.agents import mock_policy  # noqa: E402
+from fakes import mock_policy  # noqa: E402
 from backend.agents.calc import SECONDARY_FIELDS, field  # noqa: E402
 from backend.agents.claims import masked_raw_lines, number_tokens  # noqa: E402
 from backend.agents.counsel import TURN_SCHEMA, load_prompt, run_round1  # noqa: E402
@@ -25,7 +25,8 @@ from backend.agents.heimdall import open_case  # noqa: E402
 from backend.casefile.schema import CHALLENGE_SCHEMA, CLAIM_SCHEMA, RESPONSE_SCHEMA  # noqa: E402
 from backend.ingestion.packs import load_packs  # noqa: E402
 from backend.ingestion.quality import MASK_PLACEHOLDER  # noqa: E402
-from backend.llm.provider import DeterministicMockProvider, Provider, make_provider, skeleton, validate_schema  # noqa: E402
+from backend.llm.provider import Provider, skeleton, validate_schema  # noqa: E402
+from fakes import DeterministicMockProvider, cli_factory, make_provider  # noqa: E402
 from backend.memory.store import MemoryStore  # noqa: E402
 from backend.provenance.citations import parse_citations  # noqa: E402
 from backend.runtime.budget import BudgetGuard  # noqa: E402
@@ -309,6 +310,7 @@ class SyntheticAndDeterminism(unittest.TestCase):
         spec = importlib.util.spec_from_file_location("run_case_script3", ROOT / "scripts" / "run_case.py")
         script = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(script)
+        script.PROVIDER_FACTORY = cli_factory
         dirs = []
         for n in (1, 2):
             with contextlib.redirect_stdout(io.StringIO()):

@@ -13,9 +13,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tests"))
 
 import server  # noqa: E402
-from backend.llm.provider import make_provider  # noqa: E402
+from backend.llm.factory import SpecError  # noqa: E402
+from fakes import make_provider  # noqa: E402
 from backend.runtime.config import load_config  # noqa: E402
 from backend.runtime.orchestrator import run_full_case  # noqa: E402
 
@@ -31,8 +33,14 @@ class Console(unittest.TestCase):
         config = load_config()
         run_full_case(QUESTION, [PACK], config, make_provider("mock", config), cls.tmp / "runs", cls.tmp / "mem",
                       out_name="demo", ledger_path=cls.tmp / "ledger.json")
-        cls.saved = (server.RUNS, server.ROOT / "data" / "memory")
+        cls.saved = (server.RUNS, server.PROVIDER_FACTORY)
         server.RUNS = cls.tmp / "runs"
+
+        def offline(spec):                                 # an offline stand-in for the model, with the real spec validation
+            if spec.get("provider") not in ("ollama", "openai", "anthropic"):
+                raise SpecError("provider must be one of ollama, openai, anthropic")
+            return make_provider("mock", config), config
+        server.PROVIDER_FACTORY = offline
         cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
         cls.port = cls.httpd.server_address[1]
         threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
@@ -42,7 +50,7 @@ class Console(unittest.TestCase):
     def tearDownClass(cls):
         cls.httpd.shutdown()
         cls.httpd.server_close()
-        server.RUNS = cls.saved[0]
+        server.RUNS, server.PROVIDER_FACTORY = cls.saved
         shutil.rmtree(cls.tmp, ignore_errors=True)
 
     @classmethod
@@ -69,10 +77,12 @@ class Console(unittest.TestCase):
         self.assertEqual(self.get_json("/api/health")["status"], "ok")
         meta = self.get_json("/api/meta")
         self.assertEqual(meta["modes"], ["trial"])
-        self.assertEqual([p["name"] for p in meta["providers"]], ["mock", "replay", "live"])
+        self.assertEqual([p["name"] for p in meta["providers"]], ["ollama", "openai", "anthropic", "replay"])
+        self.assertTrue(all("configured" in p and "hint" in p and "models" in p for p in meta["providers"]))
+        self.assertTrue(next(p for p in meta["providers"] if p["name"] == "replay")["configured"])
         runs = self.get_json("/api/runs")
-        self.assertEqual([r["run_id"] for r in runs], ["demo"])
-        self.assertEqual(runs[0]["status"], "completed")
+        demo = next(r for r in runs if r["run_id"] == "demo")
+        self.assertEqual(demo["status"], "completed")
 
     def test_the_trial_record_has_what_the_console_reads(self):
         r = self.result
@@ -149,13 +159,13 @@ class Console(unittest.TestCase):
         code, body, _ = self.raw("/app")
         self.assertEqual((code, b"root" in body), (200, True))
 
-    def test_a_live_run_cannot_be_started_from_the_console(self):
-        code, body, _ = self.raw("/api/runs", {"profile": "anthropic", "question": QUESTION})
+    def test_an_unknown_provider_is_refused(self):
+        code, body, _ = self.raw("/api/runs", {"provider": "mock", "question": QUESTION})
         self.assertEqual(code, 400)
-        self.assertIn("mock or replay", json.loads(body)["detail"])
+        self.assertIn("provider must be one of", json.loads(body)["detail"])
 
     def test_start_a_run_watch_its_events_then_replay_it_at_zero_dollars(self):
-        code, body, _ = self.raw("/api/runs", {"question": QUESTION, "profile": "mock"})
+        code, body, _ = self.raw("/api/runs", {"question": QUESTION, "provider": "ollama", "model": "fake:1b"})
         self.assertEqual(code, 202)
         run_id = json.loads(body)["run_id"]
         seen, deadline = [], time.time() + 60
@@ -169,7 +179,7 @@ class Console(unittest.TestCase):
         self.assertEqual(run["result"]["schema_version"], "trial-2")
         seen += self.get_json(f"/api/runs/{run_id}/events?after={len(seen)}")
         self.assertEqual([e["seq"] for e in seen], list(range(1, len(seen) + 1)))
-        code, body, _ = self.raw("/api/runs", {"profile": "replay", "from": run_id})
+        code, body, _ = self.raw("/api/runs", {"provider": "replay", "from": run_id})
         self.assertEqual(code, 202)
         rep_id = json.loads(body)["run_id"]
         deadline = time.time() + 60
@@ -185,7 +195,7 @@ class Console(unittest.TestCase):
     def test_bad_requests(self):
         self.assertEqual(self.raw("/api/runs", {"question": ""})[0], 400)
         self.assertEqual(self.raw("/api/runs", {"question": QUESTION, "runemark_path": "../outside"})[0], 400)
-        self.assertEqual(self.raw("/api/runs", {"profile": "replay", "from": "../x"})[0], 400)
+        self.assertEqual(self.raw("/api/runs", {"provider": "replay", "from": "../x"})[0], 400)
         self.assertEqual(self.raw("/api/runs/nope")[0], 404)
 
 

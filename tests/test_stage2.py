@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from backend import contracts  # noqa: E402
-from backend.agents import mock_policy  # noqa: E402
+from fakes import mock_policy  # noqa: E402
 from backend.agents import calc as calc_mod  # noqa: E402
 from backend.agents.calc import field  # noqa: E402
 from backend.agents.claims import NUMBER, masked_raw_lines, number_tokens  # noqa: E402
@@ -22,7 +22,8 @@ from backend.casefile.schema import CLAIM_SCHEMA  # noqa: E402
 from backend.ingestion.packs import load_packs  # noqa: E402
 from backend.ingestion.pipeline import case_scope  # noqa: E402
 from backend.ingestion.quality import MASK_PLACEHOLDER  # noqa: E402
-from backend.llm.provider import DeterministicMockProvider, make_provider, validate_schema  # noqa: E402
+from backend.llm.provider import validate_schema  # noqa: E402
+from fakes import DeterministicMockProvider, cli_factory, make_provider  # noqa: E402
 from backend.memory.store import MemoryAccessDenied, MemoryStore  # noqa: E402
 from backend.provenance.citations import parse_citations, validate_citation  # noqa: E402
 from backend.runtime.config import load_config  # noqa: E402
@@ -641,6 +642,7 @@ class RunnerOutputs(unittest.TestCase):
         spec = importlib.util.spec_from_file_location("run_case_script", ROOT / "scripts" / "run_case.py")
         script = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(script)
+        script.PROVIDER_FACTORY = cli_factory
         tmp = Path(tempfile.mkdtemp(prefix="runner_"))
         self.addCleanup(shutil.rmtree, tmp, True)
         outs = []

@@ -1060,7 +1060,7 @@ function AuditView({ result, onReplay }: { result: TrialResult; onReplay?: () =>
             {result.usage.cost_usd == null
               ? "not priced"
               : result.usage.cost_usd === 0 && result.usage.shadow_cost_usd != null
-                ? `$0 spent · ${result.provider ?? "mock"} · ~$${result.usage.shadow_cost_usd.toFixed(4)} at configured prices`
+                ? `$0 spent · ${result.provider ?? "local"} · ~$${result.usage.shadow_cost_usd.toFixed(4)} at configured prices`
                 : `$${result.usage.cost_usd.toFixed(4)}`}
           </dd>
         </div>

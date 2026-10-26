@@ -8,7 +8,7 @@ spent only by Odin's final ruling and the briefing. The briefing may use the
 whole reserve; the final ruling only down to the briefing's worst case; every
 other call stops at `per_case_cap_usd - odin_briefing_reserve_usd`.
 
-A mock provider is not billable: its calls are recorded with `cost_usd: 0` and
+A provider that is not billable (Ollama, a localhost server, replay) records its calls with `cost_usd: 0` and
 a `shadow_cost_usd` at configured prices, so the guard logic stays observable.
 """
 from ..llm.provider import SchemaError, message_tokens, validate_schema
@@ -69,7 +69,7 @@ class BudgetGuard:
                 "project_spent_usd": self.project_spent, "project_limit_usd": self.project_limit(), "mode": self.mode}
 
     # ---------- calls ----------
-    def record(self, role, model, usage, provider="mock", input_chars=None):
+    def record(self, role, model, usage, provider="local", input_chars=None):
         cost = self.config.call_cost(role, usage["input_tokens"], usage["output_tokens"])
         entry = {"role": role, "model": model, "provider": provider, "input_tokens": usage["input_tokens"],
                  "output_tokens": usage["output_tokens"], "cost_usd": cost if self.billable else 0.0,

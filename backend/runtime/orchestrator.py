@@ -6,8 +6,8 @@ Everything a run produces is written under <out_root>/<case_id>/ (or <out_root>/
     rulings.json    briefing.json      briefing.md        trap_report.json     run_record.json
     events.jsonl    search_log.jsonl   provider_calls.jsonl                    llm_calls.jsonl  config.json
 
-Providers: mock (rule-based, $0), replay (re-runs a recorded case from llm_calls.jsonl at $0) and anthropic (live;
-only the budget owner, once). Every provider is wrapped by RecordingProvider so any run can be replayed.
+Providers: ollama (local, free), openai (any OpenAI-compatible API), anthropic, and replay (re-runs a recorded case from
+llm_calls.jsonl at $0). Every real provider is wrapped by RecordingProvider so any run can be replayed.
 """
 import hashlib
 import json
@@ -25,8 +25,7 @@ from ..briefing import (OUTLOOK_SCHEMA, briefing_hash, build, gate, render_markd
 from ..briefing.trap_report import calc_explain, trap_report
 from ..casefile import model as casefile
 from ..ingestion.packs import load_packs
-from ..llm.provider import (ProviderError, RecordingProvider, ReplayProvider, canonical, is_billable, make_provider,
-                            validate_schema)
+from ..llm.provider import ProviderError, RecordingProvider, canonical, is_billable, validate_schema
 from ..runtime import ledger as ledger_mod
 from ..runtime.budget import BudgetExceeded
 from ..runtime.config import ROOT, load_config
