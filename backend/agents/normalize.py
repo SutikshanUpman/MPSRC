@@ -34,6 +34,16 @@ def _leaf_paths(obj, prefix="", depth=0):
         yield prefix, obj
 
 
+def _usable_ref(r):
+    """A number reference that names a calc field, or one valid citation. Anything else is dropped; the number it was meant to
+    cover then has no source, and the number guard says so."""
+    if not isinstance(r, dict) or r.get("value") in (None, ""):
+        return False
+    if isinstance(r.get("calc_id"), str) and isinstance(r.get("field"), str):
+        return True
+    return isinstance(r.get("citation"), str) and bool(CITATION.match(r["citation"]))
+
+
 def _secondary(rec):
     p = (rec.get("passes") or {}).get("with_flagged") or {}
     if p.get("status") != "OK":
@@ -76,6 +86,7 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
         if not isinstance(c.get(key), list):
             c[key] = []
     c["citations"] = [x for x in c["citations"] if isinstance(x, str) and CITATION.match(x)]
+    c["number_refs"] = [dict(r, value=str(r["value"])) for r in c["number_refs"] if _usable_ref(r)]   # a malformed reference is dropped
     # calc ids named by the estimate's references
     refs = [est[k] for k in ("low_ref", "high_ref") if est and isinstance(est.get(k), dict)] if est else []
     for r in refs:

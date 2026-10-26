@@ -700,6 +700,19 @@ class SmallModelPaperwork(unittest.TestCase):
                             "loki", 1, 1, Tools())
         self.assertIsNone(c["estimate"])
 
+    def test_a_malformed_number_reference_is_dropped_not_repaired(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            def calc_by_id(self, cid):
+                return None
+        c = normalize_claim({"claim_type": "SUPPORTING", "claim_kind": "INFERENCE", "country": "A", "sector": "B", "claim_text": "x",
+                             "number_refs": [{"citation": "[ORV-0009, P8-13, 2027-01-19 09:20]"}, {"value": 5, "calc_id": "c", "field": "f"},
+                                             {"value": "7", "citation": "[ORV-0009, P4, 2027-01-19 09:20]"}, "junk"]},
+                            "thor", 1, 1, Tools())
+        self.assertEqual(c["number_refs"], [{"value": "5", "calc_id": "c", "field": "f"},
+                                            {"value": "7", "citation": "[ORV-0009, P4, 2027-01-19 09:20]"}])
+
     def test_normalising_never_invents_a_figure_or_a_citation(self):
         from backend.agents.normalize import normalize_claim
 
