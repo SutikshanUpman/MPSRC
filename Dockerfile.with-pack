@@ -1,0 +1,26 @@
+# Same as Dockerfile, with the Runemark pack baked in from ./dev_pack_E5 (the build context must contain it).
+# Only build and push this image to a PRIVATE registry: the pack is not ours to publish.
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    HOST=0.0.0.0 \
+    PORT=8000 \
+    DATA_DIR=/data
+
+RUN useradd --create-home --uid 10001 realms && mkdir -p /data && chown realms /data
+WORKDIR /app
+COPY server.py ./
+COPY backend ./backend
+COPY config ./config
+COPY prompts ./prompts
+COPY scripts ./scripts
+COPY web ./web
+COPY dev_pack_E5 ./dev_pack_E5
+
+USER realms
+VOLUME ["/data"]
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+  CMD python -c "import os,urllib.request;urllib.request.urlopen('http://127.0.0.1:%s/api/health' % os.environ.get('PORT','8000'),timeout=4)"
+CMD ["python", "server.py"]

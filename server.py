@@ -13,12 +13,19 @@ Serves the console (web/, built from ui/) and the API it was designed around, on
     GET  /api/runs/<id>/feed             the sealed archive as of the case's date
     GET  /api/runs/<id>/sources/<sid>    a document, one paragraph (DOC:P#) or a trade row (DOC|YYYY-MM)
 
+Deployment (see docs/DEPLOY.md): HOST=0.0.0.0 to listen on every interface, PORT (platforms inject it), DATA_DIR for the
+volume that holds runs, private memory and the ledger, CONSOLE_PASSWORD for HTTP Basic auth on everything but /api/health
+(required whenever the server listens beyond localhost), MAX_QUEUED_RUNS, FINAL_ROUND=1 for the final-round ledger ceiling.
+Variables may come from the platform or from a gitignored .env file; the platform's always win.
+
 Binds 127.0.0.1 by default. The console runs the trial on a model you choose: a local one through Ollama (free), an
 OpenAI-compatible API, or Claude. Keys come from the server's environment only, never from a page. A metered provider
 (OpenAI-compatible remote, Anthropic) also needs LIVE=1, BUDGET_OWNER and verified prices in the server's environment;
 the per-case cap, the Odin reserve and the project ledger apply to it as on the command line.
 """
 import argparse
+import base64
+import hmac
 import json
 import mimetypes
 import os
@@ -40,10 +47,15 @@ from backend.llm.factory import SpecError, build_provider, provider_status  # no
 from backend.llm.provider import ProviderError, ReplayProvider, ollama_models  # noqa: E402
 from backend.runtime import trial_view  # noqa: E402
 from backend.runtime.config import ConfigError, load_config  # noqa: E402
+from backend.runtime.env import data_dir, load_dotenv  # noqa: E402
 from backend.runtime.orchestrator import run_full_case  # noqa: E402
 
+load_dotenv()                                  # a gitignored .env, never overriding the platform's own variables
+
 WEB = ROOT / "web"
-RUNS = ROOT / "data" / "runs"
+DATA = data_dir()
+RUNS = DATA / "runs"
+MEMORY = DATA / "memory"
 DEFAULT_PACK = Path(os.environ["RAGNAROK_PACK_DIR"]) if os.environ.get("RAGNAROK_PACK_DIR") else ROOT / "dev_pack_E5"
 VERSION = "1.0"
 JOBS = {}                      # run id -> {"status", "events", "question", "created_at", "error", "provider", "pack"}
@@ -146,14 +158,15 @@ def _run_job(run_id, question, pack, provider, config, src, as_of):
                     shutil.copytree(src / "memory_before", mem)
                 job["status"] = "running"
                 run_full_case(rec["question"], rec["pack_paths"], config, provider, RUNS, mem, case_id=rec["case_id"],
-                              created_at=rec["created_at"], out_name=run_id, on_event=lambda e: _push(job, e))
+                              created_at=rec["created_at"], out_name=run_id, on_event=lambda e: _push(job, e),
+                              ledger_path=DATA / "ledger.json")
         else:
             if as_of and as_of not in question:
                 question = f"As of {as_of}: {question}"
             with RUN_LOCK:
                 job["status"] = "running"
-                run_full_case(question, [pack], config, provider, RUNS, ROOT / "data" / "memory",
-                              out_name=run_id, on_event=lambda e: _push(job, e))
+                run_full_case(question, [pack], config, provider, RUNS, MEMORY, out_name=run_id, on_event=lambda e: _push(job, e),
+                              final_round=os.environ.get("FINAL_ROUND") == "1", ledger_path=DATA / "ledger.json")
         job["status"] = "done"
     except Exception as e:                       # a failed run must not take the server down
         job["status"], job["error"] = "failed", f"{type(e).__name__}: {e}"
@@ -187,6 +200,9 @@ def start_run(body):
             provider, config = PROVIDER_FACTORY({k: body.get(k) for k in ("provider", "model", "odin_model", "base_url")})
     except (SpecError, ProviderError, ConfigError) as e:
         return 400, {"detail": str(e)}
+    active = sum(1 for j in JOBS.values() if j["status"] in ("queued", "running"))
+    if active >= int(os.environ.get("MAX_QUEUED_RUNS", "3")):
+        return 429, {"detail": f"{active} trials are already queued or running; wait for one to finish"}
     JOBS[run_id] = {"status": "queued", "events": [], "question": question, "created_at": now(), "error": None,
                     "provider": name, "pack": str(pack)}
     threading.Thread(target=_run_job, args=(run_id, question, pack, provider, config, src, body.get("as_of_date")), daemon=True).start()
@@ -212,6 +228,28 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         sys.stderr.write("[console] " + (fmt % args) + "\n")
 
+    def _authorised(self):
+        """HTTP Basic auth with CONSOLE_PASSWORD (any user name) on everything except /api/health."""
+        password = os.environ.get("CONSOLE_PASSWORD")
+        if not password or urlparse(self.path).path == "/api/health":
+            return True
+        header = self.headers.get("Authorization") or ""
+        if header.startswith("Basic "):
+            try:
+                given = base64.b64decode(header[6:]).decode("utf-8").partition(":")[2]
+            except (ValueError, UnicodeDecodeError):
+                given = ""
+            if hmac.compare_digest(given.encode(), password.encode()):
+                return True
+        data = b'{"detail": "sign in: the console needs its password"}'
+        self.send_response(401)
+        self.send_header("WWW-Authenticate", 'Basic realm="Trial of the Nine Realms", charset="UTF-8"')
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+        return False
+
     def _send(self, code, payload, ctype="application/json; charset=utf-8"):
         data = payload if isinstance(payload, bytes) else json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
@@ -219,6 +257,10 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
+                         "font-src 'self'; connect-src 'self'; frame-ancestors 'none'")
         self.end_headers()
         self.wfile.write(data)
 
@@ -226,6 +268,8 @@ class Handler(BaseHTTPRequestHandler):
         self._send(code, {"detail": detail})
 
     def do_GET(self):
+        if not self._authorised():
+            return
         url = urlparse(self.path)
         path, q = unquote(url.path), parse_qs(url.query)
         if path == "/api/health":
@@ -291,6 +335,8 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, f.read_bytes(), ctype)
 
     def do_POST(self):
+        if not self._authorised():
+            return
         if urlparse(self.path).path != "/api/runs":
             return self._err(404, "not found")
         try:
@@ -305,7 +351,14 @@ class Handler(BaseHTTPRequestHandler):
         self._send(code, payload)
 
 
+def is_loopback_host(host):
+    return host in ("127.0.0.1", "localhost", "::1")
+
+
 def run_server(host, port):
+    if not is_loopback_host(host) and not os.environ.get("CONSOLE_PASSWORD") and os.environ.get("CONSOLE_ALLOW_OPEN") != "1":
+        sys.exit("refusing to listen on " + host + " without CONSOLE_PASSWORD: anyone who can reach the server could start runs "
+                 "on your API key. Set CONSOLE_PASSWORD (or CONSOLE_ALLOW_OPEN=1 on a private network).")
     server = ThreadingHTTPServer((host, port), Handler)
     print(f"Trial of the Nine Realms on http://{host}:{port}  (runs in {RUNS})", flush=True)
     try:

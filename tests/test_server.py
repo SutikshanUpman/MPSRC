@@ -1,5 +1,6 @@
 """The web console's server (server.py) and the trial record it serves (backend/runtime/trial_view.py)."""
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -33,8 +34,8 @@ class Console(unittest.TestCase):
         config = load_config()
         run_full_case(QUESTION, [PACK], config, make_provider("mock", config), cls.tmp / "runs", cls.tmp / "mem",
                       out_name="demo", ledger_path=cls.tmp / "ledger.json")
-        cls.saved = (server.RUNS, server.PROVIDER_FACTORY)
-        server.RUNS = cls.tmp / "runs"
+        cls.saved = (server.RUNS, server.PROVIDER_FACTORY, server.MEMORY, server.DATA)
+        server.RUNS, server.MEMORY, server.DATA = cls.tmp / "runs", cls.tmp / "memory", cls.tmp
 
         def offline(spec):                                 # an offline stand-in for the model, with the real spec validation
             if spec.get("provider") not in ("ollama", "openai", "anthropic"):
@@ -50,7 +51,7 @@ class Console(unittest.TestCase):
     def tearDownClass(cls):
         cls.httpd.shutdown()
         cls.httpd.server_close()
-        server.RUNS, server.PROVIDER_FACTORY = cls.saved
+        server.RUNS, server.PROVIDER_FACTORY, server.MEMORY, server.DATA = cls.saved
         shutil.rmtree(cls.tmp, ignore_errors=True)
 
     @classmethod
@@ -197,6 +198,99 @@ class Console(unittest.TestCase):
         self.assertEqual(self.raw("/api/runs", {"question": QUESTION, "runemark_path": "../outside"})[0], 400)
         self.assertEqual(self.raw("/api/runs", {"provider": "replay", "from": "../x"})[0], 400)
         self.assertEqual(self.raw("/api/runs/nope")[0], 404)
+
+
+class Deployment(unittest.TestCase):
+    """What makes the server safe to put on a network: password, refusal to start open, queue cap, env file, data dir."""
+
+    KEYS = ("CONSOLE_PASSWORD", "CONSOLE_ALLOW_OPEN", "MAX_QUEUED_RUNS", "PRICES_VERIFIED", "DATA_DIR", "ZZ_FROM_DOTENV", "ZZ_KEEP")
+
+    def setUp(self):
+        saved = {k: os.environ.pop(k, None) for k in self.KEYS}
+
+        def restore():
+            for k in self.KEYS:
+                os.environ.pop(k, None)
+            os.environ.update({k: v for k, v in saved.items() if v is not None})
+        self.addCleanup(restore)
+        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
+        self.port = self.httpd.server_address[1]
+        threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
+        self.addCleanup(lambda: (self.httpd.shutdown(), self.httpd.server_close()))
+
+    def fetch(self, path, user_pass=None, method="GET", body=None):
+        import base64
+        headers = {"Content-Type": "application/json"}
+        if user_pass:
+            headers["Authorization"] = "Basic " + base64.b64encode(user_pass.encode()).decode()
+        req = urllib.request.Request(f"http://127.0.0.1:{self.port}{path}", method=method, headers=headers,
+                                     data=None if body is None else json.dumps(body).encode())
+        try:
+            with urllib.request.urlopen(req) as r:
+                return r.status, dict(r.headers), r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, dict(e.headers), e.read()
+
+    def test_with_a_password_everything_but_health_needs_it(self):
+        os.environ["CONSOLE_PASSWORD"] = "s3cret-pass"
+        self.assertEqual(self.fetch("/api/health")[0], 200)
+        for path in ("/", "/app", "/api/meta", "/api/runs", "/api/runs/x/feed"):
+            code, headers, _ = self.fetch(path)
+            self.assertEqual(code, 401, path)
+            self.assertIn("Basic", headers.get("WWW-Authenticate", ""))
+        self.assertEqual(self.fetch("/api/runs", "me:wrong")[0], 401)
+        self.assertEqual(self.fetch("/api/runs", "me:s3cret-pass")[0], 200)
+        self.assertEqual(self.fetch("/", ":s3cret-pass")[0], 200)
+        self.assertEqual(self.fetch("/api/runs", method="POST", body={"question": "x"})[0], 401)
+
+    def test_without_a_password_a_local_console_is_open(self):
+        self.assertEqual(self.fetch("/api/meta")[0], 200)
+
+    def test_security_headers(self):
+        _, headers, _ = self.fetch("/")
+        self.assertEqual(headers.get("X-Frame-Options"), "DENY")
+        self.assertIn("default-src 'self'", headers.get("Content-Security-Policy", ""))
+
+    def test_it_refuses_to_listen_beyond_localhost_without_a_password(self):
+        with self.assertRaises(SystemExit) as cm:
+            server.run_server("0.0.0.0", 0)
+        self.assertIn("CONSOLE_PASSWORD", str(cm.exception))
+
+    def test_a_full_queue_is_refused_not_piled_up(self):
+        os.environ["MAX_QUEUED_RUNS"] = "1"
+        server.JOBS["busy"] = {"status": "running", "events": [], "question": "q", "created_at": "", "error": None,
+                               "provider": "ollama", "pack": str(PACK)}
+        self.addCleanup(server.JOBS.pop, "busy", None)
+        code, _, body = self.fetch("/api/runs", method="POST", body={"question": QUESTION, "provider": "ollama", "model": "m:1b"})
+        self.assertEqual(code, 429)
+        self.assertIn("already", json.loads(body)["detail"])
+
+    def test_dotenv_fills_gaps_but_never_overrides_the_platform(self):
+        from backend.runtime.env import load_dotenv
+        tmp = Path(tempfile.mkdtemp(prefix="dotenv_"))
+        self.addCleanup(shutil.rmtree, tmp, True)
+        f = tmp / ".env"
+        f.write_text('# comment\nZZ_FROM_DOTENV="from-file"\nZZ_KEEP=file-value\nBLANK=\n', encoding="utf-8")
+        os.environ["ZZ_KEEP"] = "platform-value"
+        loaded = load_dotenv(f)
+        self.assertEqual((os.environ["ZZ_FROM_DOTENV"], os.environ["ZZ_KEEP"]), ("from-file", "platform-value"))
+        self.assertEqual(loaded, ["ZZ_FROM_DOTENV"])
+        self.assertEqual(load_dotenv(tmp / "missing.env"), [])
+
+    def test_data_dir_and_verified_prices_come_from_the_environment(self):
+        from backend.runtime.env import data_dir
+        os.environ["DATA_DIR"] = "/data"
+        self.assertEqual(data_dir(), Path("/data"))
+        self.assertFalse(load_config().get("prices_verified"))
+        os.environ["PRICES_VERIFIED"] = "1"
+        self.assertTrue(load_config().get("prices_verified"))
+
+    def test_the_console_is_shipped_built(self):
+        self.assertTrue((ROOT / "web" / "index.html").is_file())
+        self.assertTrue((ROOT / "Dockerfile").is_file() and (ROOT / "docker-compose.yml").is_file())
+        text = (ROOT / "Dockerfile").read_text(encoding="utf-8")
+        self.assertNotRegex(text, r"(?i)api[_-]?key\s*=\s*\S")
+        self.assertIn("USER realms", text)
 
 
 if __name__ == "__main__":

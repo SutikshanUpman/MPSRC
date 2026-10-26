@@ -33,6 +33,8 @@ class Config:
         return self.data[key]
 
     def get(self, key, default=None):
+        if key == "prices_verified" and os.environ.get("PRICES_VERIFIED") == "1":
+            return True                      # the budget owner verified the prices; set in the deployment, not in the repo
         return self.data.get(key, default)
 
     def model_for(self, role):

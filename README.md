@@ -56,6 +56,10 @@ python scripts/export_logs.py <case_id>           # copy a finished case to logs
 
 `python server.py` serves the **Trial of the Nine Realms console** on `http://127.0.0.1:8000` (override with `HOST`/`PORT`). Its design is AdverSI's (merged in; see [docs/MERGE_ADVERSI.md](docs/MERGE_ADVERSI.md)), its engine is this repository's. Open `/app`, type a question, **pick the provider and model** (Ollama models installed on the machine are listed; metered providers show what is missing), and start the trial. You get the live feed while it runs, then Briefing, Case File, Runemark map, Document feed, Trial (Thor and Loki side by side, challenges and defences, Odin's rulings), Exposure (ranges, "why this number") and Audit (trap report, memory audit, replay at $0). Every citation opens the source. Keys are read from the server's environment only: the page never sees or sends one. See [docs/DASHBOARD.md](docs/DASHBOARD.md).
 
+## Deploy
+
+A Dockerfile, a compose file and a Render blueprint are included; the console is committed pre-built, the server has no dependencies, and it refuses to listen beyond localhost without `CONSOLE_PASSWORD`. See [docs/DEPLOY.md](docs/DEPLOY.md): environment, volume, the Runemark pack, and the checks to run before the real run.
+
 ## Folder layout
 
 | Path | What |

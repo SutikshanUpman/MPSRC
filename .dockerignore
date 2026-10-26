@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+data
+logs
+tests
+ui
+docs
+adversi-main*
+**/__pycache__
+**/*.pyc
+*.zip
+*.md
+!README.md

@@ -1,0 +1,27 @@
+# Render blueprint. The pack is not in git: build from Dockerfile.with-pack in a private repo or image,
+# or attach a disk and upload the pack to /app/dev_pack_E5. Secrets are entered in the dashboard (sync: false).
+services:
+  - type: web
+    name: nine-realms-console
+    runtime: docker
+    dockerfilePath: ./Dockerfile.with-pack
+    healthCheckPath: /api/health
+    disk:
+      name: console-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: CONSOLE_PASSWORD
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LIVE
+        value: "1"
+      - key: BUDGET_OWNER
+        sync: false
+      - key: PRICES_VERIFIED
+        value: "0"
+      - key: DATA_DIR
+        value: /data

@@ -8,8 +8,10 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+import os
+
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PATH = ROOT / "data" / "ledger.json"
+DEFAULT_PATH = Path(os.environ.get("DATA_DIR") or ROOT / "data") / "ledger.json"
 
 
 class LedgerRefused(RuntimeError):
