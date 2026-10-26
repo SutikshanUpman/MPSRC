@@ -681,6 +681,25 @@ class SmallModelPaperwork(unittest.TestCase):
         self.assertEqual(ledger(small), ledger(full))
         self.assertTrue(all(c["confidence"] == 0.5 for c in small["case_file"]["claim_ledger"] if c["round"] == 1 and c["run"] == 1))
 
+    def test_a_missing_or_null_bound_takes_the_sides_standing_scenario(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            calcs = [{"calc_id": "calc-r1-loki-01", "country": "A", "sector": "B", "status": "OK",
+                      "envelope": {"full_credit": {"low": 54.8}, "half_credit": {"high": 57.7}}, "passes": {}}]
+
+            def calc_by_id(self, cid):
+                return next((c for c in self.calcs if c["calc_id"] == cid), None)
+        for estimate in (None, {"low_ref": None, "high_ref": None}, {"low_ref": {"calc_id": "calc-r1-loki-01", "field": "envelope.full_credit.low"}, "high_ref": None}):
+            c = normalize_claim({"claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "x", "estimate": estimate},
+                                "loki", 1, 1, Tools())
+            self.assertEqual((c["estimate"]["low"], c["estimate"]["high"], c["estimate_status"]), (54.8, 57.7, "ESTIMATED"))
+            self.assertEqual(c["calc_ids"], ["calc-r1-loki-01"])
+        # a side that says there is no flow is not overridden
+        c = normalize_claim({"claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "x", "estimate_status": "NO_DOCUMENTED_FLOW"},
+                            "loki", 1, 1, Tools())
+        self.assertIsNone(c["estimate"])
+
     def test_normalising_never_invents_a_figure_or_a_citation(self):
         from backend.agents.normalize import normalize_claim
 

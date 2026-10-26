@@ -19,6 +19,9 @@ from .claims import NUMBER, _norm_num, number_tokens
 
 CITATION = re.compile(CITATION_PATTERN)
 NEUTRAL_CONFIDENCE = 0.5
+# Thor argues the high bound (at most half the substitute growth credited); Loki the limited bound (substitutes credited in full).
+SCENARIOS = {"thor": ("envelope.half_credit.low", "envelope.no_credit.high"),
+             "loki": ("envelope.full_credit.low", "envelope.half_credit.high")}
 
 
 def _leaf_paths(obj, prefix="", depth=0):
@@ -83,6 +86,15 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
         if own:
             c["calc_ids"].append(own[-1]["calc_id"])
     records = [rec for rec in (tools.calc_by_id(i) for i in c["calc_ids"]) if rec]
+    if estimate and records and records[0]["status"] == "OK" and c.get("estimate_status") in (None, "ESTIMATED"):
+        # The side's standing scenarios (the prompt's rule): a bound the model left out or set to null is taken from them.
+        est = dict(est or {})
+        for which, path in zip(("low", "high"), SCENARIOS.get(agent, (None, None))):
+            ref = est.get(f"{which}_ref")
+            if path and not (isinstance(ref, dict) and ref.get("field")):
+                est[f"{which}_ref"] = {"calc_id": records[0]["calc_id"], "field": path}
+        refs = [est[k] for k in ("low_ref", "high_ref") if isinstance(est.get(k), dict)]
+        c["estimate"] = est
     if estimate:
         by_id = {rec["calc_id"]: rec for rec in records}
         if est and refs and len(refs) == 2:
