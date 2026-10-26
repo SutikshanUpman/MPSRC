@@ -178,7 +178,7 @@ def build(cf, rulings, cells, corpus, run_info, narrative=None, mode="RULES"):
               "run2_new_evidence_families": run_info.get("run2_new_evidence_families", []),
               "run2_notice": None if run_info.get("run2_new_evidence_families") or not run_info.get("run2_ran")
               else "Run 2 found no new evidence: " + (run_info.get("run2_no_evidence_reason") or "no new evidence family."),
-              "ruling_mode": mode}
+              "ruling_mode": mode, "premise_status": (cf.get("premise_check") or {}).get("status")}
 
     story = narrative or template_narrative(cf, cells, rulings)
     ev = cf["event_verification"]
@@ -189,7 +189,10 @@ def build(cf, rulings, cells, corpus, run_info, narrative=None, mode="RULES"):
         event.append(_para(f"evt-c{i}", f"{rel['from']['citation']} {rel['type'].lower().replace('_', ' ')} "
                            f"{rel['to']['citation']}.", "ESTABLISHED", [], [rel["from"]["citation"], rel["to"]["citation"]],
                            [], [], 0.9, cf))
+    event += premise_paragraphs(cf, corpus)
     summary = _summary_para(cf, cells, story["executive_summary"], rulings)
+    summary["citation_refs"] = list(dict.fromkeys(summary["citation_refs"] + [c for p in event if p["paragraph_id"].startswith("prem")
+                                                                                for c in p["citation_refs"]]))
     for sec in sections.values():
         for q in sec:
             q.pop("text_key", None)
@@ -222,6 +225,51 @@ def _summary_para(cf, cells, text, rulings):
     return para
 
 
+def _kinds(corpus, cites):
+    names = []
+    for c in cites:
+        for p in parse_citations(c):
+            rec = corpus.records.get(p["doc_id"])
+            if rec and rec["source_type"]:
+                names.append(rec["source_type"].replace("_", " "))
+    return ", ".join(dict.fromkeys(names)) or "case documents"
+
+
+def premise_paragraphs(cf, corpus):
+    """The verdict on what the question takes for granted (a disruption that 'destroyed' a port, a 'famine'): Heimdall's
+    premise check, with the documents that establish the event and the ones that only assert the claim."""
+    pc = cf.get("premise_check") or {}
+    if pc.get("status") not in ("REJECTED_PREMISE", "VERIFIED"):
+        return []
+    established = [c["citation"] for c in pc["citations"] if c.get("role") == "established_event"]
+    out = []
+    for i, f in enumerate(pc["findings"], 1):
+        cites = [c["citation"] for c in f["citations"]]
+        if f["supported"]:
+            text = f"Premise {f['premise']}: VERIFIED. Current high-reliability documents ({_kinds(corpus, cites)}) support it. " + " ".join(cites)
+            cls, refs = "ESTABLISHED", cites
+        else:
+            text = (f"Premise {f['premise']}: REJECTED as unsupported. The event itself is established by current high-reliability "
+                    f"documents ({_kinds(corpus, established)}); the claim of {f['premise']} appears only in a low-reliability source "
+                    f"({_kinds(corpus, cites)}) and is set aside, not relied on. Established: " + " ".join(established[:3])
+                    + " Set aside: " + " ".join(cites))
+            cls, refs = "REJECTED", established[:3] + cites
+        out.append(_para(f"prem-{i:02d}", text, cls, [], refs, [], [], 0.9, cf))
+    return out
+
+
+def premise_sentence(cf):
+    pc = cf.get("premise_check") or {}
+    rejected = [f["premise"] for f in pc.get("findings", []) if not f["supported"]]
+    verified = [f["premise"] for f in pc.get("findings", []) if f["supported"]]
+    bits = []
+    if rejected:
+        bits.append("the claim of " + ", ".join(rejected) + " is rejected as unsupported by the evidence")
+    if verified:
+        bits.append("the claim of " + ", ".join(verified) + " is verified")
+    return ("Premise check: " + "; ".join(bits) + ". ") if bits else ""
+
+
 def template_narrative(cf, cells, rulings):
     """The deterministic summary and outlook (also the labelled fallback when Odin's briefing call fails)."""
     parts = []
@@ -231,7 +279,7 @@ def template_narrative(cf, cells, rulings):
             parts.append(f"{c['country']} {c['sector']}: net value shortfall of {_fmt(o['low'])}% to {_fmt(o['high'])}%")
         else:
             parts.append(f"{c['country']} {c['sector']}: insufficient evidence ({c['reason']}), no number given")
-    text = (f"As of {cf['as_of_date']}, the exposure to {cf['event_name']} is: " + "; ".join(parts) + ".")
+    text = (premise_sentence(cf) + f"As of {cf['as_of_date']}, the exposure to {cf['event_name']} is: " + "; ".join(parts) + ".")
     assessed = [c for c in cells if c["odin"]]
     drivers = [f"{c['country']} {c['sector']}: documented substitute routes offset part of the direct-route loss."
                for c in assessed if any(x["status"] == "OK" and x["substitute_inputs"] and c["odin"]

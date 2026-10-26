@@ -115,6 +115,16 @@ def exposure_rows(bundle, corpus):
     return rows
 
 
+def _premise(cf, corpus):
+    pc = cf.get("premise_check")
+    if not pc:
+        return None
+    return {"status": pc["status"], "words": pc["premise_words"],
+            "findings": [{"premise": f["premise"], "supported": f["supported"],
+                          "citations": citations(corpus, [c["citation"] for c in f["citations"]])} for f in pc["findings"]],
+            "established": citations(corpus, [c["citation"] for c in pc["citations"] if c.get("role") == "established_event"])}
+
+
 def _claim(c, ruling, corpus):
     est = c["estimate"]
     return {
@@ -196,7 +206,7 @@ def trial_result(run_id, bundle, corpus):
         "issues": [f"{q['doc_id']}: {q['reason']}" for r in cf["run_status"][:1] for q in r["quarantined_documents"]]
         + [f"{c['country']} {c['sector']}: coverage {c['status']}" for c in cf["coverage"] if c["status"] != "COVERED"],
         "coverage": [{"country": c["country"], "sector": c["sector"], "status": c["status"]} for c in cf["coverage"]],
-        "evidence_gaps": cf["evidence_gaps"], "event_status": "VERIFIED" if ev.get("verdict") == "VERIFIED" else "EVENT_UNVERIFIED",
+        "evidence_gaps": cf["evidence_gaps"], "premise": _premise(cf, corpus), "event_status": "VERIFIED" if ev.get("verdict") == "VERIFIED" else "EVENT_UNVERIFIED",
     }
     t0 = events[0]["timestamp"] if events else ""
     t1 = events[-1]["timestamp"] if events else ""
@@ -235,6 +245,8 @@ def trial_result(run_id, bundle, corpus):
             "outlook_parts": {k: b["outlook"][k] for k in ("drivers", "risks", "indicators")},
             "assumptions": b["outlook"]["assumptions"], "source_ids": [s["doc_id"] for s in b["sources"]],
             "citations": citations(corpus, [c for r in b["exposure_table"] for c in r["citation_refs"]][:30]),
+            "verification": [{"text": p["text"], "classification": p["finding_classification"], "citations": citations(corpus, p["citation_refs"])}
+                             for p in b["event_verification"]],
             "complete": b["header"]["completion_status"] == "COMPLETE", "flagged_cells": b["header"]["flagged_cells"],
             "removed_by_validator": b["removed_by_validator"], "ruling_mode": b["header"]["ruling_mode"],
             "run2_notice": b["header"]["run2_notice"], "briefing_hash": rec.get("briefing_hash") if rec else None,

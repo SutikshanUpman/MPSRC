@@ -216,6 +216,8 @@ function BriefingView({ result, certified }: { result: TrialResult; certified: b
         </dl>
       </section>
 
+      <VerdictSection result={result} />
+
       {briefing.exposure.length > 0 && (
         <section>
           <SectionHead
@@ -1109,6 +1111,38 @@ function Citation({ citation, runId }: { citation: TrialCitation; runId: string 
 
 
 /* ------------------------------------------------------------ final-build pieces */
+
+function VerdictSection({ result }: { result: TrialResult }) {
+  const briefing = result.briefing;
+  const premise = result.case_file.premise;
+  if (!briefing || briefing.verification.length === 0) return null;
+  return (
+    <section className="rulings-ledger">
+      <SectionHead
+        kicker="Event verification"
+        title={premise?.status === "REJECTED_PREMISE" ? "A claim in the question was rejected" : "What was verified"}
+        note="Heimdall's verdict on the event and on what the question takes for granted, with the documents each rests on."
+        aside={<AgentLabel agent="heimdall" compact />}
+      />
+      <ul className="ruled-list">
+        {briefing.verification.map((item, index) => (
+          <li key={index}>
+            <span className={`ruling-word rw-${item.classification === "REJECTED" ? "rejected" : "established"}`}>{item.classification.toLowerCase()}</span>{" "}
+            {item.text.replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim()}
+            <ul className="cite-inline">
+              {item.citations.map((citation) => (
+                <li key={citation.locator}>
+                  <Citation citation={citation} runId={result.run_id} />
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 
 function BriefingNotices({ briefing }: { briefing: NonNullable<TrialResult["briefing"]> }) {
   return (

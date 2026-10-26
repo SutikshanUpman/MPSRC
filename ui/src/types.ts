@@ -119,6 +119,12 @@ export interface TrialCaseFile {
   coverage: { country: string; sector: string; status: string }[];
   evidence_gaps: { country: string; sector: string; missing: string; queries: string[] }[];
   event_status: "VERIFIED" | "EVENT_UNVERIFIED";
+  premise: {
+    status: "REJECTED_PREMISE" | "VERIFIED" | "NO_PREMISE_WORDS";
+    words: string[];
+    findings: { premise: string; supported: boolean; citations: TrialCitation[] }[];
+    established: TrialCitation[];
+  } | null;
 }
 
 export interface TrialRun {
@@ -151,6 +157,7 @@ export interface TrialBriefing {
   source_ids: string[];
   citations: TrialCitation[];
   complete: boolean;
+  verification: { text: string; classification: string; citations: TrialCitation[] }[];
   flagged_cells: string[];
   removed_by_validator: { section: string; paragraph_id: string; text: string; problems: string[] }[];
   ruling_mode: string;
