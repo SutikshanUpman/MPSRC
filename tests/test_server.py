@@ -38,8 +38,8 @@ class Console(unittest.TestCase):
         server.RUNS, server.MEMORY, server.DATA = cls.tmp / "runs", cls.tmp / "memory", cls.tmp
 
         def offline(spec):                                 # an offline stand-in for the model, with the real spec validation
-            if spec.get("provider") not in ("ollama", "openai", "anthropic"):
-                raise SpecError("provider must be one of ollama, openai, anthropic")
+            if spec.get("provider") not in ("ollama", "anthropic"):
+                raise SpecError("provider must be one of ollama, anthropic")
             return make_provider("mock", config), config
         server.PROVIDER_FACTORY = offline
         cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
@@ -78,7 +78,7 @@ class Console(unittest.TestCase):
         self.assertEqual(self.get_json("/api/health")["status"], "ok")
         meta = self.get_json("/api/meta")
         self.assertEqual(meta["modes"], ["trial"])
-        self.assertEqual([p["name"] for p in meta["providers"]], ["ollama", "openai", "anthropic", "replay"])
+        self.assertEqual([p["name"] for p in meta["providers"]], ["ollama", "anthropic", "replay"])
         self.assertTrue(all("configured" in p and "hint" in p and "models" in p for p in meta["providers"]))
         self.assertTrue(next(p for p in meta["providers"] if p["name"] == "replay")["configured"])
         runs = self.get_json("/api/runs")
@@ -192,6 +192,27 @@ class Console(unittest.TestCase):
         self.assertEqual(rep["status"], "completed")
         self.assertEqual(rep["briefing_hash"], run["briefing_hash"])
         self.assertEqual(rep["spend"]["case_spent_usd"], 0)
+
+    def test_the_questions_own_date_wins_over_the_date_field(self):
+        seen = {}
+        original = server.run_full_case
+
+        def spy(question, *a, **kw):
+            seen["q"] = question
+            return original(question, *a, **kw)
+        server.run_full_case = spy
+        self.addCleanup(setattr, server, "run_full_case", original)
+        for body, expect in (({"question": QUESTION, "provider": "ollama", "model": "m:1b", "as_of_date": "2006-10-28"}, QUESTION),
+                             ({"question": "How exposed is Midgard to the Orvan corridor ending?", "provider": "ollama", "model": "m:1b",
+                               "as_of_date": "2027-01-25"}, "As of 2027-01-25: How exposed is Midgard to the Orvan corridor ending?")):
+            code, data, _ = self.raw("/api/runs", body)
+            self.assertEqual(code, 202)
+            run_id = json.loads(data)["run_id"]
+            for _ in range(300):
+                if self.get_json(f"/api/runs/{run_id}")["status"] not in ("queued", "running", "done"):
+                    break
+                time.sleep(0.1)
+            self.assertEqual(seen["q"], expect)
 
     def test_bad_requests(self):
         self.assertEqual(self.raw("/api/runs", {"question": ""})[0], 400)

@@ -18,7 +18,7 @@ export interface RunInput {
   question?: string;
   mode?: string;
   /** Who runs the agents. "replay" re-runs a saved trial from its recorded calls (needs `from`). */
-  provider: "ollama" | "openai" | "anthropic" | "replay";
+  provider: "ollama" | "anthropic" | "replay";
   model?: string;
   odin_model?: string;
   base_url?: string;

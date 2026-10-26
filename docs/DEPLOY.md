@@ -17,7 +17,6 @@ Set these in the platform's secret store (or a local, gitignored `.env`; the pla
 |---|---|
 | `CONSOLE_PASSWORD` | HTTP Basic password for everything except `/api/health`. Any user name. **Required** when `HOST` is not localhost |
 | `ANTHROPIC_API_KEY` | Claude. Metered |
-| `OPENAI_API_KEY`, `OPENAI_BASE_URL` | An OpenAI-compatible API. Metered unless the URL is localhost |
 | `OLLAMA_HOST` | Where Ollama listens (default `http://127.0.0.1:11434`) |
 | `LIVE=1`, `BUDGET_OWNER=<name>` | The budget owner's switches. A metered provider refuses to start without them |
 | `PRICES_VERIFIED=1` | Set **only after** checking the prices in `config/runtime_config.json` against the provider's price page |

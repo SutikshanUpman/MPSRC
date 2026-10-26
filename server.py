@@ -6,7 +6,7 @@ Serves the console (web/, built from ui/) and the API it was designed around, on
 
     GET  /api/health  /api/meta
     GET  /api/runs                       saved and running trials, newest first
-    POST /api/runs                       {question, as_of_date?, runemark_path?, provider: "ollama" | "openai" | "anthropic",
+    POST /api/runs                       {question, as_of_date?, runemark_path?, provider: "ollama" | "anthropic",
                                           model?, odin_model?, base_url?}   or   {provider: "replay", from}
     GET  /api/runs/<id>                  summary + the trial record (null while it runs)
     GET  /api/runs/<id>/events?after=N   the event log, as it is written
@@ -19,8 +19,7 @@ volume that holds runs, private memory and the ledger, CONSOLE_PASSWORD for HTTP
 Variables may come from the platform or from a gitignored .env file; the platform's always win.
 
 Binds 127.0.0.1 by default. The console runs the trial on a model you choose: a local one through Ollama (free), an
-OpenAI-compatible API, or Claude. Keys come from the server's environment only, never from a page. A metered provider
-(OpenAI-compatible remote, Anthropic) also needs LIVE=1, BUDGET_OWNER and verified prices in the server's environment;
+or Claude. Keys come from the server's environment only, never from a page. Claude is metered and also needs LIVE=1, BUDGET_OWNER and verified prices in the server's environment;
 the per-case cap, the Odin reserve and the project ledger apply to it as on the command line.
 """
 import argparse
@@ -42,6 +41,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+from backend.agents.heimdall import parse_as_of  # noqa: E402
 from backend.ingestion.pipeline import ingest_pack  # noqa: E402
 from backend.llm.factory import SpecError, build_provider, provider_status  # noqa: E402
 from backend.llm.provider import ProviderError, ReplayProvider, ollama_models  # noqa: E402
@@ -161,7 +161,7 @@ def _run_job(run_id, question, pack, provider, config, src, as_of):
                               created_at=rec["created_at"], out_name=run_id, on_event=lambda e: _push(job, e),
                               ledger_path=DATA / "ledger.json")
         else:
-            if as_of and as_of not in question:
+            if as_of and parse_as_of(question) is None:          # the question's own date wins; the field only fills a gap
                 question = f"As of {as_of}: {question}"
             with RUN_LOCK:
                 job["status"] = "running"

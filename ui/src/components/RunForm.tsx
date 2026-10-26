@@ -13,7 +13,32 @@ const HANDS = [
 const EXAMPLE =
   "As of 25 January 2027, how exposed are Midgard and Tolan to the end of the Orvan corridor agreement? Give a low and high range for wheat and maize imports.";
 
-const RUNNABLE = ["ollama", "openai", "anthropic"] as const;
+type Choice = { value: string; label: string; provider: ProviderInfo; model: string; disabled: boolean };
+
+/** One flat list of what can be picked: the Ollama models installed here, and Claude. */
+function choicesFor(providers: ProviderInfo[]): { group: string; hint: string | null; items: Choice[] }[] {
+  const groups: { group: string; hint: string | null; items: Choice[] }[] = [];
+  for (const provider of providers) {
+    const disabled = !provider.configured;
+    if (provider.name === "ollama") {
+      groups.push({
+        group: "Ollama · local, free",
+        hint: provider.models.length === 0 ? provider.hint ?? "No model installed: run `ollama pull qwen2.5:14b`." : null,
+        items: provider.models.map((m) => ({ value: `ollama::${m}`, label: m, provider, model: m, disabled })),
+      });
+    } else if (provider.name === "anthropic") {
+      groups.push({
+        group: "Claude · Anthropic API, metered",
+        hint: disabled ? provider.hint : null,
+        items: [
+          { value: "anthropic::", label: provider.default_label ?? "Default split", provider, model: "", disabled },
+          ...provider.models.map((m) => ({ value: `anthropic::${m}`, label: m, provider, model: m, disabled })),
+        ],
+      });
+    }
+  }
+  return groups;
+}
 
 export function RunForm({
   meta,
@@ -24,30 +49,26 @@ export function RunForm({
   busy: boolean;
   onSubmit: (input: RunInput) => void;
 }) {
-  const providers = useMemo(() => (meta?.providers ?? []).filter((p) => (RUNNABLE as readonly string[]).includes(p.name)), [meta]);
+  const providers = useMemo(() => (meta?.providers ?? []).filter((p) => p.name === "ollama" || p.name === "anthropic"), [meta]);
+  const groups = useMemo(() => choicesFor(providers), [providers]);
+  const all = useMemo(() => groups.flatMap((g) => g.items), [groups]);
   const [question, setQuestion] = useState("");
   const [asOf, setAsOf] = useState("");
   const [runemarkPath, setRunemarkPath] = useState("");
-  const [providerName, setProviderName] = useState<RunInput["provider"] | "">("");
-  const [model, setModel] = useState("");
-  const [odinModel, setOdinModel] = useState("");
-  const [baseUrl, setBaseUrl] = useState("");
+  const [choice, setChoice] = useState("");
+  const [odinChoice, setOdinChoice] = useState("");
 
-  // Start on the first provider that is ready; keep the user's choice once they make one.
+  // Start on the first model that is ready; keep the user's choice once they make one.
   useEffect(() => {
-    if (providerName || providers.length === 0) return;
-    const ready = providers.find((p) => p.configured) ?? providers[0];
-    setProviderName(ready.name as RunInput["provider"]);
-  }, [providers, providerName]);
+    if (choice && all.some((c) => c.value === choice)) return;
+    const ready = all.find((c) => !c.disabled);
+    setChoice(ready ? ready.value : "");
+  }, [all, choice]);
 
-  const provider: ProviderInfo | undefined = providers.find((p) => p.name === providerName);
-  useEffect(() => {
-    setModel(provider?.default_model ?? "");
-    setOdinModel("");
-  }, [provider?.name, provider?.default_model]);
-
-  const needsModel = provider?.needs_model ?? false;
-  const ready = Boolean(provider?.configured) && (!needsModel || model.trim().length > 0);
+  const picked = all.find((c) => c.value === choice);
+  const odinOptions = all.filter((c) => picked && c.provider.name === picked.provider.name && c.model !== "" && !c.disabled);
+  const ready = Boolean(picked && !picked.disabled);
+  const unreadyHint = picked?.disabled ? picked.provider.hint : null;
 
   return (
     <section className="intake" aria-labelledby="intake-title">
@@ -67,14 +88,13 @@ export function RunForm({
           className="intake-form"
           onSubmit={(e) => {
             e.preventDefault();
-            if (!question.trim() || !ready || !providerName) return;
+            if (!question.trim() || !ready || !picked) return;
             onSubmit({
               question,
               mode: "trial",
-              provider: providerName,
-              model: model.trim() || undefined,
-              odin_model: odinModel.trim() || undefined,
-              base_url: baseUrl.trim() || undefined,
+              provider: picked.provider.name as RunInput["provider"],
+              model: picked.model || undefined,
+              odin_model: odinChoice ? odinChoice.split("::")[1] : undefined,
               as_of_date: asOf || undefined,
               runemark_path: runemarkPath || undefined,
             });
@@ -98,96 +118,77 @@ export function RunForm({
             </button>
           </div>
 
-          <fieldset className="field proceeding">
-            <legend className="field-label">
-              Run the agents on <span className="field-hint">keys stay in the server&apos;s environment; the page never sees them</span>
-            </legend>
-            <div className="mode-list">
-              {providers.map((p) => (
-                <label key={p.name} className={`mode${providerName === p.name ? " is-selected" : ""}`}>
-                  <input type="radio" name="provider" value={p.name} checked={providerName === p.name} onChange={() => setProviderName(p.name as RunInput["provider"])} />
-                  <span className="mode-name">
-                    {p.label}
-                    <em className="mono provider-state">
-                      {p.configured ? (p.free ? "ready · free" : "ready · metered") : "not set up"}
-                    </em>
-                  </span>
-                </label>
+          <div className="field-row">
+            <div className="field">
+              <label className="field-label" htmlFor="model">
+                Model <span className="field-hint">Ollama (local) or Claude; keys stay on the server</span>
+              </label>
+              <select
+                id="model"
+                value={choice}
+                onChange={(e) => {
+                  setChoice(e.target.value);
+                  setOdinChoice("");
+                }}
+                disabled={busy || all.length === 0}
+              >
+                {all.length === 0 && <option value="">No model available</option>}
+                {groups.map((g) => (
+                  <optgroup key={g.group} label={g.group}>
+                    {g.items.length === 0 && (
+                      <option disabled value={`none::${g.group}`}>
+                        none installed
+                      </option>
+                    )}
+                    {g.items.map((c) => (
+                      <option key={c.value} value={c.value} disabled={c.disabled}>
+                        {c.label}
+                        {c.disabled ? " (not set up)" : ""}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              {groups.filter((g) => g.hint).map((g) => (
+                <p key={g.group} className="mode-note provider-hint">
+                  {g.group.split(" ·")[0]}: {g.hint}
+                </p>
               ))}
+              {picked && !unreadyHint && (
+                <p className="mode-note">
+                  {picked.provider.free
+                    ? "Runs on this machine. Free; speed depends on your hardware."
+                    : "Metered: the per-case cap, Odin's reserve and the project ledger apply."}
+                </p>
+              )}
             </div>
-            {provider && <p className="mode-note">{provider.description}</p>}
-            {provider && !provider.configured && provider.hint && <p className="mode-note provider-hint">{provider.hint}</p>}
-          </fieldset>
-
-          {provider && (
-            <div className="field-row">
-              <div className="field">
-                <label className="field-label" htmlFor="model">
-                  Model <span className="field-hint">{needsModel ? "Heimdall, Thor, Loki and Odin" : "optional; the configured Haiku/Sonnet split by default"}</span>
-                </label>
-                {provider.models.length > 0 ? (
-                  <>
-                    <input
-                      id="model"
-                      className="mono-input"
-                      list="model-options"
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                      placeholder={provider.default_model ?? "model name"}
-                      required={needsModel}
-                    />
-                    <datalist id="model-options">
-                      {provider.models.map((m) => (
-                        <option key={m} value={m} />
-                      ))}
-                    </datalist>
-                  </>
-                ) : (
-                  <input
-                    id="model"
-                    className="mono-input"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder={provider.name === "ollama" ? "e.g. qwen2.5:14b  (ollama pull it first)" : "e.g. gpt-4o-mini"}
-                    required={needsModel}
-                  />
-                )}
-              </div>
-              <div className="field">
-                <label className="field-label" htmlFor="as-of">
-                  As-of date <span className="field-hint">optional; the question&apos;s own date wins</span>
-                </label>
-                <input id="as-of" type="date" value={asOf} onChange={(e) => setAsOf(e.target.value)} />
-              </div>
+            <div className="field field-date">
+              <label className="field-label" htmlFor="as-of">
+                As-of date <span className="field-hint">optional; the question&apos;s own date wins</span>
+              </label>
+              <input id="as-of" type="date" value={asOf} onChange={(e) => setAsOf(e.target.value)} />
             </div>
-          )}
+          </div>
 
           <details className="advanced-options">
             <summary>
               <span>Advanced</span>
-              <span className="field-hint">Odin&apos;s model, endpoint, Runemark pack</span>
+              <span className="field-hint">Odin&apos;s model, Runemark pack</span>
             </summary>
             <div className="advanced-options-body">
               <div className="field">
                 <label className="field-label" htmlFor="odin-model">
-                  Odin&apos;s model <span className="field-hint">optional; a stronger model for the judge</span>
+                  Odin&apos;s model <span className="field-hint">optional; a stronger model for the judge, same provider</span>
                 </label>
-                <input id="odin-model" className="mono-input" value={odinModel} onChange={(e) => setOdinModel(e.target.value)} placeholder={model || "same as above"} />
+                <select id="odin-model" value={odinChoice} onChange={(e) => setOdinChoice(e.target.value)} disabled={odinOptions.length === 0}>
+                  <option value="">{picked?.provider.name === "anthropic" && !picked.model ? "Sonnet (the default split)" : "Same as the model above"}</option>
+                  {odinOptions.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-              {provider && provider.name !== "anthropic" && (
-                <div className="field">
-                  <label className="field-label" htmlFor="base-url">
-                    Endpoint <span className="field-hint">a local server only (localhost); remote ones are set in the server&apos;s environment</span>
-                  </label>
-                  <input
-                    id="base-url"
-                    className="mono-input"
-                    value={baseUrl}
-                    onChange={(e) => setBaseUrl(e.target.value)}
-                    placeholder={provider.name === "ollama" ? "http://127.0.0.1:11434" : "http://127.0.0.1:1234/v1"}
-                  />
-                </div>
-              )}
               <div className="field">
                 <label className="field-label" htmlFor="corpus">
                   Runemark pack folder <span className="field-hint">inside the repository; defaults to dev_pack_E5</span>
@@ -200,7 +201,6 @@ export function RunForm({
           <div className="submit-row">
             <p className="submit-note">
               Two bounded runs. Citations are checked against the corpus. Every model call is recorded, so the case can be replayed at $0.
-              {provider && !provider.free && " This provider is metered: the per-case cap, Odin's reserve and the project ledger apply."}
             </p>
             <button className="btn btn-primary" disabled={busy || !question.trim() || !ready}>
               {busy ? "Opening the case" : "Start the trial"}

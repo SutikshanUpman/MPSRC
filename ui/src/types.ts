@@ -267,7 +267,7 @@ export interface RunemarkFeedItem {
 export type ResultPayload = TrialResult;
 
 export interface ProviderInfo {
-  name: "ollama" | "openai" | "anthropic" | "replay";
+  name: "ollama" | "anthropic" | "replay";
   label: string;
   /** Can start a run from this server right now. */
   configured: boolean;
@@ -279,6 +279,7 @@ export interface ProviderInfo {
   models: string[];
   needs_model: boolean;
   default_model: string | null;
+  default_label?: string;
 }
 
 export interface Meta {

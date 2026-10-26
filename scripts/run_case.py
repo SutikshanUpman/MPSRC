@@ -2,12 +2,11 @@
 and the briefing. Everything is written to data/runs/<case_id>/ (see backend/runtime/orchestrator.py).
 
     python scripts/run_case.py --provider ollama    --model qwen2.5:14b --pack dev_pack_E5 --question "..."     local, free
-    python scripts/run_case.py --provider openai    --model gpt-4o-mini ...      OpenAI-compatible API (OPENAI_API_KEY, OPENAI_BASE_URL)
     python scripts/run_case.py --provider anthropic ...                          Claude (ANTHROPIC_API_KEY)
     python scripts/run_case.py --provider replay --from <case_id>                re-run a recorded case at $0
 
-OpenAI and Anthropic cost money: they need LIVE=1, BUDGET_OWNER and "prices_verified": true in the runtime config
-(see scripts/live_check.py). Ollama and a localhost OpenAI-compatible server are free. Private memory persists in
+Claude costs money: it needs LIVE=1, BUDGET_OWNER and "prices_verified": true in the runtime config
+(see scripts/live_check.py). Ollama is free. Private memory persists in
 --memory-dir across cases.
 """
 import argparse
@@ -69,10 +68,10 @@ def main(argv=None):
     ap.add_argument("--pack", help="live (or only) pack directory")
     ap.add_argument("--base", help="base reference pack, listed first in pack_paths")
     ap.add_argument("--question")
-    ap.add_argument("--provider", default="ollama", choices=["ollama", "openai", "anthropic", "replay"])
-    ap.add_argument("--model", help="model for Heimdall, Thor and Loki (required for ollama and openai)")
+    ap.add_argument("--provider", default="ollama", choices=["ollama", "anthropic", "replay"])
+    ap.add_argument("--model", help="model for Heimdall, Thor and Loki (required for ollama; default for anthropic: the configured split)")
     ap.add_argument("--odin-model", help="model for Odin (default: --model)")
-    ap.add_argument("--base-url", help="loopback OpenAI-compatible or Ollama address; remote ones come from the environment")
+    ap.add_argument("--base-url", help="a loopback Ollama address; a remote one comes from OLLAMA_HOST")
     ap.add_argument("--from", dest="from_case", help="replay: the recorded case_id under --out")
     ap.add_argument("--config", help="runtime config JSON (default config/runtime_config.json)")
     ap.add_argument("--out", default=str(ROOT / "data" / "runs"))

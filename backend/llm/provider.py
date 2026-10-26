@@ -3,11 +3,10 @@
 `complete(role, messages, schema, max_output_tokens)` returns
 `{"output": <parsed JSON>, "usage": {"input_tokens", "output_tokens"}, "model", "input_hash"}`.
 
-Real providers, all over stdlib urllib (no SDK):
+Real providers, both over stdlib urllib (no SDK):
 - OllamaProvider: a local model through Ollama. Free, no key.
-- OpenAICompatProvider: any OpenAI-compatible API (OpenAI, OpenRouter, vLLM, LM Studio, ...). A loopback URL is free.
-- AnthropicProvider: Claude through the Messages API.
-Billable providers refuse to exist unless LIVE=1, BUDGET_OWNER and verified prices are set. RecordingProvider records every
+- AnthropicProvider: Claude through the Messages API. Metered.
+The metered one refuses to exist unless LIVE=1, BUDGET_OWNER and verified prices are set. RecordingProvider records every
 call before its output is used; ReplayProvider re-runs a case from the records at $0.
 
 Callers never call a provider directly for billable work; they go through `BudgetGuard.call` (backend/runtime/budget.py).
@@ -155,7 +154,7 @@ def parse_json_text(text):
 
 
 class HTTPProvider(Provider):
-    """Shared transport for the three real providers: stdlib urllib, backoff with at most 2 retries (FINAL BUILD 4.1),
+    """Shared transport for the two real providers: stdlib urllib, backoff with at most 2 retries (FINAL BUILD 4.1),
     one JSON-repair attempt (4.2). Keys are read from the environment at call time and never stored or logged."""
     TIMEOUT = 120
     BACKOFF = (1.0, 3.0)
@@ -260,53 +259,6 @@ def is_loopback(url):
     return host in ("127.0.0.1", "localhost", "::1")
 
 
-class OpenAICompatProvider(HTTPProvider):
-    """Any OpenAI-compatible chat-completions API: OpenAI, OpenRouter, vLLM, LM Studio, llama.cpp server, Ollama's /v1.
-    A loopback base URL is a local server: free, no gates. A remote one is billable and needs the same switches as
-    Anthropic. The key is OPENAI_API_KEY (or `key_env`), sent only to the base URL the server's own environment names."""
-    name = "openai"
-    label = "Chat Completions API"
-    TIMEOUT = 300
-
-    def __init__(self, config, base_url=None, key_env="OPENAI_API_KEY"):
-        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-        self.key_env = key_env
-        self.billable = not is_loopback(self.base_url)
-        if self.billable:
-            _require_live_gates(config, "this OpenAI-compatible API")
-        super().__init__(config)
-
-    def complete(self, role, messages, schema, max_output_tokens=None):
-        key = os.environ.get(self.key_env)
-        if self.billable and not key:
-            raise LiveCallsDisabled(f"{self.key_env} is not set in the environment")
-        cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
-        model = self.model_for(role)
-        msgs = [dict(m) for m in messages]
-        first = next((m for m in msgs if m["role"] == "system"), None)
-        if first:
-            first["content"] += self._json_instruction(schema)
-        else:
-            msgs.insert(0, {"role": "system", "content": self._json_instruction(schema).strip()})
-        body = {"model": model, "messages": msgs, "temperature": 0, "response_format": {"type": "json_object"},
-                ("max_completion_tokens" if "api.openai.com" in self.base_url else "max_tokens"): cap}
-        headers = {"authorization": f"Bearer {key}"} if key else {}
-        try:
-            raw = self._post(f"{self.base_url}/chat/completions", body, headers)
-        except ProviderUnavailable as e:
-            if getattr(e, "status", None) == 400 and "response_format" in (getattr(e, "detail", "") or ""):
-                body.pop("response_format")                  # a server without JSON mode: the prompt still asks for JSON
-                raw = self._post(f"{self.base_url}/chat/completions", body, headers)
-            else:
-                raise
-        choice = (raw.get("choices") or [{}])[0]
-        if choice.get("finish_reason") == "length":
-            raise SchemaError(f"output reached max_output_tokens {cap} (truncated)")
-        u = raw.get("usage") or {}
-        return self._result(role, messages, schema, cap, model, (choice.get("message") or {}).get("content") or "",
-                            u.get("prompt_tokens"), u.get("completion_tokens"))
-
-
 def ollama_url(base_url=None):
     url = base_url or os.environ.get("OLLAMA_HOST") or "http://127.0.0.1:11434"
     if "://" not in url:
@@ -341,7 +293,7 @@ class OllamaProvider(HTTPProvider):
         cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
         model = self.model_for(role)
         body = {"model": model, "messages": messages, "stream": False, "format": schema,
-                "options": {"temperature": 0, "num_predict": cap, "num_ctx": int(self.config.get("ollama_num_ctx", 16384))}}
+                "options": {"temperature": 0, "num_predict": cap, "num_ctx": int(self.config.get("ollama_num_ctx", 24576))}}
         try:
             raw = self._post(f"{self.base_url}/api/chat", body, {})
         except ProviderUnavailable as e:

@@ -21,13 +21,13 @@
 - **Run II** shows the new evidence families Heimdall found, or the reason it found none.
 - **Audit** shows the acceptance evidence of the run (send-back, new evidence, concessions, memory decisions, briefing hash), the trap report, the private-memory audit, and a **Replay at $0** button.
 - **The live feed** reads this engine's own event names (`ODIN_SENT_BACK`, `RUN_2_NEW_EVIDENCE`, `DECISION_CHANGED`, `FALLBACK_*`, ...).
-- **A run starts from the console on a model you choose** (Ollama, an OpenAI-compatible API, Claude), as in AdverSI's provider and model picker. Keys stay in the server's environment; metered providers keep the budget owner's switches, per-case cap and ledger.
+- **A run starts from the console on a model you choose** (Ollama or Claude), as in AdverSI's provider and model picker. Keys stay in the server's environment; metered providers keep the budget owner's switches, per-case cap and ledger.
 
 ## What was changed in this repository for the merge
 
 - `server.py` now serves the AdverSI API contract (stdlib only) and the built console from `web/`. A run started from the console runs in a thread and its events appear in the live feed as the engine writes them (`TraceLog.on_emit`).
 - `backend/runtime/trial_view.py` (new): the case's files -> the console's record; the as-of document feed; click-through to a document, a paragraph (`DOC:P#`) or a trade row (`DOC|YYYY-MM`).
-- `backend/llm/` gained the OpenAI-compatible and Ollama providers and `factory.py` (provider + model -> configured run); the rule-based stand-ins used by the test suite moved to `tests/fakes/` and the product no longer offers them.
+- `backend/llm/` gained the Ollama provider (and Claude as before) and `factory.py` (provider + model -> configured run); the rule-based stand-ins used by the test suite moved to `tests/fakes/` and the product no longer offers them.
 - `ui/` (new): the console's source. `web/` is its production build, committed, so running the project needs no node.
 - `orchestrator.run_full_case(on_event=...)`, `TraceLog.on_emit`: live events. `memory_before/` in each case: a replay starts from the same private memory.
 

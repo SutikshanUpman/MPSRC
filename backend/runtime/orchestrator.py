@@ -6,7 +6,7 @@ Everything a run produces is written under <out_root>/<case_id>/ (or <out_root>/
     rulings.json    briefing.json      briefing.md        trap_report.json     run_record.json
     events.jsonl    search_log.jsonl   provider_calls.jsonl                    llm_calls.jsonl  config.json
 
-Providers: ollama (local, free), openai (any OpenAI-compatible API), anthropic, and replay (re-runs a recorded case from
+Providers: ollama (local, free), anthropic (Claude), and replay (re-runs a recorded case from
 llm_calls.jsonl at $0). Every real provider is wrapped by RecordingProvider so any run can be replayed.
 """
 import hashlib

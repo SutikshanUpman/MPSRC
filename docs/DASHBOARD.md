@@ -2,7 +2,7 @@
 
 `python server.py` (standard library only) serves the console (`web/`, built from `ui/`) and its API on **127.0.0.1:8000**; override with `--host/--port` or `HOST`/`PORT`. The design is AdverSI's, the engine is this repository's ([MERGE_ADVERSI.md](MERGE_ADVERSI.md)).
 
-**You choose the model that runs the agents**: a local one through Ollama (free), an OpenAI-compatible API, or Claude. API keys are read from the **server's environment** (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, see `.env.example`); the page never sees, sends or stores one. A metered provider (Anthropic, a remote OpenAI-compatible API) also needs `LIVE=1`, `BUDGET_OWNER` and `"prices_verified": true` in the server's environment/config, and the per-case cap, Odin's reserve and the project ledger apply to it. A base URL typed in the page is honoured only if it is localhost.
+**You choose the model that runs the agents**: a local one through Ollama (free), or Claude. API keys are read from the **server's environment** (`ANTHROPIC_API_KEY`, see `.env.example`); the page never sees, sends or stores one. Claude (metered) also needs `LIVE=1`, `BUDGET_OWNER` and `"prices_verified": true` in the server's environment/config, and the per-case cap, Odin's reserve and the project ledger apply to it. A base URL typed in the page is honoured only if it is localhost.
 
 Start: `python server.py`, open `http://127.0.0.1:8000/app`.
 
@@ -37,7 +37,7 @@ A file that does not exist (for example no trap report) shows nothing or an empt
 |---|---|
 | `GET /api/health`, `/api/meta` | status and version; the providers and, per provider, whether it is ready, free or metered, its installed models and what to set if it is not |
 | `GET /api/runs` | saved and running trials, newest first |
-| `POST /api/runs` | `{question, as_of_date?, runemark_path?, provider: "ollama" \| "openai" \| "anthropic", model?, odin_model?, base_url?}` starts a trial (202); `{provider: "replay", from: "<id>"}` replays one |
+| `POST /api/runs` | `{question, as_of_date?, runemark_path?, provider: "ollama" \| "anthropic", model?, odin_model?, base_url?}` starts a trial (202); `{provider: "replay", from: "<id>"}` replays one |
 | `GET /api/runs/<id>` | summary and the trial record (`schema_version: trial-2`; `result` is `null` while it runs) |
 | `GET /api/runs/<id>/events?after=N` | events after sequence N |
 | `GET /api/runs/<id>/feed` | the document archive admitted by the case's as-of date |

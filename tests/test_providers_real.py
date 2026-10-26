@@ -1,4 +1,4 @@
-"""The real providers (Ollama, OpenAI-compatible, Anthropic) against a local stub HTTP server: request shape, response parsing,
+"""The real providers (Ollama and Anthropic) against a local stub HTTP server: request shape, response parsing,
 fallbacks, gates, pricing, and the provider spec the console and the CLI use. No model is called."""
 import json
 import os
@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from backend.llm.factory import SpecError, build_provider, provider_status  # noqa: E402
-from backend.llm.provider import (LiveCallsDisabled, OllamaProvider, OpenAICompatProvider, ProviderUnavailable,  # noqa: E402
+from backend.llm.provider import (LiveCallsDisabled, OllamaProvider, ProviderUnavailable,  # noqa: E402
                                   RecordingProvider, ReplayProvider, SchemaError, ollama_models)
 from backend.runtime.budget import BudgetGuard  # noqa: E402
 from backend.runtime.config import ConfigError, load_config  # noqa: E402
@@ -63,13 +63,8 @@ def ollama_ok(text='{"a": "x"}', **extra):
                       "prompt_eval_count": 120, "eval_count": 15}, **extra)
 
 
-def openai_ok(text='{"a": "x"}', finish="stop"):
-    return 200, {"choices": [{"message": {"role": "assistant", "content": text}, "finish_reason": finish}],
-                 "usage": {"prompt_tokens": 90, "completion_tokens": 12}}
-
-
 class Env(unittest.TestCase):
-    KEYS = ("LIVE", "BUDGET_OWNER", "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "OPENAI_BASE_URL", "OLLAMA_HOST")
+    KEYS = ("LIVE", "BUDGET_OWNER", "ANTHROPIC_API_KEY", "OLLAMA_HOST")
 
     def setUp(self):
         saved = {k: os.environ.pop(k, None) for k in self.KEYS}
@@ -96,7 +91,7 @@ class OllamaTests(Env):
         self.assertEqual(req["path"], "/api/chat")
         body = req["body"]
         self.assertEqual((body["model"], body["stream"], body["format"]), ("qwen2.5:7b", False, SCHEMA))
-        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 2000, "num_ctx": 16384})
+        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 2000, "num_ctx": 24576})
         self.assertEqual(body["messages"], MESSAGES)
         self.assertEqual(out["output"], {"a": "x"})
         self.assertEqual(out["usage"], {"input_tokens": 120, "output_tokens": 15})
@@ -168,54 +163,6 @@ class OllamaTests(Env):
         self.assertEqual(replay.complete("thor", MESSAGES, SCHEMA)["output"], {"a": "x"})
 
 
-class OpenAICompatTests(Env):
-    def test_a_loopback_server_is_free_and_needs_no_key(self):
-        self.stub.queue.append(openai_ok())
-        p, config = build_provider({"provider": "openai", "model": "local-model", "base_url": self.stub.url + "/v1"})
-        out = p.complete("thor", MESSAGES, SCHEMA)
-        self.assertFalse(p.billable)
-        (req,) = self.stub.seen
-        self.assertEqual(req["path"], "/v1/chat/completions")
-        body = req["body"]
-        self.assertEqual((body["model"], body["temperature"], body["max_tokens"]), ("local-model", 0, 2000))
-        self.assertEqual(body["response_format"], {"type": "json_object"})
-        self.assertIn("satisfies this JSON schema", body["messages"][0]["content"])
-        self.assertIn("You are Thor.", body["messages"][0]["content"])
-        self.assertNotIn("authorization", {k.lower() for k in req["headers"]})
-        self.assertEqual((out["output"], out["usage"]), ({"a": "x"}, {"input_tokens": 90, "output_tokens": 12}))
-
-    def test_a_server_without_json_mode_is_retried_without_it(self):
-        self.stub.queue += [(400, {"error": {"message": "response_format is not supported"}}), openai_ok()]
-        p = OpenAICompatProvider(load_config(), self.stub.url)
-        p.complete("thor", MESSAGES, SCHEMA)
-        self.assertIn("response_format", self.stub.seen[0]["body"])
-        self.assertNotIn("response_format", self.stub.seen[1]["body"])
-
-    def test_length_finish_is_truncation(self):
-        self.stub.queue.append(openai_ok('{"a"', finish="length"))
-        with self.assertRaises(SchemaError):
-            OpenAICompatProvider(load_config(), self.stub.url).complete("thor", MESSAGES, SCHEMA)
-
-    def test_the_remote_default_is_metered_and_gated(self):
-        with self.assertRaises(LiveCallsDisabled):
-            OpenAICompatProvider(load_config())
-        os.environ.update(LIVE="1", BUDGET_OWNER="owner")
-        with self.assertRaises(LiveCallsDisabled):                                    # prices not verified
-            OpenAICompatProvider(load_config())
-        p = OpenAICompatProvider(load_config(overrides={"prices_verified": True}))
-        self.assertTrue(p.billable)
-        with self.assertRaises(LiveCallsDisabled):                                    # no key
-            p.complete("thor", MESSAGES, SCHEMA)
-
-    def test_the_key_goes_only_where_the_environment_points(self):
-        os.environ.update(LIVE="1", BUDGET_OWNER="owner", OPENAI_API_KEY="test-key-not-real")
-        p = OpenAICompatProvider(load_config(overrides={"prices_verified": True}), self.stub.url)     # loopback: no gate, key optional
-        self.stub.queue.append(openai_ok())
-        p.complete("thor", MESSAGES, SCHEMA)
-        sent = {k.lower(): v for k, v in self.stub.seen[0]["headers"].items()}
-        self.assertEqual(sent.get("authorization"), "Bearer test-key-not-real")
-
-
 class FactoryTests(Env):
     def test_ollama_spec_sets_every_role_and_prices_the_model_at_zero(self):
         provider, config = build_provider({"provider": "ollama", "model": "qwen2.5:14b", "odin_model": "llama3.3:70b"})
@@ -231,6 +178,7 @@ class FactoryTests(Env):
                            ({"provider": "ollama", "model": "bad name; rm"}, "model name"),
                            ({"provider": "ollama", "model": "m", "base_url": "http://evil.example.com"}, "loopback"),
                            ({"provider": "ollama", "model": "m", "base_url": "file:///etc/passwd"}, "http(s)"),
+                           ({"provider": "openai", "model": "m"}, "provider must be one of"),
                            ({"provider": "anthropic", "base_url": "http://127.0.0.1:1"}, "fixed address")):
             with self.assertRaises(SpecError, msg=spec) as cm:
                 build_provider(spec)
@@ -239,15 +187,18 @@ class FactoryTests(Env):
     def test_a_loopback_endpoint_from_a_client_is_honoured(self):
         provider, _ = build_provider({"provider": "ollama", "model": "m", "base_url": "http://localhost:11500"})
         self.assertEqual(provider.base_url, "http://localhost:11500")
-        provider, config = build_provider({"provider": "openai", "model": "m", "base_url": "http://127.0.0.1:1234/v1"})
-        self.assertFalse(provider.billable)
-        self.assertEqual(config.price("m"), (0.0, 0.0))
 
     def test_metered_providers_refuse_without_the_budget_owners_switches(self):
         with self.assertRaises(LiveCallsDisabled):
             build_provider({"provider": "anthropic"})
-        with self.assertRaises(ConfigError) as cm:                                    # a remote model with no price
-            build_provider({"provider": "openai", "model": "gpt-unpriced"})
+        os.environ.update(LIVE="1", BUDGET_OWNER="owner")
+        cfg = Path(tempfile.mkdtemp(prefix="cfg_")) / "c.json"
+        self.addCleanup(shutil.rmtree, cfg.parent, True)
+        data = json.loads((ROOT / "config" / "runtime_config.json").read_text(encoding="utf-8"))
+        data["prices_verified"] = True
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+        with self.assertRaises(ConfigError) as cm:                                    # a Claude model with no price
+            build_provider({"provider": "anthropic", "model": "claude-unpriced-1"}, cfg)
         self.assertIn("price", str(cm.exception))
 
     def test_anthropic_models_keep_the_configured_split_by_default(self):
@@ -270,9 +221,9 @@ class FactoryTests(Env):
         self.assertFalse(status["anthropic"]["configured"])
         self.assertIn("ANTHROPIC_API_KEY", status["anthropic"]["hint"])
         self.assertIn("LIVE=1", status["anthropic"]["hint"])
-        self.assertFalse(status["openai"]["configured"])
-        os.environ["OPENAI_BASE_URL"] = "http://127.0.0.1:1234/v1"                    # a local OpenAI-compatible server
-        self.assertTrue({p["name"]: p for p in provider_status()}["openai"]["configured"])
+        self.assertEqual(status["anthropic"]["models"], ["claude-haiku-5-5", "claude-sonnet-5-5"])
+        self.assertIn("Default split", status["anthropic"]["default_label"])
+        self.assertEqual(sorted(status), ["anthropic", "ollama"])                      # only Ollama and Claude
         os.environ["OLLAMA_HOST"] = "http://127.0.0.1:1"
         self.assertFalse({p["name"]: p for p in provider_status()}["ollama"]["configured"])
 

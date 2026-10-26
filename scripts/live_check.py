@@ -1,6 +1,5 @@
-"""Dry run for the budget owner, BEFORE a metered case (Anthropic, or a remote OpenAI-compatible API). It makes NO model call
-and reads no key: it prints what such a run would do, and which providers this machine can use. (Ollama and a localhost
-OpenAI-compatible server are free and need no check.)
+"""Dry run for the budget owner, BEFORE a Claude case. It makes NO model call
+and reads no key: it prints what such a run would do, and which providers this machine can use. (Ollama is free and needs no check.)
 
     python scripts/live_check.py [--final-round] [--config config/runtime_config.json]
 

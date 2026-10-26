@@ -43,6 +43,7 @@
     "odin_briefing": {"max_input_tokens": 16000, "max_output_tokens": 6000}
   },
   "prices_verified": false,
+  "ollama_num_ctx": 24576,
   "project_cap_usd": 4.00,
   "final_round_reserve_usd": 2.50,
   "per_case_cap_usd": 0.50,

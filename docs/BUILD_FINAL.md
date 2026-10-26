@@ -93,6 +93,8 @@ Note: the Trap Report lists tier-4 claims only when an agent cites one; the mock
 ## Update: real providers, mock removed from the product
 
 - The rule-based stand-ins for the agents (and the deterministic provider) moved from `backend/` to `tests/fakes/`; the CLI, the console and the README no longer offer a mock. The test suite still uses them, because it must run without a model.
-- New providers (stdlib `urllib`): `OllamaProvider` (native `/api/chat`, JSON schema as `format`, `num_ctx`, free), `OpenAICompatProvider` (any chat-completions API; a localhost URL is free, a remote one is metered and gated), `AnthropicProvider` (as before). `backend/llm/factory.py` turns `{provider, model, odin_model, base_url}` into a configured run; `tests/test_providers_real.py` exercises all three against a local stub HTTP server.
-- The console and `scripts/run_case.py --provider ollama|openai|anthropic|replay --model ...` start runs on the chosen model. The committed example logs, the `/demo` page and the example screenshots were produced by the fake and were removed: replace them with a real run (`scripts/export_logs.py`).
+- New providers (stdlib `urllib`): `OllamaProvider` (native `/api/chat`, JSON schema as `format`, `num_ctx`, free), `AnthropicProvider` (as before). `backend/llm/factory.py` turns `{provider, model, odin_model, base_url}` into a configured run; `tests/test_providers_real.py` exercises all three against a local stub HTTP server.
+- The console and `scripts/run_case.py --provider ollama|anthropic|replay --model ...` start runs on the chosen model. The committed example logs, the `/demo` page and the example screenshots were produced by the fake and were removed: replace them with a real run (`scripts/export_logs.py`).
 - **Not yet exercised against a real model.** The three providers and the agents' prompts have only met a stub server. A small local model may fail the output guards; the agent is then marked failed (F07) and the briefing is INCOMPLETE rather than wrong.
+
+- The model choice was then narrowed to **Ollama and Claude** (one dropdown in the console); the OpenAI-compatible provider was removed.
