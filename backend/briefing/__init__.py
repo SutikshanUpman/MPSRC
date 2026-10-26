@@ -17,6 +17,7 @@ from ..agents.claims import _norm_num, number_tokens
 from ..agents.odin import _val
 from ..llm.provider import canonical
 from ..provenance.citations import parse_citations
+from .dispute import dispute_paragraphs, dispute_sentence
 
 SCHEMA_VERSION = "briefing-1"
 OUTLOOK_SCHEMA = {
@@ -150,6 +151,10 @@ def build(cf, rulings, cells, corpus, run_info, narrative=None, mode="RULES"):
         para["ruling_id"] = r["ruling_id"]
         sections[key].append(para)
 
+    dispute = dispute_paragraphs(cf, corpus)
+    if dispute:                       # the verdict on the parties the question names comes first in each section
+        for key in ("established", "contested", "conceded"):
+            sections[key] = dispute[key] + sections[key]
     table = []
     for cell in cells:
         cal = calibration(cf, cell, corpus)
@@ -190,7 +195,7 @@ def build(cf, rulings, cells, corpus, run_info, narrative=None, mode="RULES"):
                            f"{rel['to']['citation']}.", "ESTABLISHED", [], [rel["from"]["citation"], rel["to"]["citation"]],
                            [], [], 0.9, cf))
     event += premise_paragraphs(cf, corpus)
-    summary = _summary_para(cf, cells, story["executive_summary"], rulings)
+    summary = _summary_para(cf, cells, dispute_sentence(dispute) + story["executive_summary"], rulings)
     summary["citation_refs"] = list(dict.fromkeys(summary["citation_refs"] + [c for p in event if p["paragraph_id"].startswith("prem")
                                                                                 for c in p["citation_refs"]]))
     for sec in sections.values():
@@ -312,6 +317,11 @@ def sources(cf, corpus, rulings):
     for r in rulings:
         for ref in r["supporting_refs"]:
             cites.setdefault(ref["doc_id"], set()).add(ref["span_id"])
+    found = dispute_paragraphs(cf, corpus) or {}
+    for p in found.get("parties", []) + found.get("measures", []):          # what the dispute check read is listed too
+        m = parse_citations(p["citation"])
+        if m:
+            cites.setdefault(m[0]["doc_id"], set()).add(m[0]["paragraph"])
     out = []
     for d in sorted(cites):
         rec = corpus.records.get(d)

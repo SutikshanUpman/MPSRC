@@ -170,7 +170,11 @@ def _run_full_case(question, pack_paths, config, provider, out_root, memory_dir,
         shutil.copytree(memory_dir, before)
 
     cf, trace, guard = open_case(question, pack_paths, config, provider, case_id=case_id, created_at=created_at)
-    guard.project_spent = ledger["total_spent_usd"]
+    # The project's money limit concerns paid runs only: a free run (Ollama, the mock, a replay) is never stopped by what the paid
+    # runs have spent.
+    guard.project_spent = ledger["total_spent_usd"] if live else 0.0
+    if final_round:                                  # the same ceiling the ledger allowed: the whole project cap, reserve included
+        guard.mode = "final"
     if on_event:                                     # the live feed: what is already written, then everything that follows
         for e in trace.events:
             on_event(e)

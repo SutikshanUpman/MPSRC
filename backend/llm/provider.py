@@ -158,6 +158,9 @@ class HTTPProvider(Provider):
     one JSON-repair attempt (4.2). Keys are read from the environment at call time and never stored or logged."""
     TIMEOUT = 120
     BACKOFF = (1.0, 3.0)
+    # A call that never reached the server (no DNS answer, a refused or blocked socket) sends nothing and costs nothing, so it may
+    # wait for the connection to come back; the strict two-retry limit above is for answers from the server.
+    CONNECT_WAIT = ()                      # a local server that refuses the connection (Ollama) fails at once; Claude sets a wait
     label = "API"
 
     def __init__(self, config):
@@ -167,8 +170,8 @@ class HTTPProvider(Provider):
     def _post(self, url, body, headers):
         req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), method="POST",
                                      headers=dict({"content-type": "application/json"}, **headers))
-        last = None
-        for attempt in range(len(self.BACKOFF) + 1):
+        last, waited = None, 0
+        for attempt in range(len(self.BACKOFF) + 1 + len(self.CONNECT_WAIT)):
             try:
                 with urllib.request.urlopen(req, timeout=self.TIMEOUT) as resp:
                     return json.loads(resp.read().decode("utf-8"))
@@ -185,9 +188,17 @@ class HTTPProvider(Provider):
                     raise err
             except (urllib.error.URLError, TimeoutError, OSError) as e:
                 last = type(e).__name__ + (f": {e.reason}" if isinstance(e, urllib.error.URLError) else "")
+                reason = e.reason if isinstance(e, urllib.error.URLError) else e
+                if isinstance(reason, OSError) and not isinstance(reason, TimeoutError) and waited < len(self.CONNECT_WAIT):
+                    self.fallbacks.append({"type": "FALLBACK_LLM_RETRY", "attempt": attempt + 1, "error": last, "connection": True})
+                    time.sleep(self.CONNECT_WAIT[waited] if self.BACKOFF != (0.0, 0.0) else 0)
+                    waited += 1
+                    continue
             self.fallbacks.append({"type": "FALLBACK_LLM_RETRY", "attempt": attempt + 1, "error": last})
-            if attempt < len(self.BACKOFF):
-                time.sleep(self.BACKOFF[attempt])
+            if attempt - waited < len(self.BACKOFF):
+                time.sleep(self.BACKOFF[attempt - waited])
+            else:
+                break
         raise ProviderUnavailable(f"{self.label} unavailable after retries: {last}")
 
     def _result(self, role, messages, schema, cap, model, text, in_tokens, out_tokens):
@@ -222,13 +233,15 @@ def _require_live_gates(config, what):
 
 
 class AnthropicProvider(HTTPProvider):
-    """Claude via the Messages API. Temperature 0. Billable: refuses to exist unless LIVE=1, BUDGET_OWNER and verified prices."""
+    """Claude via the Messages API (no sampling parameters: current models reject them). Billable: refuses to exist unless LIVE=1, BUDGET_OWNER and verified prices."""
     name = "anthropic"
     billable = True
     label = "Messages API"
     URL = "https://api.anthropic.com/v1/messages"
     VERSION = "2023-06-01"
     TIMEOUT = 90
+    CONNECT_WAIT = (5.0, 10.0, 20.0, 30.0)       # about 65 seconds for DNS or the network to come back, at no cost
+    LOW_EFFORT_ROLES = ("thor", "loki")
 
     def __init__(self, config):
         _require_live_gates(config, "the Anthropic API")
@@ -245,7 +258,13 @@ class AnthropicProvider(HTTPProvider):
         cap = max_output_tokens or self.config.caps(role)["max_output_tokens"]
         model = self.model_for(role)
         system, msgs = self._split(messages)
-        body = {"model": model, "max_tokens": cap, "temperature": 0, "system": system + self._json_instruction(schema), "messages": msgs}
+        # No sampling parameters: the API rejects `temperature` (and top_p/top_k) on current models. Repeatability comes from the
+        # recorded call log (record/replay), not from the sampler.
+        body = {"model": model, "max_tokens": cap, "system": system + self._json_instruction(schema), "messages": msgs}
+        if role in self.LOW_EFFORT_ROLES:
+            # Thor and Loki reason with the calc tool, not in their heads: at the default effort the model's own thinking used
+            # most of the output allowance and cut the answer off mid-JSON.
+            body["output_config"] = {"effort": "low"}
         raw = self._post(self.URL, body, {"x-api-key": key, "anthropic-version": self.VERSION})
         text = "".join(b.get("text", "") for b in raw.get("content", []) if b.get("type") == "text")
         if raw.get("stop_reason") == "max_tokens":

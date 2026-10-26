@@ -96,7 +96,8 @@ def number_guard(where, texts, number_tokens, number_refs, resolve_calc, span_te
         if "calc_id" in ref:
             value = resolve_calc(ref["calc_id"], ref.get("field", ""))
             try:
-                ok = value is not None and round(float(value), 1) == round(float(norm(ref["value"])), 1)
+                # prose gives the size of a change ("fell 60.3%") and the calc field carries its sign: compare magnitudes
+                ok = value is not None and round(abs(float(value)), 1) == round(abs(float(norm(ref["value"]))), 1)
             except (TypeError, ValueError):
                 ok = False
             if not ok:
@@ -152,6 +153,11 @@ def entity_guard(where, texts, cf, corpus, citations=()):
             w = m.group(0)
             if not w[0].isupper() or w.isupper() or w.lower() in allowed:
                 continue
+            if re.sub(r"'s?$", "", w).lower() in allowed:     # a possessive of a known name: "Harbour's"
+                continue
+            parts = [x for x in w.split("-") if x]
+            if len(parts) > 1 and all(not x[0].isupper() or x.lower() in allowed for x in parts):
+                continue                                       # a route written "Orvan-to-Ravik": every name in it is known
             before = body[:m.start()].rstrip()
             if not before or before[-1] in ".!?:;(\n":        # sentence start
                 continue

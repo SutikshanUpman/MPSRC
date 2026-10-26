@@ -180,6 +180,24 @@ def fit_input(side, messages, config):
     return rebuilt, None
 
 
+def _hints(problems):
+    """What the model should do about the validator's messages, in plain steps (a small model does not infer the tool order)."""
+    text = " ".join(problems)
+    hints = []
+    if "new round-2 calc_id" in text:
+        hints.append("A QUALIFY that changes a range needs fresh arithmetic: call `calc` now (in this round) for that cell, then point "
+                     "the revised estimate's low_ref/high_ref at the new calc id. If you will not recalculate, DEFEND with new "
+                     "evidence instead, or CONCEDE.")
+    elif "calc_id" in text or "does not match" in text:
+        hints.append("A CELL_ESTIMATE rests on the calc tool: call `calc` for each cell first, then set calc_ids to the ids it returns "
+                     "(like calc-r1-thor-01) and low_ref/high_ref to its fields. Do not type trade figures yourself.")
+    if "citation" in text:
+        hints.append("Cite only documents your search or get_document returned, each as one bracket [DOC_ID, P#, timestamp].")
+    if "CELL_ESTIMATE claims" in text:
+        hints.append("Submit exactly one CELL_ESTIMATE for every cell in your batch: run `calc` for the cells still missing one, then submit all together.")
+    return hints or ["Fix each problem and submit again."]
+
+
 def model_loop(side, messages, provider, guard, config, on_tools, on_submit):
     """One agent step (F07): model turns through the guard; tool turns run tools, a submit is validated.
     `on_tools(out, turn)` returns the tool results; `on_submit(out, turn)` returns problems (empty = accepted).
@@ -215,7 +233,7 @@ def model_loop(side, messages, provider, guard, config, on_tools, on_submit):
         if retries > config["max_model_retries_per_call"]:
             raise StepFailed(f"validation failed {retries} times (max_model_retries_per_call="
                              f"{config['max_model_retries_per_call']})", problems)
-        messages.append({"role": "user", "content": canonical({"validation_errors": problems})})
+        messages.append({"role": "user", "content": canonical({"validation_errors": problems, "what_to_do": _hints(problems)})})
     raise StepFailed(f"no valid output within max_model_turns_per_agent_step={config['max_model_turns_per_agent_step']}", problems)
 
 
@@ -234,7 +252,8 @@ def run_step(side, snapshot, cells, corpus, provider, guard, config, masked):
 
     def on_submit(out, turn):
         _log_decisions(side, out, turn)
-        out["claims"] = normalize_claims(out.get("claims", []), side.agent, 1, 1, side.tools)     # the runtime fills the paperwork
+        out["claims"] = normalize_claims(out.get("claims", []), side.agent, 1, 1, side.tools,
+                                         taken={c["claim_id"] for c in side.claims})     # the runtime fills the paperwork
         problems = validate_claims(side.agent, out.get("claims", []), set(cells), side.tools, snapshot, corpus, config,
                                    masked, prior=side.claims)
         return problems + [f"cell {c}: no executed search by {side.agent} in this case (every cell needs one)"
@@ -260,7 +279,12 @@ def _write_memory(side, writes, snapshot, corpus):
     pub_dates = {d: r["pub_date"] for d, r in corpus.records.items()}
     for w in writes:
         doc_ids = [d for d in w["source_doc_ids"] if d in retrieved_docs]
-        entry = side.store.write(w["key"], w["kind"], w["value"], doc_ids, pub_dates, snapshot["as_of_date"],
+        value = w["value"]
+        if not isinstance(value, dict):                    # a memory value is an object; a plain note becomes one
+            value = {"note": str(value)}
+        if w["kind"] == "case_note":
+            value = dict(value, event_id=snapshot["event_id"])     # a case note belongs to the event it was written for
+        entry = side.store.write(w["key"], w["kind"], value, doc_ids, pub_dates, snapshot["as_of_date"],
                                  snapshot["case_id"])
         if entry:
             side.memory_written.append(entry["memory_id"])

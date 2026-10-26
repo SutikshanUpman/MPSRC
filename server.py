@@ -32,6 +32,7 @@ import shutil
 import sys
 import tempfile
 import threading
+import traceback
 import uuid
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -170,6 +171,7 @@ def _run_job(run_id, question, pack, provider, config, src, as_of):
         job["status"] = "done"
     except Exception as e:                       # a failed run must not take the server down
         job["status"], job["error"] = "failed", f"{type(e).__name__}: {e}"
+        traceback.print_exc()                    # the page shows the one-line error; the server log keeps the whole trace
     finally:
         if job["status"] == "done":
             JOBS.pop(run_id, None)               # from here on the run is read from its files

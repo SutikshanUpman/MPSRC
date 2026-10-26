@@ -222,6 +222,14 @@ def odin_view(cf, rulings):
                              "estimate": by_id[r["claim_id"]]["estimate"]} for r in open_]}
 
 
+def _num_key(v):
+    """A figure compared by size at one decimal: "60.3", 60.3 and "-60.3" are the same figure."""
+    try:
+        return round(abs(float(str(v).replace(",", ""))), 1)
+    except ValueError:
+        return str(v)
+
+
 def model_pass(cf, rulings, provider, guard, trace, corpus, masked, final_ruling=False):
     """Step 3. Mutates `rulings` in place for the claims the model rules on; returns the mode label."""
     view = odin_view(cf, rulings)
@@ -235,7 +243,7 @@ def model_pass(cf, rulings, provider, guard, trace, corpus, masked, final_ruling
         return "DETERMINISTIC_FALLBACK"
     allowed = {c["claim_id"]: c for c in view["open_claims"]}
     by_claim = {r["claim_id"]: r for r in rulings}
-    problems = []
+    problems, accepted = [], []
     for item in out["rulings"]:
         c = allowed.get(item["claim_id"])
         if c is None:
@@ -243,19 +251,28 @@ def model_pass(cf, rulings, provider, guard, trace, corpus, masked, final_ruling
             continue
         claim = next(x for x in cf["claim_ledger"] if x["claim_id"] == item["claim_id"])
         where = item["claim_id"]
-        problems += guards.entity_guard(where, [item["rationale"]], cf, corpus, claim["citations"])
-        problems += guards.injection_guard(where, [item["rationale"]], masked)
-        problems += guards.quote_guard(where, [item["rationale"]], claim["citations"], corpus)
-        allowed_numbers = {t.replace(",", "") for t in number_tokens(claim["claim_text"] + " " + c["default_rationale"])}
+        found = guards.entity_guard(where, [item["rationale"]], cf, corpus, claim["citations"])
+        found += guards.injection_guard(where, [item["rationale"]], masked)
+        found += guards.quote_guard(where, [item["rationale"]], claim["citations"], corpus)
+        # Odin may quote any figure the claim itself carries: its text, its range bounds and its referenced figures (a model
+        # often keeps the numbers in the estimate fields and out of the sentence). A figure from anywhere else is a new fact.
+        allowed_numbers = {_num_key(t) for t in number_tokens(claim["claim_text"] + " " + c["default_rationale"])}
+        allowed_numbers |= {_num_key(v) for v in [(claim["estimate"] or {}).get("low"), (claim["estimate"] or {}).get("high")]
+                            + [r["value"] for r in claim["number_refs"]] if v is not None}
         for t in number_tokens(item["rationale"]):
-            if t.replace(",", "") not in allowed_numbers:
-                problems.append(f"{where}: number {t} in the rationale is not in the claim")
+            if _num_key(t) not in allowed_numbers:
+                found.append(f"{where}: number {t} in the rationale is not in the claim")
         if not 0 <= item["confidence"] <= 1:
-            problems.append(f"{where}: confidence outside 0-1")
-    if problems:
-        trace.emit("runtime", "FALLBACK_ODIN_RULES", {"reason": "GUARD_FAILED", "problems": problems[:10]}, "WARNING")
+            found.append(f"{where}: confidence outside 0-1")
+        problems += found
+        if not found:
+            accepted.append(item)
+    if problems:                      # only the rulings that failed keep the rules' decision; the others stand
+        trace.emit("runtime", "FALLBACK_ODIN_RULES", {"reason": "GUARD_FAILED", "problems": problems[:10],
+                                                      "kept_rules_for": sorted({p.split(":")[0] for p in problems})}, "WARNING")
+    if not accepted:
         return "DETERMINISTIC_FALLBACK"
-    for item in out["rulings"]:
+    for item in accepted:
         r = by_claim[item["claim_id"]]
         r["decided_by"] = "MODEL"
         r["decision"], r["rationale"], r["confidence"] = item["decision"], item["rationale"], item["confidence"]

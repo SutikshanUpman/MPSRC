@@ -43,8 +43,8 @@ class MemoryStore:
         for e in self.entries():
             if e["max_source_pub_date"] and e["max_source_pub_date"] > as_of:
                 hidden.append(e)
-            elif e["kind"] == "case_note" and e["value"].get("event_id") != event_id:
-                continue
+            elif e["kind"] == "case_note" and not (isinstance(e["value"], dict) and e["value"].get("event_id") == event_id):
+                continue                  # another event's note, or an entry whose value is not an object (never loaded)
             else:
                 visible.append(e)
         return visible, hidden

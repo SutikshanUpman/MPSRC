@@ -119,6 +119,7 @@ EVENT_PAYLOAD_REQUIRED = {
     "SEARCH_SHARED_QUERY": ["query", "filters", "agents"],
     "CHALLENGES_SUBMITTED": ["challenge_ids", "targets", "kinds"],
     "RESPONSES_SUBMITTED": ["response_ids", "types", "revised_claim_ids"],
+    "REVISION_SET_ASIDE": ["claim_ids", "reason"],
     "CLAIM_SUPERSEDED": ["claim_id", "superseded_by", "challenge_id"],
     "CLAIM_CONCEDED": ["claim_id", "challenge_id", "reason"],
     "ROUND_2_COMPLETED": ["challenges", "responses", "revised_claims", "failures"],

@@ -346,6 +346,25 @@ class OdinModelAndFallbacks(unittest.TestCase):
         self.assertTrue(all(r["decided_by"] == "RULES" for r in res["rulings"]))
         self.assertEqual(res["briefing"]["header"]["completion_status"], "COMPLETE")
 
+    def test_odin_may_quote_the_claims_own_range_and_one_bad_ruling_does_not_sink_the_rest(self):
+        def judge(role, messages, schema):
+            view = json.loads(messages[-1]["content"])
+            out = []
+            for i, c in enumerate(view["open_claims"]):
+                est = c["estimate"] or {}
+                bound = f" The high bound of {est['high']:g} credits no substitute." if est.get("high") is not None else ""
+                text = ("Imports fell 88.8% according to Zandria customs." if i == 0     # a new fact: this one ruling falls back
+                        else "The challenge was answered only in part." + bound)        # the claim's own bound: allowed
+                out.append({"claim_id": c["claim_id"], "decision": "QUALIFIED", "confidence": 0.6, "rationale": text})
+            return {"rulings": out}
+        res = self.run_with({"odin_ruling": judge})
+        self.assertIn("run 1: MODEL_ON_OPEN_CLAIMS", res["record"]["ruling_mode"])
+        fallback = res["trace"].of_type("FALLBACK_ODIN_RULES")[0]["payload"]
+        self.assertEqual(len(fallback["kept_rules_for"]), 1)                              # only the ruling with the new fact
+        first = next(e for e in res["trace"].of_type("ODIN_RULED") if e["payload"]["run"] == 1)
+        self.assertEqual(first["payload"]["mode"], "MODEL_ON_OPEN_CLAIMS")                # Odin's other rulings stood
+        self.assertFalse(any("88.8" in (r["rationale"] or "") for r in res["rulings"]))
+
     def test_model_may_reject_an_open_claim(self):
         def strict(role, messages, schema):
             view = json.loads(messages[-1]["content"])
@@ -541,7 +560,7 @@ class LiveTransportFallbacks(unittest.TestCase):
         self.assertEqual(len(calls), 3)
         self.assertEqual([f["type"] for f in p.fallbacks], ["FALLBACK_LLM_RETRY", "FALLBACK_LLM_RETRY"])
         body = calls[-1]
-        self.assertEqual(body["temperature"], 0)
+        self.assertNotIn("temperature", body)             # current models reject sampling parameters
         self.assertEqual(body["max_tokens"], self.verified.caps("thor")["max_output_tokens"])
         self.assertEqual(body["model"], self.verified.model_for("thor"))
         self.assertEqual(body["messages"], [{"role": "user", "content": "hi"}])
@@ -763,6 +782,171 @@ class SmallModelPaperwork(unittest.TestCase):
         self.assertNotIn("99.9", refs)                                 # no source: left for the number guard to reject
         self.assertEqual(c["citations"], ["[ORV-0009, P4, 2027-01-19 09:20]"])      # a range and a non-citation are dropped
         self.assertEqual((c["estimate"]["low"], c["estimate"]["high"], c["status"], c["supersedes"]), (57.6, 57.7, "submitted", None))
+
+
+    def test_a_reused_claim_id_gets_the_next_free_one(self):
+        from backend.agents.normalize import normalize_claims
+
+        class Tools:
+            def calc_by_id(self, cid):
+                return None
+        claims = [{"claim_id": "claim-thor-001", "claim_type": "SUPPORTING", "claim_kind": "INFERENCE", "country": "A", "sector": "B", "claim_text": "x"},
+                  {"claim_id": "claim-thor-004", "claim_type": "SUPPORTING", "claim_kind": "INFERENCE", "country": "A", "sector": "B", "claim_text": "y"},
+                  {"claim_id": "claim-thor-004", "claim_type": "SUPPORTING", "claim_kind": "INFERENCE", "country": "A", "sector": "B", "claim_text": "z"}]
+        out = normalize_claims(claims, "thor", 1, 1, Tools(), taken={"claim-thor-001", "claim-thor-002"})
+        self.assertEqual([c["claim_id"] for c in out], ["claim-thor-003", "claim-thor-004", "claim-thor-005"])
+
+    def test_prose_gives_the_size_of_a_fall_and_a_tier_label_is_not_a_figure(self):
+        from backend.agents.claims import _check_numbers, number_tokens
+        from backend.agents.normalize import _number_ref_for
+        rec = {"calc_id": "calc-r1-thor-01", "passes": {"with_flagged": {"direct": {"value_change_pct": -60.3}}}}
+        self.assertEqual(_number_ref_for("60.3", [rec])["field"], "passes.with_flagged.direct.value_change_pct")
+        c = {"number_refs": [{"calc_id": "calc-r1-thor-01", "field": "passes.with_flagged.direct.value_change_pct", "value": "60.3"}],
+             "claim_text": "The route fell by 60.3%. A Tier 2 news report agrees.", "mechanism": None, "assumptions": []}
+
+        class Tools:
+            retrieved = {}
+        self.assertEqual(_check_numbers("claims[0]", c, {"calc-r1-thor-01": rec}, Tools()), [])
+        self.assertEqual(number_tokens("A Tier 2 report"), [])
+        self.assertEqual(number_tokens("2 months"), ["2"])             # a bare figure still needs a source
+
+    def test_a_free_text_case_note_is_stored_as_an_object_and_a_bad_old_entry_is_skipped(self):
+        from backend.memory.store import MemoryStore
+        tmp = tempfile.mkdtemp(prefix="final_mem_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        store = MemoryStore(tmp, "thor", "thor")
+        store.write("k", "case_note", "a plain sentence", ["D"], {"D": "2027-01-01"}, "2027-01-25", "case-1")      # as an older run stored it
+        store.write("k2", "case_note", {"event_id": "E5", "note": "ok"}, ["D"], {"D": "2027-01-01"}, "2027-01-25", "case-1")
+        visible, hidden = store.read_for_case("2027-01-25", "E5")
+        self.assertEqual([e["key"] for e in visible], ["k2"])
+
+
+    def test_a_hyphenated_route_of_known_names_passes_the_entity_guard_and_an_unknown_one_does_not(self):
+        from backend.guards import entity_guard
+        cf = {"question": "", "event_name": "", "target_countries": ["Ravik", "Midgard"], "target_sectors": ["Wheat"],
+              "manifest_scope": {}, "exposure_cells": [{"country": "Ravik", "sector": "Wheat"}], "premise_check": None}
+        corpus = type("C", (), {"records": {}})()
+        self.assertEqual(entity_guard("c", ["The share fell. The Orvan-to-Ravik route lost volume."], dict(cf, target_countries=["Ravik", "Orvan"]), corpus), [])
+        bad = entity_guard("c", ["The share fell. The Orvan-to-Narnia route lost volume."], dict(cf, target_countries=["Ravik", "Orvan"]), corpus)
+        self.assertEqual(len(bad), 1)
+        self.assertEqual(entity_guard("c", ["The share fell. Then Ravik's buyers moved."], dict(cf, target_countries=["Ravik"]), corpus), [])
+        self.assertEqual(len(entity_guard("c", ["The share fell. Then Narnia's buyers moved."], cf, corpus)), 1)
+
+
+    def test_a_bare_year_is_a_date_but_a_year_sized_quantity_still_needs_a_source(self):
+        from backend.agents.claims import number_tokens
+        self.assertEqual(number_tokens("Flows in 2025 and 2026 were steady."), [])
+        self.assertEqual(number_tokens("Volume was 2025 tonnes."), ["2025"])
+        self.assertEqual(number_tokens("Exports reached 2025 for the month."), ["2025"])      # no date word: a quantity
+        self.assertEqual(number_tokens("It fell 2026%."), ["2026"])
+
+
+    def test_a_named_dispute_is_adjudicated_from_the_documents(self):
+        from backend.ingestion.pipeline import ingest_pack
+        from backend.briefing.dispute import dispute_paragraphs
+        corpus = ingest_pack(PACK)
+        q2 = ("Adjudicate the dispute between Ledger Analytics (projecting a -90% grain export wipeout) versus Corvan Grain company "
+              "statements and customs telemetry. Detail which claims are Established, Contested, or Conceded.")
+        out = dispute_paragraphs({"question": q2, "as_of_date": "2027-01-25"}, corpus)
+        self.assertEqual({p["party"]: p["verdict"] for p in out["parties"]}, {"Ledger Analytics": "CONTESTED", "Corvan Grain": "ESTABLISHED"})
+        self.assertTrue(any("ORV-0012" in c for p in out["established"] for c in p["citation_refs"]))     # the Tier 1 index corroborates
+        self.assertTrue(any("ORV-0045" in c for p in out["conceded"] for c in p["citation_refs"]))        # the analyst's own admission
+        from backend.guards import entity_guard
+        cf = {"question": q2, "event_name": "Orvan grain corridor collapse", "target_countries": [], "target_sectors": [], "manifest_scope": {}, "exposure_cells": []}
+        for section in ("established", "contested", "conceded"):
+            for para in out[section]:                       # the briefing gate must keep what the check wrote (no possessives, no unknown names)
+                self.assertEqual(entity_guard(para["paragraph_id"], [para["text"]], cf, corpus, para["citation_refs"]), [], para["text"])
+        self.assertIsNone(dispute_paragraphs({"question": "Evaluate the breaking alert that the port was destroyed.", "as_of_date": "2027-01-25"}, corpus))
+
+
+    def test_a_dropped_connection_is_waited_out_but_an_error_answer_is_not(self):
+        import urllib.error
+        from backend.llm import provider as P
+        calls = []
+
+        class Resp:
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+            def read(self): return b'{"ok": true}'
+
+        def flaky(req, timeout=0):
+            calls.append(1)
+            if len(calls) < 4:
+                raise urllib.error.URLError(OSError(11001, "getaddrinfo failed"))
+            return Resp()
+        real = P.urllib.request.urlopen
+        P.urllib.request.urlopen = flaky
+        self.addCleanup(setattr, P.urllib.request, "urlopen", real)
+        p = P.HTTPProvider.__new__(P.HTTPProvider)
+        p.calls, p.fallbacks, p.BACKOFF, p.CONNECT_WAIT = [], [], (0.0, 0.0), (5.0, 10.0, 20.0, 30.0)
+        self.assertEqual(p._post("https://example.invalid", {}, {}), {"ok": True})
+        self.assertEqual(len(calls), 4)                                                    # three drops, then the answer
+        self.assertTrue(all(f.get("connection") for f in p.fallbacks))
+
+
+    def test_a_no_flow_claim_gets_the_empty_calc_only_for_a_cell_whose_rows_were_asked_for_and_absent(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            def __init__(self):
+                self.calcs, self.asked = [], {("a", "b")}
+
+            def calc_by_id(self, cid):
+                return next((c for c in self.calcs if c["calc_id"] == cid), None)
+
+            def calc_for_empty_cell(self, country, sector):
+                if (country.lower(), sector.lower()) not in self.asked:
+                    return None
+                rec = {"calc_id": "calc-r1-thor-09", "country": country, "sector": sector, "status": "NO_DOCUMENTED_FLOW", "passes": {}}
+                self.calcs.append(rec)
+                return rec
+        claim = {"claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "x", "estimate_status": "NO_DOCUMENTED_FLOW"}
+        c = normalize_claim(dict(claim), "thor", 1, 1, Tools())
+        self.assertEqual(c["calc_ids"], ["calc-r1-thor-09"])
+        c = normalize_claim(dict(claim, country="Z"), "thor", 1, 1, Tools())              # never asked for rows: nothing is made up
+        self.assertEqual(c["calc_ids"], [])
+
+
+    def test_a_revision_keeps_its_targets_type_and_cell_and_gets_a_fresh_id(self):
+        from backend.agents.cross_exam import align_revisions
+        snapshot = {"claim_ledger": [{"claim_id": "claim-loki-001", "claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B"},
+                                     {"claim_id": "claim-loki-002", "claim_type": "SUPPORTING", "country": "A", "sector": "B"}]}
+        challenges = [{"challenge_id": "challenge-thor-001", "target_claim_id": "claim-loki-001"}]
+        out = {"responses": [{"challenge_id": "challenge-thor-001", "response_type": "QUALIFY", "revised_claim_id": "claim-loki-002"}],
+               "claims": [{"claim_id": "claim-loki-002", "claim_type": "SUPPORTING", "country": "Z", "sector": "Y", "claim_text": "narrower"}]}
+        align_revisions(out, "loki", challenges, snapshot)
+        c = out["claims"][0]
+        self.assertEqual((c["claim_id"], c["claim_type"], c["country"], c["sector"], c["supersedes"]),
+                         ("claim-loki-003", "CELL_ESTIMATE", "A", "B", "claim-loki-001"))
+        self.assertEqual(out["responses"][0]["revised_claim_id"], "claim-loki-003")
+        self.assertEqual(c["claim_text"], "narrower")                                    # what it says is untouched
+
+    def test_a_revision_no_qualify_names_is_set_aside_not_a_failure(self):
+        from backend.agents.cross_exam import align_revisions
+        snapshot = {"claim_ledger": [{"claim_id": "claim-thor-001", "claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B"}]}
+        challenges = [{"challenge_id": "challenge-loki-001", "target_claim_id": "claim-thor-001"}]
+        out = {"responses": [{"challenge_id": "challenge-loki-001", "response_type": "DEFEND", "revised_claim_id": None}],
+               "claims": [{"claim_id": "claim-thor-013", "claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "draft"}]}
+        self.assertEqual(align_revisions(out, "thor", challenges, snapshot), ["claim-thor-013"])
+        self.assertEqual(out["claims"], [])                                                # the DEFEND stands on its own
+
+
+    def test_the_final_round_switch_lifts_the_guards_project_limit_as_well_as_the_ledgers(self):
+        from backend.runtime.ledger import LedgerRefused
+
+        def case(final, paid):
+            tmp = tempfile.mkdtemp(prefix="final_round_")
+            self.addCleanup(shutil.rmtree, tmp, True)
+            (Path(tmp) / "ledger.json").write_text(json.dumps({"total_spent_usd": 1.49, "runs": []}), encoding="utf-8")
+            provider = make_provider("mock", CONFIG)
+            provider.billable = paid                                               # the mock stands in for a paid model
+            return run(QUESTION, [PACK], tmp, "fr", provider=provider, final_round=final)
+        with self.assertRaises(LedgerRefused):                                     # development: $1.49 spent, no room
+            case(final=False, paid=True)
+        paid_final = {c["status"] for c in case(final=True, paid=True)["cells"]}
+        self.assertNotIn("INCOMPLETE_BUDGET_LIMIT", paid_final)                     # final round: the guard uses the full cap too
+        free = {c["status"] for c in case(final=False, paid=False)["cells"]}
+        self.assertNotIn("INCOMPLETE_BUDGET_LIMIT", free)                           # a free run is never stopped by paid spend
 
 
 if __name__ == "__main__":

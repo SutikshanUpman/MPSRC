@@ -170,7 +170,8 @@ def run_step2(side, snapshot, gaps, queries, current, corpus, provider, guard, c
         return [side.tools.execute(c) for c in out.get("tool_calls", [])]
 
     def on_submit(out, turn):
-        out["claims"] = normalize_claims(out.get("claims", []), side.agent, 2, 1, side.tools, supersedes=current)
+        out["claims"] = normalize_claims(out.get("claims", []), side.agent, 2, 1, side.tools, supersedes=current,
+                                         taken=set(prior_ids))
         problems = validate_run2(side.agent, out.get("claims", []), gaps, current, side.tools, snapshot, corpus, config,
                                  masked, run1_cites, prior_ids)
         return problems + [f"cell {c}: no executed search by {side.agent} in this case" for c in cells

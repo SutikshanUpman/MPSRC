@@ -227,7 +227,8 @@ def trial_result(run_id, bundle, corpus):
             "query_count": len(searches), "claims": [_claim(c, rulings.get(c["claim_id"]), corpus) for c in mine],
             "challenges": [_challenge(e, corpus) for e in xs],
             "rulings": [_ruling(rulings[i], corpus) for i in sorted(ids) if i in rulings],
-            "sufficient": (not sent_back) if n == 1 else True, "returned_by_odin": sent_back and n == 1,
+            # Run 2 is the last run (max_runs): with gaps left it is not "sufficient", the run limit stopped it and the cells are flagged
+            "sufficient": (not sent_back) if n == 1 else not status_rec.get("gaps"), "returned_by_odin": sent_back and n == 1,
             "missing_evidence": [f"{g['country']} {g['sector']}: {', '.join(g['missing']) or g['reason']}" for g in status_rec.get("gaps", [])]
             if n == 2 else [f"{g['country']} {g['sector']}: {g['missing']}" for g in cf["evidence_gaps"]] if sent_back else [],
             "errors": [f"{f['agent']}: {f['reason']}" for f in status_rec.get("agent_failures", [])]

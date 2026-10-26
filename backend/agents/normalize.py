@@ -55,10 +55,10 @@ def _secondary(rec):
 
 def _number_ref_for(token, records):
     """A calc field whose value is this number at one decimal: the figure came from the calc tool."""
-    want = round(float(_norm_num(token)), 1)
+    want = round(abs(float(_norm_num(token))), 1)       # prose gives the magnitude of a change; the field carries its sign
     for rec in records:
         for path, value in _leaf_paths({k: rec[k] for k in ("envelope", "passes") if k in rec}):
-            if round(float(value), 1) == want:
+            if round(abs(float(value)), 1) == want:
                 return {"value": token, "calc_id": rec["calc_id"], "field": path}
     return None
 
@@ -98,6 +98,11 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
         own = [r for r in getattr(tools, "calcs", []) if (r["country"], r["sector"]) == (c.get("country"), c.get("sector"))]
         if own:
             c["calc_ids"].append(own[-1]["calc_id"])
+        elif c.get("estimate_status") not in (None, "ESTIMATED") and hasattr(tools, "calc_for_empty_cell") \
+                and isinstance(c.get("country"), str) and isinstance(c.get("sector"), str):
+            rec = tools.calc_for_empty_cell(c["country"], c["sector"])     # "no documented flow" for a cell with no rows
+            if rec:
+                c["calc_ids"].append(rec["calc_id"])
     records = [rec for rec in (tools.calc_by_id(i) for i in c["calc_ids"]) if rec]
     if records and not (isinstance(c.get("country"), str) and c["country"] and isinstance(c.get("sector"), str) and c["sector"]):
         c["country"], c["sector"] = records[0]["country"], records[0]["sector"]       # a claim built on one calc is about that calc's cell
@@ -151,14 +156,28 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
     return c
 
 
-def normalize_claims(claims, agent, run, round_, tools, supersedes=None):
-    """`supersedes`: {"Country|Sector": claim_id} for a Run-2 estimate that was left blank."""
+def _fresh_id(agent, taken):
+    n = 1
+    while f"claim-{agent}-{n:03d}" in taken:
+        n += 1
+    return f"claim-{agent}-{n:03d}"
+
+
+def normalize_claims(claims, agent, run, round_, tools, supersedes=None, taken=()):
+    """`supersedes`: {"Country|Sector": claim_id} for a Run-2 estimate that was left blank.
+    `taken`: claim ids this side already has. A claim id is runtime bookkeeping: a model that starts again at claim-x-001 in
+    its second step gets the next free id, never a rejection."""
     if not isinstance(claims, list):
         return claims
-    out = []
+    out, used = [], set(taken)
     for c in claims:
         sup = None
         if isinstance(c, dict) and supersedes:
             sup = supersedes.get(f"{c.get('country')}|{c.get('sector')}")
-        out.append(normalize_claim(c, agent, run, round_, tools, sup))
+        c = normalize_claim(c, agent, run, round_, tools, sup)
+        if isinstance(c, dict):
+            if not isinstance(c.get("claim_id"), str) or not c["claim_id"] or c["claim_id"] in used:
+                c["claim_id"] = _fresh_id(agent, used)
+            used.add(c["claim_id"])
+        out.append(c)
     return out

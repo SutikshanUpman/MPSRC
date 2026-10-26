@@ -42,6 +42,8 @@ NUMBER_SKIP = [re.compile(p, re.I) for p in (
     r"\b[A-Z]{2,}-\d+(?:\|\d{4}-\d{2}(?:#\d+)?)?",          # document IDs and row keys
     r"\b(?:calc|claim|mem)-[\w-]+",                         # calc, claim and memory IDs
     r"\b(?:table|row)\s+[A-Z]?\d+\b",                        # OD-1 table and row names
+    r"\b(?:in|since|from|during|until|through|before|after|early|late|mid|between|of|and|to)\s+(?:19|20)\d{2}\b(?!-\d)(?!\s*(?:%|percent|tonnes?|tons?|usd|million|billion|k\b))",   # "in 2025": a year after a date word is a date
+    r"\btier\s+[1-5]\b",                                    # a reliability tier is a label from the Case File, not a figure
     r"\b\d{4}-\d{2}(?:-\d{2})?\b",                          # ISO dates and months
     r"\b\d{1,2}\s+" + _MONTH + r"(?:\s+\d{4})?\b",          # 4 June (2031)
     r"\b" + _MONTH + r"\s+\d{1,2}(?:,\s*\d{4})?\b",         # June 4(, 2031)
@@ -232,7 +234,8 @@ def _check_numbers(where, c, calcs, tools):
                 value = field(rec, ref["field"]) if rec else None
             except (KeyError, TypeError):
                 value = None
-            if value is None or round(float(value), 1) != round(float(_norm_num(ref["value"])), 1):
+            # a percentage in prose is a magnitude ("fell by 60.3%" for a field of -60.3): the direction is in the words
+            if value is None or round(abs(float(value)), 1) != round(abs(float(_norm_num(ref["value"]))), 1):
                 problems.append(f"{where}: number {ref['value']} does not match {ref.get('calc_id')}:{ref.get('field')}")
         elif "citation" in ref:
             span = tools.retrieved.get(ref["citation"])

@@ -21,6 +21,12 @@ import { RunemarkChart } from "./RunemarkChart";
 import { useSource } from "./SourcePanel";
 import { DamagedNotice, EmptyState, LoadingRecord, UnchallengedNote } from "./States";
 
+/** A run is sufficient, sent back by Odin, or (the last run) stopped by the run limit with its gaps flagged. */
+function runState(run: TrialRun): string {
+  if (run.sufficient) return "sufficient";
+  return run.returned_by_odin ? "returned for evidence" : "run limit reached · gaps flagged";
+}
+
 const TABS = ["Briefing", "Case File", "Runemark map", "Document feed", "Trial", "Exposure", "Audit"] as const;
 type Tab = (typeof TABS)[number];
 
@@ -692,7 +698,7 @@ function TrialRecordView({ result }: { result: TrialResult }) {
                   {item.claims.length} claims · {item.query_count} searches
                 </em>
               </span>
-              <span className="round-state">{item.sufficient ? "sufficient" : "returned"}</span>
+              <span className="round-state">{item.sufficient ? "sufficient" : item.returned_by_odin ? "returned" : "limit reached"}</span>
             </button>
           ))}
         </div>
@@ -721,7 +727,7 @@ function TrialRecordView({ result }: { result: TrialResult }) {
         </div>
         <div>
           <dt>Record</dt>
-          <dd>{run.sufficient ? "sufficient" : "returned for evidence"}</dd>
+          <dd>{runState(run)}</dd>
         </div>
       </dl>
 
@@ -978,7 +984,7 @@ function AuditView({ result, onReplay }: { result: TrialResult; onReplay?: () =>
               <div className="round-head">
                 <h4>Trial run {roman(run.run_number)}</h4>
                 <span className={`round-state ${run.sufficient ? "ok" : "open"}`}>
-                  {run.sufficient ? "sufficient" : "returned for evidence"}
+                  {runState(run)}
                 </span>
               </div>
               <dl className="round-dl">

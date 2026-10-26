@@ -140,6 +140,47 @@ def validate_challenges(agent, challenges, snapshot, tools, corpus, config, mask
     return problems
 
 
+def align_revisions(out, agent, challenges, snapshot):
+    """The bookkeeping of a QUALIFY: the revised claim keeps its target's type and cell and supersedes it, and carries an id nobody
+    has used. A model that returns a SUPPORTING claim for a CELL_ESTIMATE target, or starts again at claim-x-001, is corrected
+    here; what the revision says (its text, range, citations, calc) is never touched."""
+    if not isinstance(out, dict) or not isinstance(out.get("responses"), list) or not isinstance(out.get("claims"), list):
+        return
+    ledger = {c["claim_id"]: c for c in snapshot["claim_ledger"]}
+    target_of = {ch["challenge_id"]: ch["target_claim_id"] for ch in challenges}
+    used = set(ledger)
+    for c in out["claims"]:
+        if not isinstance(c, dict):
+            continue
+        old = c.get("claim_id")
+        if not isinstance(old, str) or not old or old in used:
+            n = 1
+            while f"claim-{agent}-{n:03d}" in used:
+                n += 1
+            c["claim_id"] = f"claim-{agent}-{n:03d}"
+            for r in out["responses"]:
+                if isinstance(r, dict) and r.get("revised_claim_id") == old and not r.get("_renamed"):
+                    r["revised_claim_id"], r["_renamed"] = c["claim_id"], True
+                    break
+        used.add(c["claim_id"])
+    for r in out["responses"]:
+        if isinstance(r, dict):
+            r.pop("_renamed", None)
+        if not isinstance(r, dict) or r.get("response_type") != "QUALIFY":
+            continue
+        target = ledger.get(target_of.get(r.get("challenge_id")))
+        new = next((c for c in out["claims"] if isinstance(c, dict) and c.get("claim_id") == r.get("revised_claim_id")), None)
+        if target and new is not None:
+            new["claim_type"], new["country"], new["sector"] = target["claim_type"], target["country"], target["sector"]
+            new["supersedes"] = target["claim_id"]
+    # A revised claim that no QUALIFY names is a leftover (the model changed its mind to DEFEND or CONCEDE and kept the draft):
+    # it is set aside, never used, and the step reports it. Returns the ids set aside.
+    named = {r.get("revised_claim_id") for r in out["responses"] if isinstance(r, dict) and r.get("response_type") == "QUALIFY"}
+    leftover = [c.get("claim_id") for c in out["claims"] if isinstance(c, dict) and c.get("claim_id") not in named]
+    out["claims"] = [c for c in out["claims"] if not (isinstance(c, dict) and c.get("claim_id") in leftover)]
+    return leftover
+
+
 def validate_responses(agent, out, challenges, snapshot, tools, corpus, config, masked):
     """B2. Returns problems; the revised claims are out['claims'] (each must be named by a QUALIFY)."""
     responses, revised = out.get("responses", []), out.get("claims", [])
@@ -322,6 +363,10 @@ def run_round2(cf, sides, provider, config, trace, guard, order=SIDES):
         view = response_view(side, snapshot, against[agent], corpus, config)
         try:
             def check(o, t, agent=agent, side=side):
+                leftover = align_revisions(o, agent, against[agent], snapshot)
+                if leftover:
+                    side.trace.emit(agent, "REVISION_SET_ASIDE", {"claim_ids": leftover,
+                                                                  "reason": "no QUALIFY names it; the response stands without it"}, "WARNING")
                 o["claims"] = normalize_claims(o.get("claims", []), agent, 1, 2, side.tools)
                 return validate_responses(agent, o, against[agent], snapshot, side.tools, corpus, config, masked)
             out = _phase_step(side, view, "response", provider, guard, config, check)

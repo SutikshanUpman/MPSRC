@@ -64,6 +64,23 @@ def build_provider(spec, config_path=None):
         caps = {r: dict(c, max_output_tokens=max(c["max_output_tokens"], 4096)) for r, c in base["token_caps_by_role"].items()}
         overrides["token_caps_by_role"] = caps
         overrides["max_cells_per_agent_step"] = min(2, base["max_cells_per_agent_step"])     # shorter answers for a small local model
+        # A local answer is free, so a small model gets room to recover: it is slow to find the tool order (search, rows, calc for
+        # each cell, then submit) and often needs a second look at the validator's message.
+        overrides["max_model_turns_per_agent_step"] = max(8, base["max_model_turns_per_agent_step"])
+        overrides["max_model_retries_per_call"] = max(4, base["max_model_retries_per_call"])
+    if name == "anthropic":
+        # Current Claude models think before they answer, and the thinking counts against max_tokens: at the configured 2,000 a
+        # claim-writing turn is cut off mid-JSON. A larger ceiling costs nothing unless it is used (about $0.004 for a full
+        # 8,000-token Haiku answer), and the budget guard still bounds every step by this same number. Thor and Loki get 8,000
+        # (a Run-2 step covers every gap cell at once); Odin keeps 6,000, since his reserve must fit inside the per-case cap.
+        # The input ceilings were sized for a small local window; the cross-examination prompt (every claim of both sides) is
+        # over 14,000 tokens. Claude reads far more, and an input token costs a tenth of a cent per ten thousand on Haiku.
+        overrides["token_caps_by_role"] = {r: dict(c, max_output_tokens=max(c["max_output_tokens"], 8000 if r in ("thor", "loki") else 6000),
+                                                   max_input_tokens=max(c["max_input_tokens"], 30000))
+                                           for r, c in base["token_caps_by_role"].items()}
+        # Claude reads results, corrects itself and rewrites: four turns leave no room for a second look at a validator message.
+        overrides["max_model_turns_per_agent_step"] = max(6, base["max_model_turns_per_agent_step"])
+        overrides["max_model_retries_per_call"] = max(3, base["max_model_retries_per_call"])
     config = load_config(config_path, overrides=overrides) if overrides else base
     if name == "anthropic":
         for role in ("heimdall", "thor", "loki", "odin_ruling", "odin_briefing"):

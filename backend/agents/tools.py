@@ -30,6 +30,7 @@ class AgentTools:
         self.run_number = run_number
         self.origins = {o.lower() for o in (cf["manifest_scope"] or {}).get("event_origins", [])}
         self.cache, self.search_log, self.retrieved, self.rows_seen, self.calcs = {}, [], {}, {}, []
+        self.rows_asked = set()          # cells this agent asked trade rows for: (country, sector) in lower case
         self.searches = self.cache_hits = self.tool_calls = self.step_calls = 0
         self.total_searches = 0
         self.search_cap = config["max_searches_per_agent_per_run"]
@@ -134,6 +135,7 @@ class AgentTools:
         out = []
         for cell in cells:
             country, sector = cell["country"], cell["sector"]
+            self.rows_asked.add((country.lower(), sector.lower()))
             rows = []
             for rec in self.index.eligible:
                 for r in rec["trade_rows"]:
@@ -190,6 +192,21 @@ class AgentTools:
                                                           "baseline_flags": record["baseline_flags"]})
             out.append(calc_mod.agent_view(record))
         return out
+
+    def calc_for_empty_cell(self, country, sector):
+        """The calc record of a cell this agent asked trade rows for and was given none: it says NO_DOCUMENTED_FLOW. Computing it
+        takes no judgement, so when the agent's claim about such a cell names no calc (it ran out of tool calls), the runtime
+        computes it. A cell with any retrieved row, or one the agent never asked about, gets nothing."""
+        key = (str(country).lower(), str(sector).lower())
+        if key not in self.rows_asked:
+            return None
+        if any((r["destination"] or "").lower() == key[0] and (r["sector"] or "").lower() == key[1] for r in self.rows_seen.values()):
+            return None
+        own = [c for c in self.calcs if (c["country"].lower(), c["sector"].lower()) == key]
+        if own:
+            return own[-1]
+        self.calc([{"country": country, "sector": sector, "direct_row_keys": [], "substitute_row_keys": []}])
+        return self.calcs[-1]
 
     def search_total(self):
         return self.total_searches
