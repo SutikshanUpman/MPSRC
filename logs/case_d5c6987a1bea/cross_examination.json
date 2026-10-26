@@ -1,0 +1,341 @@
+[
+ {
+  "challenge_id": "challenge-thor-001",
+  "challenge_kind": "ASSUMPTION_ATTACK",
+  "challenge_text": "The Ravik headline of no net shortfall (-46.5%) rests on a direct rail gain that Loki's own claim-loki-105 says cannot be quantified. The Tier 1 Ravik notice states it gives no volume moved, no share of lost trade carried and no tariff, and the minister's 'covers all of the exports Orvan has lost' line is an interested-party assertion from the body promoting the route. Crediting an unquantified rail gain as a negative shortfall, while also saying rail growth cannot be measured, is internally inconsistent. The -46.5% figure is also a direct-row change, not a net Ravik cell result. The defensible Ravik estimate should carry the rail offset as unknown, not as a documented gain.",
+  "challenger": "thor",
+  "citations": [
+   "[ORV-0033, P5, 2026-11-18 11:00]",
+   "[ORV-0033, P3, 2026-11-18 11:00]",
+   "[ORV-0033, P7, 2026-11-18 11:00]"
+  ],
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-03",
+    "citation": "[ORV-0005, P4, 2027-01-21 13:15]",
+    "field": "envelope.full_credit.low",
+    "value": "-46.5"
+   }
+  ],
+  "required_response": "DEFEND_QUALIFY_OR_CONCEDE",
+  "round": 2,
+  "run": 1,
+  "target_agent": "loki",
+  "target_claim_id": "claim-loki-003",
+  "response": {
+   "challenge_id": "challenge-thor-001",
+   "citations": [
+    "[ORV-0005, P4, 2027-01-21 13:15]",
+    "[ORV-0005, P14, 2027-01-21 13:15]",
+    "[ORV-0005, P5, 2027-01-21 13:15]",
+    "[ORV-0005, P6, 2027-01-21 13:15]",
+    "[ORV-0005, P7, 2027-01-21 13:15]"
+   ],
+   "new_evidence": [
+    "[ORV-0005, P5, 2027-01-21 13:15]",
+    "[ORV-0005, P6, 2027-01-21 13:15]",
+    "[ORV-0005, P7, 2027-01-21 13:15]"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-03",
+     "citation": "[ORV-0005, P4, 2027-01-21 13:15]",
+     "field": "passes.with_flagged.direct.value_change_pct",
+     "value": "46.5"
+    }
+   ],
+   "reason": null,
+   "responder": "loki",
+   "response_id": "response-loki-001",
+   "response_text": "I defend the Ravik figure only as a gross direct-row result, not as a net cell result. The figure is the year-on-year change in the direct Orvan wheat rows on the Ravik route (PRIMARY_YOY basis), and it is not a net Ravik shortfall. The round-one wording called it a net result, which overstates it, so the claim should be read as a gross direct-row change with the rail offset unquantified. The new round-two evidence (monthly rows in the October to December 2026 period) shows the rise is concentrated in a few months, and the trade note states rail capacity is the limit on further growth, so the rise cannot be extrapolated. No rail volume or share of lost trade is quantified in any retrieved source, and the minister's coverage line is not credited. The round-two calc retry failed on an argument-format error and the tool budget is spent, so no new calc_id exists; the round-one range therefore stays as the direct-row figure, labelled gross.",
+   "response_type": "DEFEND",
+   "revised_claim_id": null,
+   "target_claim_id": "claim-loki-003"
+  }
+ },
+ {
+  "challenge_id": "challenge-thor-002",
+  "challenge_kind": "SOURCE_TIER",
+  "challenge_text": "The Tolan low end (50.8%) credits Vanir substitute growth in full, but Loki's own mechanism treats the Vanir wheat as the documented substitute. The Tier 2 Anchor Marine report says the Vanir volumes are smaller than the Orvan trade lost, and that the parcels are smaller than the Orvan cargoes they replace. A full-credit low end overstates the offset that the source supports. Anchor Marine is a port operator that does not trade grain, so its statement is usable for the scale of substitution but not for the price or volume offset itself. The cell should not take full credit at the low end.",
+  "challenger": "thor",
+  "citations": [
+   "[ORV-0042, P3, 2026-11-25 13:05]",
+   "[ORV-0042, P5, 2026-11-25 13:05]",
+   "[ORV-0042, P4, 2026-11-25 13:05]"
+  ],
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-loki-02",
+    "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+    "field": "envelope.full_credit.low",
+    "value": "50.8"
+   }
+  ],
+  "required_response": "DEFEND_QUALIFY_OR_CONCEDE",
+  "round": 2,
+  "run": 1,
+  "target_agent": "loki",
+  "target_claim_id": "claim-loki-002",
+  "response": {
+   "challenge_id": "challenge-thor-002",
+   "citations": [
+    "[ORV-0042, P3, 2026-11-25 13:05]",
+    "[ORV-0042, P4, 2026-11-25 13:05]",
+    "[ORV-0042, P5, 2026-11-25 13:05]",
+    "[ORV-0046, P4, 2027-01-20 10:05]",
+    "[ORV-0044, P5, 2027-01-22 10:50]"
+   ],
+   "new_evidence": [
+    "[ORV-0042, P5, 2026-11-25 13:05]",
+    "[ORV-0042, P3, 2026-11-25 13:05]"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-loki-02",
+     "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+     "field": "envelope.full_credit.low",
+     "value": "50.8"
+    },
+    {
+     "calc_id": "calc-r1-loki-02",
+     "field": "envelope.half_credit.high",
+     "value": "55.8"
+    },
+    {
+     "calc_id": "calc-r1-loki-02",
+     "field": "envelope.no_credit.high",
+     "value": "60.3"
+    }
+   ],
+   "reason": null,
+   "responder": "loki",
+   "response_id": "response-loki-002",
+   "response_text": "The Anchor Marine statement supports Thor's point that the Vanir parcels are smaller than the Orvan cargoes they replace, so substitution is partial and the full-credit end is not a central case. The claim's range already runs from full credit to half credit and does not rely on full credit alone. The Anchor source is Tier 2 and is used for the scale of substitution (smaller parcels, fuller berths, longer waits), not for price or volume, and it describes the change as manageable, which supports partial but real offset. The no-credit case is excluded because the Vanir rows are documented. The round-two half-credit calc failed on an argument-format error and the tool budget is spent, so no revised calc_id exists. The range therefore stays as stated, and the low end should be read as the most offset-favourable floor of the shortfall, not its midpoint.",
+   "response_type": "DEFEND",
+   "revised_claim_id": null,
+   "target_claim_id": "claim-loki-002"
+  }
+ },
+ {
+  "challenge_id": "challenge-loki-001",
+  "challenge_kind": "ASSUMPTION_ATTACK",
+  "challenge_text": "The high bound of 60.3% comes from calc-r1-thor-02's no_credit scenario, which gives zero credit to the Vanir substitute on the Orvan to Tolan route. The Vanir to Tolan wheat rows show substitute gains in the months the direct route fell. Over November and December 2026, Vanir wheat to Tolan ran above the same months of 2025 (ORV-0044 P6 and P7 against P12 and P13). The calc's own substitute pass records a substitute value change of 18.1% (with flagged rows) to 26.2% (without them), yet the high bound never credits any of it. The claim's 'net_value_shortfall_pct' label also does not match the calc's gross figure, so no net figure after substitute credit is shown. ORV-0044 P14 says the gain 'does not replace the Orvan sea volume'. That is a reason to qualify the range, not to ignore the credit.",
+  "challenger": "loki",
+  "citations": [
+   "[ORV-0044, P6, 2027-01-22 10:50]",
+   "[ORV-0044, P7, 2027-01-22 10:50]",
+   "[ORV-0044, P12, 2027-01-22 10:50]",
+   "[ORV-0044, P13, 2027-01-22 10:50]",
+   "[ORV-0044, P14, 2027-01-22 10:50]",
+   "[ORV-0046, P14, 2027-01-20 10:05]"
+  ],
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-02",
+    "citation": "[ORV-0046, P4, 2027-01-20 10:05]",
+    "field": "envelope.no_credit.high",
+    "value": "60.3"
+   },
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "passes.with_flagged.substitute.value_change_pct",
+    "value": "18.1"
+   },
+   {
+    "calc_id": "calc-r1-thor-02",
+    "field": "passes.without_flagged.substitute.value_change_pct",
+    "value": "26.2"
+   }
+  ],
+  "required_response": "DEFEND_QUALIFY_OR_CONCEDE",
+  "round": 2,
+  "run": 1,
+  "target_agent": "thor",
+  "target_claim_id": "claim-thor-002",
+  "response": {
+   "challenge_id": "challenge-loki-001",
+   "citations": [
+    "[ORV-0044, P14, 2027-01-22 10:50]",
+    "[ORV-0046, P14, 2027-01-20 10:05]",
+    "[ORV-0046, P4, 2027-01-20 10:05]"
+   ],
+   "new_evidence": [
+    "[ORV-0044, P14, 2027-01-22 10:50]",
+    "[ORV-0046, P14, 2027-01-20 10:05]"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "envelope.no_credit.high",
+     "value": "60.3"
+    },
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "passes.with_flagged.gross_value_shortfall_pct",
+     "value": "60.3"
+    },
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "passes.without_flagged.scenarios.full_credit",
+     "value": "50.8"
+    },
+    {
+     "calc_id": "calc-r1-thor-02",
+     "field": "envelope.full_credit.high",
+     "value": "51.3"
+    }
+   ],
+   "reason": null,
+   "responder": "thor",
+   "response_id": "response-thor-001",
+   "response_text": "DEFEND the no-credit high as a gross reference, and acknowledge the label error. The claim's metric reads net_value_shortfall_pct, but calc-r1-thor-02 computes gross_value_shortfall_pct. Its full-credit scenario is the only net-after-substitute figure in the calc record, and it sits below our range. The Tier 2 trade notes on both routes say the substitute gain is limited: Vanir's gain is 'real but small' and 'does not replace the Orvan sea volume' (ORV-0044 P14), and Tolan's replacement was 'smaller than the gap' (ORV-0046 P14). Crediting substitutes in full overstates the offset against those sources. The range should be read as gross, with the full-credit net figure shown alongside it. I did not rerun a round-two calc for the relabelled figure, because the round-two calc attempt failed on bad arguments.",
+   "response_type": "DEFEND",
+   "revised_claim_id": null,
+   "target_claim_id": "claim-thor-002"
+  }
+ },
+ {
+  "challenge_id": "challenge-loki-002",
+  "challenge_kind": "INFERENCE_AS_FACT",
+  "challenge_text": "The claim treats the full Midgard maize drop (38.5%) as lost exposure. The only source for the mechanism says part of the maize trade ran on delayed delivery terms, and it attributes the held-up October volume to that. Delayed-delivery terms defer cargoes rather than remove them, so the October to December 2026 drop in ORV-0030 P5 to P7 is not a clean measure of lost supply. The claim does not net out deferred cargo or describe the terms the same source names. The point estimate is also a single value (low equals high at 38.5), so it carries no timing uncertainty. The source is Tier 1, so the deferral mechanism should be stated and the range widened, not dropped.",
+  "challenger": "loki",
+  "citations": [
+   "[ORV-0030, P14, 2027-01-21 09:35]",
+   "[ORV-0030, P5, 2027-01-21 09:35]",
+   "[ORV-0030, P6, 2027-01-21 09:35]",
+   "[ORV-0030, P7, 2027-01-21 09:35]"
+  ],
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-04",
+    "field": "envelope.no_credit.high",
+    "value": "38.5"
+   }
+  ],
+  "required_response": "DEFEND_QUALIFY_OR_CONCEDE",
+  "round": 2,
+  "run": 1,
+  "target_agent": "thor",
+  "target_claim_id": "claim-thor-004",
+  "response": {
+   "challenge_id": "challenge-loki-002",
+   "citations": [
+    "[ORV-0030, P14, 2027-01-21 09:35]",
+    "[ORV-0030, P5, 2027-01-21 09:35]",
+    "[ORV-0030, P6, 2027-01-21 09:35]",
+    "[ORV-0030, P7, 2027-01-21 09:35]",
+    "[ORV-0030, P12, 2027-01-21 09:35]",
+    "[ORV-0030, P13, 2027-01-21 09:35]"
+   ],
+   "new_evidence": [
+    "[ORV-0030, P6, 2027-01-21 09:35]",
+    "[ORV-0030, P7, 2027-01-21 09:35]",
+    "[ORV-0030, P12, 2027-01-21 09:35]",
+    "[ORV-0030, P13, 2027-01-21 09:35]"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-04",
+     "field": "envelope.no_credit.high",
+     "value": "38.5"
+    },
+    {
+     "citation": "[ORV-0030, P6, 2027-01-21 09:35]",
+     "value": "75,000"
+    },
+    {
+     "citation": "[ORV-0030, P7, 2027-01-21 09:35]",
+     "value": "74,000"
+    },
+    {
+     "citation": "[ORV-0030, P12, 2027-01-21 09:35]",
+     "value": "223,000"
+    },
+    {
+     "citation": "[ORV-0030, P13, 2027-01-21 09:35]",
+     "value": "222,000"
+    }
+   ],
+   "reason": null,
+   "responder": "thor",
+   "response_id": "response-thor-002",
+   "response_text": "DEFEND the single gross estimate, with the deferral mechanism stated. ORV-0030 P14 says October held up because part of the maize trade was on delayed delivery terms. Deferred cargo should return as a later volume recovery, but the November and December volumes do not show one: 75,000 and 74,000 tonnes, against 223,000 and 222,000 tonnes in the same months of the prior year. The drop from October onward persists past the deferral period and is not explained by timing alone. The figure remains gross and is a paired-month measure. I accept that a single value carries no timing uncertainty, so the estimate should be read as one point, not a band.",
+   "response_type": "DEFEND",
+   "revised_claim_id": null,
+   "target_claim_id": "claim-thor-004"
+  }
+ },
+ {
+  "challenge_id": "challenge-loki-003",
+  "challenge_kind": "REPEATED_ROWS",
+  "challenge_text": "The claim says the four TRADE_ROW_REPEATED_VALUES rows barely move the figure, so the 56.3% to 56.7% range is robust. The calc's without_flagged pass rests on only two paired months (2026-09 and 2026-10, per calc-r1-thor-05), against four months in the with_flagged pass. The two passes are not comparable, so the 'nearly unchanged' reading is not supported. The flagged rows are the July 2026, August 2026, November 2026 and December 2026 entries. They are the rows that set the range, and the claim does not say whether repeated values reflect a data error or a true flat month. The range should be shown as sensitive to these four rows until they are checked against a later source.",
+  "challenger": "loki",
+  "citations": [
+   "[ORV-0029, P2, 2027-01-20 11:40]",
+   "[ORV-0029, P3, 2027-01-20 11:40]",
+   "[ORV-0029, P6, 2027-01-20 11:40]",
+   "[ORV-0029, P7, 2027-01-20 11:40]",
+   "[ORV-0029, P4, 2027-01-20 11:40]"
+  ],
+  "number_refs": [
+   {
+    "calc_id": "calc-r1-thor-05",
+    "field": "passes.without_flagged.paired_month_count",
+    "value": "2"
+   },
+   {
+    "calc_id": "calc-r1-thor-05",
+    "citation": "[ORV-0029, P4, 2027-01-20 11:40]",
+    "field": "envelope.half_credit.low",
+    "value": "56.3"
+   },
+   {
+    "calc_id": "calc-r1-thor-05",
+    "field": "envelope.no_credit.high",
+    "value": "56.7"
+   }
+  ],
+  "required_response": "DEFEND_QUALIFY_OR_CONCEDE",
+  "round": 2,
+  "run": 1,
+  "target_agent": "thor",
+  "target_claim_id": "claim-thor-008",
+  "response": {
+   "challenge_id": "challenge-loki-003",
+   "citations": [
+    "[ORV-0029, P8, 2027-01-20 11:40]",
+    "[ORV-0029, P9, 2027-01-20 11:40]",
+    "[ORV-0029, P2, 2027-01-20 11:40]",
+    "[ORV-0029, P6, 2027-01-20 11:40]"
+   ],
+   "new_evidence": [
+    "[ORV-0029, P8, 2027-01-20 11:40]",
+    "[ORV-0029, P9, 2027-01-20 11:40]"
+   ],
+   "number_refs": [
+    {
+     "calc_id": "calc-r1-thor-05",
+     "field": "envelope.half_credit.low",
+     "value": "56.3"
+    },
+    {
+     "calc_id": "calc-r1-thor-05",
+     "field": "envelope.no_credit.high",
+     "value": "56.7"
+    },
+    {
+     "calc_id": "calc-r1-thor-05",
+     "field": "repeat_sensitivity_pct",
+     "value": "0.4"
+    }
+   ],
+   "reason": null,
+   "responder": "thor",
+   "response_id": "response-thor-003",
+   "response_text": "DEFEND the 56.3 to 56.7 range, with a caveat. The without-flagged pass covers fewer paired months than the with-flagged pass, so the two passes are not like-for-like, and the repeat sensitivity is a caveat rather than a change to the range. The flagged rows repeat exactly within the route's later months, and the earlier-year comparison months for the same route differ in both value and volume (ORV-0029 P8, P9). That pattern is consistent with a data artifact in the flagged rows, but the sources do not resolve it. The claim should carry that caveat and should not describe the figure as robust to the flagged rows until they are checked against a later source.",
+   "response_type": "DEFEND",
+   "revised_claim_id": null,
+   "target_claim_id": "claim-thor-008"
+  }
+ }
+]

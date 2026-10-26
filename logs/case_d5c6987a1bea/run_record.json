@@ -1,0 +1,430 @@
+{
+ "case_id": "case-d5c6987a1bea",
+ "status": "OPEN",
+ "question": "Evaluate the breaking alert claiming that Orvan Grain Port infrastructure and grain terminal silos were physically destroyed in military strikes. Conduct event verification to rule whether this disruption is verified or rejected as a decoy, citing verified port authority and logistics records.",
+ "pack_paths": [
+  "C:\\Users\\paree\\Downloads\\MPSRC-clean\\dev_pack_E5"
+ ],
+ "provider": "anthropic",
+ "created_at": "2026-10-26T06:26:28Z",
+ "as_of_date": "2027-01-25",
+ "event_id": "E5",
+ "input_hashes": {
+  "packs": {
+   "C:\\Users\\paree\\Downloads\\MPSRC-clean\\dev_pack_E5": {
+    "manifest.json": "cd1251fafac0bda68f0d7c540627d1e9bf29056466a4713138baffb02722ca24",
+    "hashes.sha256": "b9addedeca00222a44aa7a0bdbca98a56a0f3b1c0c13e29e102eafd5a29610dc"
+   }
+  },
+  "config": "44d5f5ae3d1b0fa560c255c567b176f2b7414bde50ce98cf46a7e44f115a5191",
+  "prompts": {
+   "loki.md": "2f69e2f5beb93760ddae4261a4c3394b5a7058f90bd9bfcd78aa5b0194c811e4",
+   "odin.md": "a4d06fb10e4ca3da6088cd0eee5eadaa1d2216d671bb2fb8ffde025822ac8a02",
+   "odin_briefing.md": "0148c6c2aa25bd0c9bdb26023c756f0cc042b6e73f13a92dfff707f9a2c8dffa",
+   "thor.md": "a5369335b1bc7041f7ca2d612c381646f3b06c1763eae4903faf5af531520749"
+  }
+ },
+ "ruling_mode": "run 1: MODEL_ON_OPEN_CLAIMS; run 2: MODEL_ON_OPEN_CLAIMS",
+ "rulings": {
+  "total": 42,
+  "decisions": {
+   "ACCEPTED": 17,
+   "QUALIFIED": 25
+  },
+  "classes": {
+   "CONTESTED": 15,
+   "ESTABLISHED": 27
+  }
+ },
+ "ac": {
+  "cross_examinations": 5,
+  "rejected_or_conceded": 0,
+  "sent_back": true,
+  "run2_new_evidence_families": [
+   "FAM-198acefee013",
+   "FAM-2f0ce3c60b40",
+   "FAM-380e182fb8e2",
+   "FAM-a217e90e5b41",
+   "FAM-e9fc5d9dbcd7"
+  ],
+  "memory_decisions_changed": 0
+ },
+ "runs": [
+  {
+   "run_number": 1,
+   "state": "ROUND_2_COMPLETED",
+   "stop_reason": null,
+   "integrity_warnings": [],
+   "pack_merges": [],
+   "cross_pack_families": [],
+   "quarantined_documents": [],
+   "handled_failures": [],
+   "verification_fallback": {
+    "fired": false,
+    "trigger": null,
+    "classified": [],
+    "calls": 0
+   },
+   "llm_calls": 37,
+   "round_1": {
+    "agents": {
+     "thor": {
+      "status": "OK",
+      "steps": 2,
+      "turns": 7,
+      "retries": 1,
+      "tool_calls": 12,
+      "searches": 8,
+      "cache_hits": 0,
+      "claims": 14,
+      "calcs": 8,
+      "memory_read": [
+       "mem-thor-34dc0ed0db",
+       "mem-thor-cc310cea5b",
+       "mem-thor-af8355c13b",
+       "mem-thor-a66d8f4aca",
+       "mem-thor-de6f5fcc85",
+       "mem-thor-364ef9eae2"
+      ],
+      "memory_hidden": [],
+      "memory_written": [
+       "mem-thor-04000b2b8f",
+       "mem-thor-6ca3431e4c"
+      ],
+      "decisions_changed": [],
+      "model_calls": 7,
+      "input_tokens_est": 126784,
+      "output_tokens_est": 21985,
+      "shadow_cost_usd": 0.023671,
+      "failure": null
+     },
+     "loki": {
+      "status": "OK",
+      "steps": 2,
+      "turns": 7,
+      "retries": 1,
+      "tool_calls": 12,
+      "searches": 8,
+      "cache_hits": 0,
+      "claims": 14,
+      "calcs": 8,
+      "memory_read": [
+       "mem-loki-5c32f25eb8",
+       "mem-loki-760647da73",
+       "mem-loki-34e34abc09",
+       "mem-loki-8fe7014382"
+      ],
+      "memory_hidden": [],
+      "memory_written": [
+       "mem-loki-9a02893d66"
+      ],
+      "decisions_changed": [],
+      "model_calls": 7,
+      "input_tokens_est": 115096,
+      "output_tokens_est": 21555,
+      "shadow_cost_usd": 0.022287,
+      "failure": null
+     }
+    },
+    "agent_failures": []
+   },
+   "round_2": {
+    "agents": {
+     "thor": {
+      "status": "OK",
+      "steps": 2,
+      "turns": 8,
+      "retries": 3,
+      "tool_calls": 9,
+      "searches": 0,
+      "cache_hits": 0,
+      "challenges": [
+       "challenge-thor-001",
+       "challenge-thor-002"
+      ],
+      "responses": {
+       "DEFEND": 3,
+       "QUALIFY": 0,
+       "CONCEDE": 0
+      },
+      "revised_claims": [],
+      "model_calls": 8,
+      "input_tokens_est": 190806,
+      "output_tokens_est": 25762,
+      "shadow_cost_usd": 0.031962,
+      "failure": null
+     },
+     "loki": {
+      "status": "OK",
+      "steps": 2,
+      "turns": 7,
+      "retries": 2,
+      "tool_calls": 11,
+      "searches": 0,
+      "cache_hits": 0,
+      "challenges": [
+       "challenge-loki-001",
+       "challenge-loki-002",
+       "challenge-loki-003"
+      ],
+      "responses": {
+       "DEFEND": 2,
+       "QUALIFY": 0,
+       "CONCEDE": 0
+      },
+      "revised_claims": [],
+      "model_calls": 7,
+      "input_tokens_est": 146948,
+      "output_tokens_est": 17001,
+      "shadow_cost_usd": 0.023195,
+      "failure": null
+     }
+    },
+    "agent_failures": [],
+    "concessions": 0,
+    "qualifications": 0,
+    "unanswered": []
+   }
+  },
+  {
+   "run_number": 2,
+   "state": "RUN_2_COMPLETED",
+   "stop_reason": null,
+   "integrity_warnings": [],
+   "quarantined_documents": [],
+   "llm_calls": 37,
+   "gaps": [
+    {
+     "country": "Asgard",
+     "sector": "Maize",
+     "reason": "COVERAGE_GAP",
+     "missing": [
+      "substitute_flow"
+     ],
+     "queries": [
+      "Asgard Maize alternative suppliers",
+      "Asgard Maize rail road substitute imports"
+     ]
+    },
+    {
+     "country": "Asgard",
+     "sector": "Wheat",
+     "reason": "COVERAGE_GAP",
+     "missing": [
+      "substitute_flow"
+     ],
+     "queries": [
+      "Asgard Wheat alternative suppliers",
+      "Asgard Wheat rail road substitute imports"
+     ]
+    },
+    {
+     "country": "Midgard",
+     "sector": "Maize",
+     "reason": "COVERAGE_GAP",
+     "missing": [
+      "substitute_flow"
+     ],
+     "queries": [
+      "Midgard Maize alternative suppliers",
+      "Midgard Maize rail road substitute imports"
+     ]
+    },
+    {
+     "country": "Ravik",
+     "sector": "Maize",
+     "reason": "NO_DOCUMENTED_FLOW",
+     "missing": [
+      "contract_delay",
+      "direct_flow",
+      "substitute_flow"
+     ],
+     "queries": [
+      "Orvan to Ravik Maize trade note",
+      "Ravik Maize imports from Orvan",
+      "Ravik Maize alternative suppliers",
+      "Ravik Maize rail road substitute imports",
+      "Ravik Maize contracts delayed deliveries",
+      "Ravik Maize protected volumes contract"
+     ]
+    },
+    {
+     "country": "Ravik",
+     "sector": "Wheat",
+     "reason": "COVERAGE_GAP",
+     "missing": [
+      "contract_delay"
+     ],
+     "queries": [
+      "Ravik Wheat contracts delayed deliveries",
+      "Ravik Wheat protected volumes contract"
+     ]
+    },
+    {
+     "country": "Tolan",
+     "sector": "Maize",
+     "reason": "NO_DOCUMENTED_FLOW",
+     "missing": [
+      "contract_delay",
+      "direct_flow",
+      "substitute_flow"
+     ],
+     "queries": [
+      "Orvan to Tolan Maize trade note",
+      "Tolan Maize imports from Orvan",
+      "Tolan Maize alternative suppliers",
+      "Tolan Maize rail road substitute imports",
+      "Tolan Maize contracts delayed deliveries",
+      "Tolan Maize protected volumes contract"
+     ]
+    }
+   ],
+   "queries_by_cell": {
+    "Asgard|Maize": [
+     "Asgard Maize alternative suppliers",
+     "Asgard Maize rail road substitute imports",
+     "Asgard Maize supply disruption"
+    ],
+    "Asgard|Wheat": [
+     "Asgard Wheat alternative suppliers",
+     "Asgard Wheat rail road substitute imports",
+     "Asgard Wheat supply disruption"
+    ],
+    "Midgard|Maize": [
+     "Midgard Maize alternative suppliers",
+     "Midgard Maize rail road substitute imports",
+     "Midgard Maize supply disruption"
+    ],
+    "Ravik|Maize": [
+     "Orvan to Ravik Maize trade note",
+     "Ravik Maize imports from Orvan",
+     "Ravik Maize alternative suppliers"
+    ],
+    "Ravik|Wheat": [
+     "Ravik Wheat contracts delayed deliveries",
+     "Ravik Wheat protected volumes contract",
+     "Ravik Wheat supply disruption"
+    ],
+    "Tolan|Maize": [
+     "Orvan to Tolan Maize trade note",
+     "Tolan Maize imports from Orvan",
+     "Tolan Maize alternative suppliers"
+    ]
+   },
+   "run2_new_evidence_families": [
+    "FAM-198acefee013",
+    "FAM-2f0ce3c60b40",
+    "FAM-380e182fb8e2",
+    "FAM-a217e90e5b41",
+    "FAM-e9fc5d9dbcd7"
+   ],
+   "run2_new_evidence_citations": {
+    "FAM-2f0ce3c60b40": [
+     "[ORV-0007, P5, 2026-10-22 08:20]"
+    ],
+    "FAM-e9fc5d9dbcd7": [
+     "[ORV-0021, P5, 2026-11-12 10:30]",
+     "[ORV-0021, P5, 2026-11-12 10:30]"
+    ],
+    "FAM-380e182fb8e2": [
+     "[ORV-0018, P8, 2026-12-15 09:40]"
+    ],
+    "FAM-198acefee013": [
+     "[ORV-0024, P6, 2026-09-12 10:15]",
+     "[ORV-0024, P5, 2026-09-12 10:15]"
+    ],
+    "FAM-a217e90e5b41": [
+     "[ORV-0020, P6, 2026-12-08 09:45]"
+    ]
+   },
+   "run2_no_evidence_reason": null,
+   "agent_failures": [],
+   "updated_claims": {
+    "thor": [
+     "claim-thor-015",
+     "claim-thor-016",
+     "claim-thor-017",
+     "claim-thor-018",
+     "claim-thor-019",
+     "claim-thor-020",
+     "claim-thor-021",
+     "claim-thor-022"
+    ],
+    "loki": [
+     "claim-loki-201",
+     "claim-loki-202",
+     "claim-loki-203",
+     "claim-loki-204",
+     "claim-loki-205",
+     "claim-loki-206"
+    ]
+   }
+  }
+ ],
+ "spend": {
+  "case_spent_usd": 0.159087,
+  "shadow_spent_usd": 0.159087,
+  "model_calls": 39,
+  "project_spent_before_usd": 1.050904,
+  "billable": true,
+  "project_total_after_usd": 1.209991
+ },
+ "briefing_hash": "db082e64e140c5013d13f452be1dad161ad3cbad0a74f1c8bcdfa8c83fd97354",
+ "briefing_completion": "COMPLETE",
+ "events": {
+  "AGENT_STEP_COMPLETED": 10,
+  "AGENT_STEP_STARTED": 10,
+  "AS_OF_DATE_RESOLVED": 1,
+  "BRIEFING_BUILT": 1,
+  "CALC_COMPUTED": 26,
+  "CASE_CREATED": 1,
+  "CASE_FILE_BUILT": 1,
+  "CELL_BUDGET_PROJECTED": 1,
+  "CELL_INSUFFICIENT_EVIDENCE": 2,
+  "CHALLENGES_SUBMITTED": 2,
+  "CLAIMS_SUBMITTED": 6,
+  "CLAIM_SUPERSEDED": 12,
+  "CLAIM_VALIDATION_FAILED": 9,
+  "COVERAGE_TESTED": 1,
+  "DECISION_UNVERIFIED": 3,
+  "DOCUMENT_RETRIEVED": 16,
+  "EVENT_MAPPING": 1,
+  "EVENT_VERIFICATION": 1,
+  "FALLBACK_JSON_REPAIR": 5,
+  "FALLBACK_ODIN_RULES": 1,
+  "MEMORY_READ": 2,
+  "MEMORY_WRITTEN": 3,
+  "ODIN_RULED": 2,
+  "ODIN_SENT_BACK": 1,
+  "PREMISE_CHECKED": 1,
+  "RESPONSES_SUBMITTED": 2,
+  "ROUND_1_COMPLETED": 1,
+  "ROUND_1_STARTED": 1,
+  "ROUND_2_COMPLETED": 1,
+  "ROUND_2_STARTED": 1,
+  "RUN_2_COMPLETED": 1,
+  "RUN_2_NEW_EVIDENCE": 1,
+  "RUN_2_STARTED": 1,
+  "SCOPE_DEFAULTED": 2,
+  "SEARCH_COMPLETED": 26,
+  "SEARCH_EXECUTED": 23,
+  "SEARCH_LIMIT_REACHED": 2,
+  "TOOL_CALLED": 6
+ },
+ "outputs": [
+  "case_file.json",
+  "claim_ledger.json",
+  "calc_ledger.json",
+  "cross_examination.json",
+  "rulings.json",
+  "briefing.json",
+  "briefing.md",
+  "trap_report.json",
+  "run_record.json",
+  "events.jsonl",
+  "search_log.jsonl",
+  "provider_calls.jsonl",
+  "llm_calls.jsonl",
+  "config.json"
+ ]
+}

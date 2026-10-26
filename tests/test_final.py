@@ -930,6 +930,18 @@ class SmallModelPaperwork(unittest.TestCase):
         self.assertEqual(align_revisions(out, "thor", challenges, snapshot), ["claim-thor-013"])
         self.assertEqual(out["claims"], [])                                                # the DEFEND stands on its own
 
+    def test_a_single_point_range_is_qualified_in_words_without_a_new_calc(self):
+        from backend.agents.cross_exam import _check_revision
+        target = {"claim_id": "claim-loki-003", "claim_type": "CELL_ESTIMATE", "country": "Ravik", "sector": "Wheat",
+                  "claim_text": "Ravik wheat rose.", "estimate": {"low": -46.5, "high": -46.5}}
+        new = dict(target, claim_id="claim-loki-014", supersedes="claim-loki-003", calc_ids=[],
+                   claim_text="Ravik wheat rose, though the paired months cover a single route.")
+        self.assertEqual(_check_revision("r", new, target, set()), [])
+        same = dict(new, claim_text=target["claim_text"])
+        self.assertTrue(_check_revision("r", same, target, set()))                          # nothing changed: not a qualification
+        wider = dict(new, estimate={"low": -50.0, "high": -40.0})
+        self.assertTrue(_check_revision("r", wider, target, set()))                         # new numbers still need narrowing + calc
+
 
     def test_the_final_round_switch_lifts_the_guards_project_limit_as_well_as_the_ledgers(self):
         from backend.runtime.ledger import LedgerRefused

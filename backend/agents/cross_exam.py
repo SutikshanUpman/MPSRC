@@ -173,6 +173,8 @@ def align_revisions(out, agent, challenges, snapshot):
         if target and new is not None:
             new["claim_type"], new["country"], new["sector"] = target["claim_type"], target["country"], target["sector"]
             new["supersedes"] = target["claim_id"]
+            if target["claim_type"] == "CELL_ESTIMATE" and not new.get("estimate_status"):
+                new["estimate_status"] = target.get("estimate_status")         # a revision keeps its target's status unless it says otherwise
     # A revised claim that no QUALIFY names is a leftover (the model changed its mind to DEFEND or CONCEDE and kept the draft):
     # it is set aside, never used, and the step reports it. Returns the ids set aside.
     named = {r.get("revised_claim_id") for r in out["responses"] if isinstance(r, dict) and r.get("response_type") == "QUALIFY"}
@@ -269,7 +271,14 @@ def _check_revision(where, new, target, round2_calcs):
         problems.append(f"{where}: the revised claim must supersede {target['claim_id']}")
     if (new["claim_type"], new["country"], new["sector"]) != (target["claim_type"], target["country"], target["sector"]):
         problems.append(f"{where}: the revised claim must keep the target's type and cell")
-    if target["claim_type"] == "CELL_ESTIMATE" and target["estimate"] and new["estimate"]:
+    point = bool(target["estimate"] and new["estimate"] and target["estimate"]["low"] == target["estimate"]["high"]
+                 and (new["estimate"]["low"], new["estimate"]["high"]) == (target["estimate"]["low"], target["estimate"]["high"]))
+    if point:
+        # A single-point range cannot be narrowed: the qualification is in the words (a caveat, a narrower scope), the numbers
+        # stay the calc's, and no new calc is needed because nothing was recomputed.
+        if new["claim_text"] == target["claim_text"]:
+            problems.append(f"{where}: QUALIFY must change the claim (a single-point range is qualified in words)")
+    elif target["claim_type"] == "CELL_ESTIMATE" and target["estimate"] and new["estimate"]:
         old, est = target["estimate"], new["estimate"]
         if not (old["low"] <= est["low"] <= est["high"] <= old["high"]) or (est["low"], est["high"]) == (old["low"], old["high"]):
             problems.append(f"{where}: QUALIFY must narrow the range inside [{old['low']}, {old['high']}]")

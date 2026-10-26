@@ -184,6 +184,9 @@ def _hints(problems):
     """What the model should do about the validator's messages, in plain steps (a small model does not infer the tool order)."""
     text = " ".join(problems)
     hints = []
+    if "must narrow the range inside" in text:
+        hints.append("A range whose low equals its high is a single point and cannot be narrowed: keep its numbers and qualify the "
+                     "wording (a caveat or a narrower scope), or DEFEND with new evidence, or CONCEDE.")
     if "new round-2 calc_id" in text:
         hints.append("A QUALIFY that changes a range needs fresh arithmetic: call `calc` now (in this round) for that cell, then point "
                      "the revised estimate's low_ref/high_ref at the new calc id. If you will not recalculate, DEFEND with new "

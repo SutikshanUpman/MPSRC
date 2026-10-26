@@ -1,0 +1,99 @@
+{
+ "_about": "Runtime config block of docs/SYSTEM_ARCHITECTURE.md section 17 (Hard limits, Tunable starting values). Every key listed in _tunable_unverified is a starting value, not a measured or verified figure. Prices are UNVERIFIED. odin_briefing_reserve_usd and htl_minimum_usd are derived in backend/runtime/config.py, never set here.",
+ "_tunable_unverified": [
+  "max_tool_calls_per_agent_step",
+  "max_model_turns_per_agent_step",
+  "briefing_time_reserve_seconds",
+  "max_cells_per_agent_step",
+  "event_match_min_score",
+  "event_match_min_ratio",
+  "baseline_crosscheck_tolerance_pct_points",
+  "token_caps_by_role",
+  "prices_usd_per_million_tokens",
+  "evidence_packet_top_k_per_cell",
+  "calc_substitute_credit",
+  "max_stance_fallback_docs",
+  "batch_input_target_share",
+  "batch_token_estimates",
+  "max_challenges_per_side_per_round"
+ ],
+ "max_runs": 2,
+ "max_cross_examination_rounds": 1,
+ "max_searches_per_agent_per_run": 8,
+ "max_total_searches_per_case": 32,
+ "max_model_retries_per_call": 3,
+ "max_tool_retries_per_call": 2,
+ "max_tool_calls_per_agent_step": 6,
+ "max_model_turns_per_agent_step": 6,
+ "max_wall_clock_seconds": 900,
+ "briefing_time_reserve_seconds": 120,
+ "max_supporting_claims_per_side_per_round": 6,
+ "max_cells_per_agent_step": 4,
+ "batch_input_target_share": 0.8,
+ "batch_token_estimates": {
+  "per_trade_row": 70,
+  "per_search_result_set": 500,
+  "per_calc_view": 470,
+  "per_cell_turn_outputs": 150
+ },
+ "max_challenges_per_side_per_round": 3,
+ "event_match_min_score": 3,
+ "event_match_min_ratio": 2.0,
+ "baseline_crosscheck_tolerance_pct_points": 5,
+ "token_caps_by_role": {
+  "heimdall": {
+   "max_input_tokens": 30000,
+   "max_output_tokens": 6000
+  },
+  "thor": {
+   "max_input_tokens": 30000,
+   "max_output_tokens": 8000
+  },
+  "loki": {
+   "max_input_tokens": 30000,
+   "max_output_tokens": 8000
+  },
+  "odin_ruling": {
+   "max_input_tokens": 30000,
+   "max_output_tokens": 6000
+  },
+  "odin_briefing": {
+   "max_input_tokens": 30000,
+   "max_output_tokens": 6000
+  }
+ },
+ "prices_verified": false,
+ "ollama_num_ctx": 24576,
+ "project_cap_usd": 4.0,
+ "final_round_reserve_usd": 2.5,
+ "per_case_cap_usd": 0.5,
+ "budget_mode": "development",
+ "models": {
+  "heimdall": "claude-haiku-5-5",
+  "thor": "claude-haiku-5-5",
+  "loki": "claude-haiku-5-5",
+  "odin": "claude-sonnet-5-5"
+ },
+ "prices_usd_per_million_tokens": {
+  "claude-haiku-5-5": {
+   "input": 0.1,
+   "output": 0.5
+  },
+  "claude-sonnet-5-5": {
+   "input": 2.0,
+   "output": 10.0
+  }
+ },
+ "evidence_packet_top_k_per_cell": 3,
+ "calc_substitute_credit": {
+  "no_credit": 0.0,
+  "half_credit": 0.5,
+  "full_credit": 1.0
+ },
+ "max_stance_fallback_docs": 3,
+ "allow_hash_mismatch_doc_ids": [],
+ "live": {
+  "enabled": false,
+  "budget_owner": ""
+ }
+}
