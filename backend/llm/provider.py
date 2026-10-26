@@ -319,6 +319,7 @@ class RecordingProvider(Provider):
     def __init__(self, inner, path):
         super().__init__(inner.config)
         self.inner, self.path = inner, path
+        self.notify = None                 # live feed: called with (kind, info) when a model call starts and ends
         self.name, self.billable = inner.name, is_billable(inner)
         self.seq = 0
 
@@ -339,13 +340,23 @@ class RecordingProvider(Provider):
         self.seq += 1
         base = {"seq": self.seq, "request_hash": request_hash(role, model, messages, schema, cap), "role": role, "model": model,
                 "provider": self.inner.name}
+        started = time.time()
+        if self.notify:
+            self.notify("MODEL_CALL_STARTED", {"role": role, "model": model, "call": self.seq, "input_chars": sum(len(m["content"]) for m in messages)})
         try:
             result = self.inner.complete(role, messages, schema, max_output_tokens)
         except ProviderError as e:
             self._write(dict(base, error=f"{type(e).__name__}: {e}"))
+            if self.notify:
+                self.notify("MODEL_CALL_FINISHED", {"role": role, "model": model, "call": self.seq, "seconds": round(time.time() - started, 1),
+                                                   "error": f"{type(e).__name__}: {str(e)[:160]}"})
             raise
         self._write(dict(base, raw_response=result.get("raw"), output=result.get("output"), usage=result["usage"],
                          parse_error=bool(result.get("parse_error"))))
+        if self.notify:
+            self.notify("MODEL_CALL_FINISHED", {"role": role, "model": model, "call": self.seq, "seconds": round(time.time() - started, 1),
+                                               "input_tokens": result["usage"]["input_tokens"], "output_tokens": result["usage"]["output_tokens"],
+                                               "error": "the answer is not valid JSON" if result.get("output") is None else None})
         if result.get("output") is None:
             raise SchemaError("model output is not valid JSON")
         # What is used is what was recorded: key order included, so a replay is byte-identical.

@@ -13,6 +13,7 @@ import hashlib
 import json
 import shutil
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .. import guards
@@ -23,6 +24,7 @@ from ..agents.cross_exam import run_round2
 from ..agents.heimdall import open_case
 from ..briefing import (OUTLOOK_SCHEMA, briefing_hash, build, gate, render_markdown, template_narrative)
 from ..briefing.trap_report import calc_explain, trap_report
+from ..runtime.trace import TraceLog
 from ..casefile import model as casefile
 from ..ingestion.packs import load_packs
 from ..llm.provider import ProviderError, RecordingProvider, canonical, is_billable, validate_schema
@@ -109,7 +111,37 @@ def _unverified(cf):
             "assumptions_limitations": [], "sources": [], "removed_by_validator": []}
 
 
-def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, case_id=None, created_at=None, out_name=None,
+class _LiveFeed:
+    """What a person watching the console sees while the models work: the case's own events, the agents' events as they
+    happen, and a line when a model call starts and ends. The agents' events are merged into the case's trace later, in a
+    fixed order; those copies are not sent a second time."""
+
+    def __init__(self, on_event):
+        self.on_event, self.streamed = on_event, {}
+
+    @staticmethod
+    def _key(e):
+        return (e["actor"], e["event_type"], json.dumps(e["payload"], sort_keys=True, default=str))
+
+    def side(self, e):
+        k = self._key(e)
+        self.streamed[k] = self.streamed.get(k, 0) + 1
+        self.on_event(e)
+
+    def main(self, e):
+        k = self._key(e)
+        if self.streamed.get(k):
+            self.streamed[k] -= 1
+            return
+        self.on_event(e)
+
+    def model_call(self, kind, info):
+        self.on_event({"sequence": 0, "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "case_id": None,
+                       "run_id": None, "actor": info["role"].split("_")[0], "level": "WARNING" if info.get("error") else "INFO",
+                       "event_type": kind, "payload": info})
+
+
+def _run_full_case(question, pack_paths, config, provider, out_root, memory_dir, case_id=None, created_at=None, out_name=None,
                   final_round=False, ledger_path=ledger_mod.DEFAULT_PATH, stop_after=None, on_event=None):
     case_id = case_id or f"case-{uuid.uuid4().hex[:12]}"
     out = Path(out_root) / (out_name or case_id)
@@ -119,11 +151,17 @@ def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, 
     ledger = ledger_mod.load(ledger_path)
     if live:
         ledger_mod.check_live_allowed(config, ledger, final_round)
+    livefeed = None
+    if on_event:
+        livefeed = _LiveFeed(on_event)
+        TraceLog.default_on_emit = livefeed.side
     if provider.name != "replay":
         log = out / "llm_calls.jsonl"
         if log.exists():
             log.unlink()
         provider = RecordingProvider(provider, log)
+        if livefeed:
+            provider.notify = livefeed.model_call
     _write_json(out / "config.json", config.data)
     before = out / "memory_before"                  # the private memory this case started from, so a replay can start there too
     if before.exists():
@@ -136,7 +174,7 @@ def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, 
     if on_event:                                     # the live feed: what is already written, then everything that follows
         for e in trace.events:
             on_event(e)
-        trace.on_emit = on_event
+        trace.on_emit = livefeed.main
     sides, rulings, cells, b, mode, run2rec = {}, [], [], None, "NONE", None
     modes = []
     corpus = index = None
@@ -242,6 +280,14 @@ def run_full_case(question, pack_paths, config, provider, out_root, memory_dir, 
         ledger_mod.record(cf["case_id"], provider.name, spent, "final" if final_round else "development", ledger_path)
     return {"case_file": cf, "out_dir": out, "record": record, "briefing": b, "rulings": rulings, "cells": cells,
             "trace": trace, "sides": sides, "guard": guard}
+
+
+def run_full_case(*args, **kwargs):
+    """Run one case (see _run_full_case). The live-stream hook is set for this run only."""
+    try:
+        return _run_full_case(*args, **kwargs)
+    finally:
+        TraceLog.default_on_emit = None
 
 
 def _count(items, field, key=None):

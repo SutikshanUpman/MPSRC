@@ -20,6 +20,12 @@ function describe(e: RunEvent): string {
   const d = e.data as D;
   const who = agentShort(e.agent ?? null, "The record");
   switch (e.type) {
+    case "MODEL_CALL_STARTED":
+      return `${who} is thinking: call ${d.call} to ${d.model}, about ${Math.round(Number(d.input_chars) / 4).toLocaleString()} tokens of prompt (a local model takes minutes)`;
+    case "MODEL_CALL_FINISHED":
+      return d.error
+        ? `${who}'s call ${d.call} failed after ${d.seconds}s: ${d.error}`
+        : `${who}'s call ${d.call} answered in ${d.seconds}s (${d.input_tokens} tokens in, ${d.output_tokens} out)`;
     case "CASE_CREATED":
       return "case opened";
     case "AS_OF_DATE_RESOLVED":

@@ -209,7 +209,7 @@ def run_second_run(cf, cells, gaps, sides, provider, config, trace, guard, memor
         s = sides[a]
         s.tools.run_number, s.tools.round = 2, 3
         s.tools.searches = 0
-        s.trace = type(s.trace)(cf["case_id"])
+        s.trace = type(s.trace)(cf["case_id"]).for_side()
         s.tools.trace = s.trace
         used = sum(sides[b].tools.search_total() for b in SIDES)
         s.tools.search_cap = config["max_searches_per_agent_per_run"] if not total_cap else \

@@ -239,7 +239,7 @@ def _check_revision(where, new, target, round2_calcs):
 
 
 def _new_trace(side, case_id):
-    side.trace = TraceLog(case_id)
+    side.trace = TraceLog(case_id).for_side()
     side.tools.trace = side.trace
 
 

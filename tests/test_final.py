@@ -619,5 +619,26 @@ class MemoryAcrossCases(unittest.TestCase):
             self.assertTrue((Path(tmp) / "mem" / a / "memory.jsonl").exists())
 
 
+class LiveFeed(unittest.TestCase):
+    def test_agents_events_and_model_calls_stream_while_the_case_runs_and_are_not_repeated(self):
+        tmp = tempfile.mkdtemp(prefix="final_live_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        live = []
+        res = run_full_case(QUESTION, [PACK], CONFIG, make_provider("mock", CONFIG), Path(tmp) / "runs", Path(tmp) / "mem",
+                            out_name="live", ledger_path=Path(tmp) / "l.json", on_event=live.append)
+        types = [e["event_type"] for e in live]
+        final = [e["event_type"] for e in res["trace"].events]
+        for t in ("SEARCH_EXECUTED", "CLAIMS_SUBMITTED", "CALC_COMPUTED", "CHALLENGES_SUBMITTED"):
+            self.assertEqual(types.count(t), final.count(t), t)                      # streamed once, not twice
+        self.assertLess(types.index("SEARCH_EXECUTED"), types.index("ROUND_1_COMPLETED"))   # visible before the round ends
+        started = [e for e in live if e["event_type"] == "MODEL_CALL_STARTED"]
+        finished = [e for e in live if e["event_type"] == "MODEL_CALL_FINISHED"]
+        self.assertEqual(len(started), len(finished))
+        self.assertEqual(len(started), res["record"]["spend"]["model_calls"])
+        from backend.runtime.trace import TraceLog
+        self.assertIsNone(TraceLog.default_on_emit)                                  # the hook does not outlive the run
+        self.assertEqual(sorted(final), sorted(e["event_type"] for e in res["trace"].events))
+
+
 if __name__ == "__main__":
     unittest.main()

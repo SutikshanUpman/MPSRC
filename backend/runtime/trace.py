@@ -4,6 +4,11 @@ from datetime import datetime, timezone
 
 
 class TraceLog:
+    # Thor's and Loki's own traces are merged into the case's trace only when a phase ends (so the order never depends on who
+    # ran first). To let a person watch a slow model work, they stream each event as it happens through this hook, which the
+    # orchestrator sets for the duration of a run; the merge later does not repeat what was already streamed.
+    default_on_emit = None
+
     def __init__(self, case_id=None, run_id="run-001"):
         self.case_id = case_id
         self.run_id = run_id
@@ -19,6 +24,11 @@ class TraceLog:
         if self.on_emit:
             self.on_emit(event)
         return event
+
+    def for_side(self):
+        """A side's own trace: streams live, is merged later."""
+        self.on_emit = TraceLog.default_on_emit
+        return self
 
     def of_type(self, event_type):
         return [e for e in self.events if e["event_type"] == event_type]

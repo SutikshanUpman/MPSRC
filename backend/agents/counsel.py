@@ -72,7 +72,7 @@ def load_prompt(agent, round_number, run_number=1):
 class Side:
     def __init__(self, agent, snapshot, corpus, index, config, memory_root):
         self.agent = agent
-        self.trace = TraceLog(snapshot["case_id"])
+        self.trace = TraceLog(snapshot["case_id"]).for_side()
         self.tools = AgentTools(agent, snapshot, corpus, index, config, self.trace)
         self.claims, self.status, self.failure = [], "OK", None
         self.steps = self.turns = self.retries = 0
