@@ -712,6 +712,16 @@ class SmallModelPaperwork(unittest.TestCase):
                              "estimate": {"low_ref": None, "high_ref": None}}, "thor", 1, 1, Tools())
         self.assertEqual((c["estimate"], c["estimate_status"]), (None, "NO_DOCUMENTED_FLOW"))
 
+    def test_malformed_tool_arguments_from_a_model_are_an_error_result_not_a_crash(self):
+        from backend.agents.counsel import run_round1  # noqa: F401
+        res = run(QUESTION, [PACK], tempfile.mkdtemp(prefix="final_args_"), "args")
+        tools = res["sides"]["thor"].tools
+        for call in ({"tool": "calc", "args": {"cells": ["Midgard Wheat"]}}, {"tool": "get_trade_rows", "args": {"cells": ["x"]}},
+                     {"tool": "search", "args": {"query": ["not", "a", "string"], "limit": "many"}}, {"tool": "calc", "args": {"cells": 5}},
+                     {"tool": "get_document", "args": {"doc_id": 7}}, {"tool": "calc", "args": None}, "calc", ["search"]):
+            out = tools.execute(call)
+            self.assertIn("error", out, call)
+
     def test_a_malformed_number_reference_is_dropped_not_repaired(self):
         from backend.agents.normalize import normalize_claim
 

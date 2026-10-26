@@ -51,6 +51,8 @@ class AgentTools:
                 "countries": countries or [], "sector_boost": sectors or []}
 
     def execute(self, call):
+        if not isinstance(call, dict):
+            return {"tool": None, "args": None, "error": "a tool call is an object with `tool` and `args`"}
         tool, args = call.get("tool"), call.get("args") or {}
         self.step_calls += 1
         self.tool_calls += 1
@@ -68,8 +70,8 @@ class AgentTools:
                 result = self.calc(args["cells"])
             else:
                 return {"tool": tool, "args": args, "error": f"unknown tool {tool!r}"}
-        except (KeyError, TypeError) as e:
-            return {"tool": tool, "args": args, "error": f"bad arguments: {e}"}
+        except (KeyError, TypeError, AttributeError, ValueError, IndexError) as e:   # a model's arguments are untrusted: an error result, never a crash
+            return {"tool": tool, "args": args, "error": f"bad arguments: {type(e).__name__}: {e}"}
         return {"tool": tool, "args": args, "result": result}
 
     # ---------- search ----------

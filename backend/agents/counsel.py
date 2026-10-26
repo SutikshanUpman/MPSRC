@@ -200,10 +200,13 @@ def model_loop(side, messages, provider, guard, config, on_tools, on_submit):
                 out, problems = None, [f"FALLBACK_LLM_RETRY: {e}"]
         if out is not None:
             messages.append({"role": "assistant", "content": canonical(out)})
-            if out["action"] == "tools":
-                messages.append({"role": "user", "content": canonical({"tool_results": on_tools(out, turn)})})
-                continue
-            problems = on_submit(out, turn)
+            try:
+                if out["action"] == "tools":
+                    messages.append({"role": "user", "content": canonical({"tool_results": on_tools(out, turn)})})
+                    continue
+                problems = on_submit(out, turn)
+            except Exception as e:                    # what a model wrote is untrusted: a bad shape is a failed attempt, never a crash
+                problems = [f"your output could not be processed ({type(e).__name__}: {e}); follow the output schema exactly"]
             if not problems:
                 return out, turn, retries
         retries += 1
