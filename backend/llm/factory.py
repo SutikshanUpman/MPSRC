@@ -59,6 +59,10 @@ def build_provider(spec, config_path=None):
     overrides = {"models": models} if models else {}
     if name == "ollama":
         overrides["prices_usd_per_million_tokens"] = {m: {"input": 0.0, "output": 0.0} for m in set(models.values())}
+        # A local answer costs nothing, so Odin and the agents may write more before they are cut off (the input window is
+        # ollama_num_ctx; 4,096 out + about 19,000 in fits the 24,576 default).
+        caps = {r: dict(c, max_output_tokens=max(c["max_output_tokens"], 4096)) for r, c in base["token_caps_by_role"].items()}
+        overrides["token_caps_by_role"] = caps
     config = load_config(config_path, overrides=overrides) if overrides else base
     if name == "anthropic":
         for role in ("heimdall", "thor", "loki", "odin_ruling", "odin_briefing"):

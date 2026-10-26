@@ -20,6 +20,15 @@ The first user message is a JSON case view: event, as-of date, event origins, th
 
 Limits: at most `max_tool_calls_per_agent_step` tool calls and `max_model_turns_per_agent_step` turns per step; your last allowed turn must submit. **Run at least one search for every assigned cell** (filtered to the cell's country, boosting its sector): memory may rewrite or skip a redundant query, but a skip that would leave a cell unsearched is overridden by the runtime.
 
+## Compact claims (keep your output short)
+
+The runtime fills in the bookkeeping: `agent`, `run`, `round`, `status`, `supersedes`, `metric`, `confidence` (neutral 0.5 unless you give one), `secondary_metrics`, `calc_ids` (from your references), the estimate's `low`/`high`/`unit` (from the calc fields you name) and `number_refs` for any figure that equals a field of your calc record. **Leave those out.** Give only:
+
+- a `CELL_ESTIMATE`: `claim_id`, `claim_type`, `country`, `sector`, `claim_text`, `citations`, and `estimate` with just `low_ref` and `high_ref` (`{"calc_id", "field"}`); for a cell with no flow, `estimate_status` and no estimate;
+- a `SUPPORTING` claim: `claim_id`, `claim_type`, `claim_kind`, `country`, `sector`, `claim_text`, `citations`, `calc_ids` (and `number_refs` for a figure that comes from a cited span).
+
+Each citation is exactly one bracket `[DOC_ID, P#, timestamp]` copied from a tool result: never a range such as `P8-13`. Keep `claim_text` to one or two sentences. A figure that is in no calc field and no cited span is rejected, so do not write one.
+
 ## Claim rules
 
 - Exactly **one `CELL_ESTIMATE` per assigned cell**. `SUPPORTING` claims in the whole round (this step plus `supporting_so_far`) stay within `max_supporting_claims_per_side_per_round`; they carry no range. Round-one claims have `supersedes: null`.

@@ -91,7 +91,7 @@ class OllamaTests(Env):
         self.assertEqual(req["path"], "/api/chat")
         body = req["body"]
         self.assertEqual((body["model"], body["stream"], body["format"]), ("qwen2.5:7b", False, SCHEMA))
-        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 2000, "num_ctx": 24576})
+        self.assertEqual(body["options"], {"temperature": 0, "num_predict": 4096, "num_ctx": 24576})
         self.assertEqual(body["messages"], MESSAGES)
         self.assertEqual(out["output"], {"a": "x"})
         self.assertEqual(out["usage"], {"input_tokens": 120, "output_tokens": 15})

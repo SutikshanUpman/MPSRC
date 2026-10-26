@@ -23,6 +23,7 @@ from ..runtime.budget import BudgetExceeded
 from ..runtime.trace import TraceLog
 from .calc import agent_view, field
 from .claims import NUMBER, _norm_num, check_citations, check_claim, has_masked_text, masked_raw_lines, number_tokens
+from .normalize import normalize_claims
 from .counsel import SIDES, STANCE, StepFailed, load_prompt, log_shared_queries, model_loop
 
 OTHER = {"thor": "loki", "loki": "thor"}
@@ -320,9 +321,10 @@ def run_round2(cf, sides, provider, config, trace, guard, order=SIDES):
             continue
         view = response_view(side, snapshot, against[agent], corpus, config)
         try:
-            out = _phase_step(side, view, "response", provider, guard, config,
-                              lambda o, t: validate_responses(agent, o, against[agent], snapshot, side.tools, corpus,
-                                                              config, masked))
+            def check(o, t, agent=agent, side=side):
+                o["claims"] = normalize_claims(o.get("claims", []), agent, 1, 2, side.tools)
+                return validate_responses(agent, o, against[agent], snapshot, side.tools, corpus, config, masked)
+            out = _phase_step(side, view, "response", provider, guard, config, check)
             side.responses, side.revised = out.get("responses", []), out.get("claims", [])
             side.trace.emit(agent, "RESPONSES_SUBMITTED", {"response_ids": [r["response_id"] for r in side.responses],
                                                            "types": [r["response_type"] for r in side.responses],

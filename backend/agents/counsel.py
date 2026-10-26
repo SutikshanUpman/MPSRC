@@ -33,6 +33,7 @@ from ..runtime.budget import BudgetExceeded, BudgetGuard
 from ..runtime.trace import TraceLog
 from ..search.bm25 import CaseIndex
 from .claims import masked_raw_lines, validate_claims
+from .normalize import normalize_claims
 from .tools import AgentTools
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -230,6 +231,7 @@ def run_step(side, snapshot, cells, corpus, provider, guard, config, masked):
 
     def on_submit(out, turn):
         _log_decisions(side, out, turn)
+        out["claims"] = normalize_claims(out.get("claims", []), side.agent, 1, 1, side.tools)     # the runtime fills the paperwork
         problems = validate_claims(side.agent, out.get("claims", []), set(cells), side.tools, snapshot, corpus, config,
                                    masked, prior=side.claims)
         return problems + [f"cell {c}: no executed search by {side.agent} in this case (every cell needs one)"

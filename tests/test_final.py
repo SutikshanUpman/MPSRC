@@ -640,5 +640,64 @@ class LiveFeed(unittest.TestCase):
         self.assertEqual(sorted(final), sorted(e["event_type"] for e in res["trace"].events))
 
 
+class SmallModelPaperwork(unittest.TestCase):
+    """A small model that leaves out the bookkeeping fields still produces the same claims: the runtime completes them."""
+
+    MECHANICAL = ("agent", "run", "round", "status", "supersedes", "metric", "secondary_metrics", "confidence", "calc_ids")
+
+    def strip(self, role, messages, schema):
+        from fakes.mock_policy import counsel_policy
+        out = counsel_policy(role, messages, schema)
+        if out.get("action") == "submit" and out.get("claims") and out["claims"][0].get("run") == 1 and out["claims"][0].get("round") == 1:
+            lean = []
+            for c in out["claims"]:
+                keep = ("calc_ids",) if c.get("claim_type") == "SUPPORTING" else ()          # which calc a supporting claim leans on is substance
+                c = {k: v for k, v in c.items() if k not in self.MECHANICAL or k in keep}
+                if c.get("claim_type") == "CELL_ESTIMATE":
+                    c.pop("claim_kind", None)
+                    c.pop("number_refs", None)
+                    if c.get("estimate"):
+                        c["estimate"] = {"low_ref": c["estimate"]["low_ref"], "high_ref": c["estimate"]["high_ref"]}
+                        c.pop("estimate_status", None)
+                elif c.get("claim_kind") == "INFERENCE":
+                    c.pop("number_refs", None)
+                lean.append(c)
+            out = dict(out, claims=lean)
+        return out
+
+    def test_the_runtime_fills_the_paperwork_and_the_guards_still_apply(self):
+        from fakes.mock_policy import default_responders
+        tmp = tempfile.mkdtemp(prefix="final_lean_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        lean = make_provider("mock", CONFIG, responders=dict(default_responders(), thor=self.strip, loki=self.strip))
+        full = run(QUESTION, [PACK], tmp, "full")
+        small = run(QUESTION, [PACK], tmp, "lean", provider=lean)
+        self.assertEqual(small["case_file"]["run_status"][0]["round_1"]["agent_failures"], [])
+
+        def ledger(res):
+            # the figure each number points to is the same; which of two equal calc fields it names may differ
+            return [dict({k: v for k, v in c.items() if k not in ("confidence", "number_refs")},
+                         number_values=sorted({r["value"] for r in c["number_refs"]})) for c in res["case_file"]["claim_ledger"] if c["round"] == 1 and c["run"] == 1]
+        self.assertEqual(ledger(small), ledger(full))
+        self.assertTrue(all(c["confidence"] == 0.5 for c in small["case_file"]["claim_ledger"] if c["round"] == 1 and c["run"] == 1))
+
+    def test_normalising_never_invents_a_figure_or_a_citation(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            def calc_by_id(self, cid):
+                return {"calc_id": cid, "status": "OK", "envelope": {"half_credit": {"low": 57.6, "high": 57.7}}, "passes": {}}
+        c = normalize_claim({"claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "Imports fell 57.6% and 99.9%.",
+                             "estimate": {"low_ref": {"calc_id": "calc-r1-thor-01", "field": "envelope.half_credit.low"},
+                                          "high_ref": {"calc_id": "calc-r1-thor-01", "field": "envelope.half_credit.high"}},
+                             "citations": ["[ORV-0009, P8-13, 2027-01-19 09:20]", "[ORV-0009, P4, 2027-01-19 09:20]", "not a citation"]},
+                            "thor", 1, 1, Tools())
+        refs = {r["value"]: r for r in c["number_refs"]}
+        self.assertIn("57.6", refs)                                    # a calc field: attached
+        self.assertNotIn("99.9", refs)                                 # no source: left for the number guard to reject
+        self.assertEqual(c["citations"], ["[ORV-0009, P4, 2027-01-19 09:20]"])      # a range and a non-citation are dropped
+        self.assertEqual((c["estimate"]["low"], c["estimate"]["high"], c["status"], c["supersedes"]), (57.6, 57.7, "submitted", None))
+
+
 if __name__ == "__main__":
     unittest.main()
