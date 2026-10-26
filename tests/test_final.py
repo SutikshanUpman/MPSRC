@@ -700,6 +700,18 @@ class SmallModelPaperwork(unittest.TestCase):
                             "loki", 1, 1, Tools())
         self.assertIsNone(c["estimate"])
 
+    def test_a_range_on_a_cell_without_flow_becomes_the_calc_status(self):
+        from backend.agents.normalize import normalize_claim
+
+        class Tools:
+            calcs = [{"calc_id": "calc-r1-thor-01", "country": "A", "sector": "B", "status": "NO_DOCUMENTED_FLOW", "passes": {}}]
+
+            def calc_by_id(self, cid):
+                return self.calcs[0] if cid == "calc-r1-thor-01" else None
+        c = normalize_claim({"claim_type": "CELL_ESTIMATE", "country": "A", "sector": "B", "claim_text": "x", "estimate_status": "ESTIMATED",
+                             "estimate": {"low_ref": None, "high_ref": None}}, "thor", 1, 1, Tools())
+        self.assertEqual((c["estimate"], c["estimate_status"]), (None, "NO_DOCUMENTED_FLOW"))
+
     def test_a_malformed_number_reference_is_dropped_not_repaired(self):
         from backend.agents.normalize import normalize_claim
 

@@ -63,6 +63,7 @@ def build_provider(spec, config_path=None):
         # ollama_num_ctx; 4,096 out + about 19,000 in fits the 24,576 default).
         caps = {r: dict(c, max_output_tokens=max(c["max_output_tokens"], 4096)) for r, c in base["token_caps_by_role"].items()}
         overrides["token_caps_by_role"] = caps
+        overrides["max_cells_per_agent_step"] = min(2, base["max_cells_per_agent_step"])     # shorter answers for a small local model
     config = load_config(config_path, overrides=overrides) if overrides else base
     if name == "anthropic":
         for role in ("heimdall", "thor", "loki", "odin_ruling", "odin_briefing"):

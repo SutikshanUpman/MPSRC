@@ -120,8 +120,10 @@ def normalize_claim(c, agent, run, round_, tools, supersedes=None):
                 est = dict(est, low=values["low"], high=values["high"], unit="percent")
                 c["estimate"] = est
                 c.setdefault("estimate_status", "ESTIMATED")
-        elif not est:
+        elif not est or not refs:                       # no usable bounds: the calc record decides the status, never a made-up range
             c["estimate"] = None
+            if c.get("estimate_status") == "ESTIMATED" and records and records[0]["status"] != "OK":
+                c["estimate_status"] = records[0]["status"]
             if "estimate_status" not in c and records and records[0]["status"] != "OK":
                 c["estimate_status"] = records[0]["status"]
         c.setdefault("estimate", None)
